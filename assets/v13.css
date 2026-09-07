@@ -280,3 +280,15 @@ html,body{max-width:100%;overflow-x:hidden}
 .seo-local-note{max-width:920px;color:#5d6873;line-height:1.65;margin:16px 0 0}
 .seo-local-note a{text-decoration:underline;text-underline-offset:3px;font-weight:800;color:var(--navy)}
 @media(max-width:760px){.seo-local-links .btn{width:100%;text-align:center}}
+
+
+/* BTT News — hemeroteca, filtros y galería múltiple */
+.news-filters{display:grid;grid-template-columns:minmax(240px,1.6fr) minmax(150px,.7fr) minmax(180px,.8fr);gap:12px;margin:26px 0 8px;align-items:end}
+.news-filters label{display:grid;gap:7px;font-size:12px;font-weight:900;color:#53616c;text-transform:uppercase;letter-spacing:.05em}
+.news-filters input,.news-filters select{width:100%;border:1px solid #d7e3e9;background:#fff;color:var(--navy);border-radius:14px;padding:12px 13px;font:inherit;outline:none}
+.news-filters input:focus,.news-filters select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(19,185,232,.12)}
+.news-count{font-size:12px;color:#71808b;margin:8px 0 24px}
+.news-archive{display:grid;gap:42px}.news-year{display:grid;gap:16px}.news-year-head{display:flex;align-items:end;justify-content:space-between;gap:14px;border-bottom:1px solid #dce6eb;padding-bottom:10px}.news-year-head h2{margin:0;font-size:32px}.news-year-head span{font-size:12px;color:#71808b;font-weight:800}
+.news-photo-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:18px}.news-photo-gallery figure{margin:0}.news-photo-gallery img{width:100%;height:150px;object-fit:cover;border-radius:12px;display:block}.news-photo-gallery figcaption{font-size:11px;color:#78858e;padding:6px 2px 0;line-height:1.35}.news-main-image{width:100%;height:250px;object-fit:cover}
+@media(max-width:760px){.news-filters{grid-template-columns:1fr}.news-photo-gallery{grid-template-columns:1fr 1fr}.news-photo-gallery img{height:130px}.news-year-head h2{font-size:28px}}
+@media(max-width:460px){.news-photo-gallery{grid-template-columns:1fr}.news-photo-gallery img{height:auto;aspect-ratio:4/3}}

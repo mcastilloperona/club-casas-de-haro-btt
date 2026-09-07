@@ -67,16 +67,38 @@
     }catch(e){box.innerHTML='<div class="weather-error">Ahora mismo no se puede cargar la previsión. Inténtalo de nuevo en unos minutos.</div>';}
   }
 
+  const newsCategoryLabel=v=>({salida:'Salida',marcha:'Marcha',evento:'Evento',miembros:'Miembros del club',equipacion:'Equipación',patrocinadores:'Patrocinadores',general:'General'})[v]||v||'General';
   function newsCard(n,full){
     const img=n.image?relPath(n.image):''; const date=n.date?fmtDate(n.date):'';
-    return `<article class="news-card">${img?`<img src="${esc(img)}" alt="${esc(n.image_alt||n.title||'BTT News')}" loading="lazy" decoding="async">`:''}<div class="news-card-body"><div class="news-meta">${date?`<span>${esc(date)}</span>`:''}${n.member?`<span>· ${esc(n.member)}</span>`:''}</div><h3>${esc(n.title)}</h3>${n.summary?`<p>${esc(n.summary)}</p>`:''}${full&&n.body?`<p class="news-body">${esc(n.body)}</p>`:''}</div></article>`;
+    const category=newsCategoryLabel(n.category);
+    const gallery=Array.isArray(n.gallery)?n.gallery.filter(x=>x&&x.image):[];
+    const galleryHtml=full&&gallery.length?`<div class="news-photo-gallery">${gallery.map((g,i)=>`<figure><img src="${esc(relPath(g.image))}" alt="${esc(g.alt||((n.title||'BTT News')+' · foto '+(i+1)))}" loading="lazy" decoding="async">${g.caption?`<figcaption>${esc(g.caption)}</figcaption>`:''}</figure>`).join('')}</div>`:'';
+    return `<article class="news-card">${img?`<img class="news-main-image" src="${esc(img)}" alt="${esc(n.image_alt||n.title||'BTT News')}" loading="lazy" decoding="async">`:''}<div class="news-card-body"><div class="news-meta">${date?`<span>${esc(date)}</span>`:''}<span>· ${esc(category)}</span>${n.member?`<span>· ${esc(n.member)}</span>`:''}</div><h3>${esc(n.title)}</h3>${n.summary?`<p>${esc(n.summary)}</p>`:''}${full&&n.body?`<p class="news-body">${esc(n.body)}</p>`:''}${galleryHtml}</div></article>`;
   }
   async function renderNews(){
     const list=document.getElementById('newsList'), teaser=document.getElementById('newsTeaser'); if(!list&&!teaser)return;
     try{
       const news=(await json('data/news.json')).filter(n=>n.published!==false).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-      if(list)list.innerHTML=news.length?news.map(n=>newsCard(n,true)).join(''):'<div class="news-empty">Todavía no hay noticias publicadas. Este espacio recogerá novedades del club, salidas, retos y noticias de sus miembros.</div>';
       if(teaser)teaser.innerHTML=news.length?`<div class="news-grid">${news.slice(0,3).map(n=>newsCard(n,false)).join('')}</div><div class="all-routes"><a class="btn dark" href="news.html">Ver BTT News →</a></div>`:'<div class="news-empty">BTT News está listo. Las próximas novedades del club aparecerán aquí automáticamente.</div>';
+      if(list){
+        const search=document.getElementById('newsSearch'), year=document.getElementById('newsYear'), category=document.getElementById('newsCategory'), count=document.getElementById('newsCount');
+        const years=[...new Set(news.map(n=>(n.date||'').slice(0,4)).filter(Boolean))].sort().reverse();
+        if(year)year.innerHTML='<option value="">Todos los años</option>'+years.map(y=>`<option value="${esc(y)}">${esc(y)}</option>`).join('');
+        const cats=[...new Set(news.map(n=>n.category||'general'))].sort((a,b)=>newsCategoryLabel(a).localeCompare(newsCategoryLabel(b),'es'));
+        if(category)category.innerHTML='<option value="">Todas las categorías</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(newsCategoryLabel(c))}</option>`).join('');
+        const paint=()=>{
+          const q=(search?.value||'').trim().toLocaleLowerCase('es'), y=year?.value||'', c=category?.value||'';
+          const filtered=news.filter(n=>{
+            const hay=[n.title,n.summary,n.body,n.member,newsCategoryLabel(n.category)].some(v=>String(v||'').toLocaleLowerCase('es').includes(q));
+            return (!q||hay)&&(!y||(n.date||'').startsWith(y))&&(!c||(n.category||'general')===c);
+          });
+          if(count)count.textContent=`${filtered.length} noticia${filtered.length===1?'':'s'} encontrada${filtered.length===1?'':'s'}`;
+          if(!filtered.length){list.innerHTML='<div class="news-empty">No hay noticias que coincidan con estos filtros.</div>';return;}
+          const groups={}; filtered.forEach(n=>{const yy=(n.date||'').slice(0,4)||'Sin fecha';(groups[yy]||(groups[yy]=[])).push(n)});
+          list.innerHTML=Object.keys(groups).sort().reverse().map(yy=>`<section class="news-year"><div class="news-year-head"><h2>${esc(yy)}</h2><span>${groups[yy].length} noticia${groups[yy].length===1?'':'s'}</span></div><div class="news-grid">${groups[yy].map(n=>newsCard(n,true)).join('')}</div></section>`).join('');
+        };
+        paint(); [search,year,category].filter(Boolean).forEach(el=>el.addEventListener(el===search?'input':'change',paint));
+      }
     }catch(e){if(list)list.innerHTML='<div class="news-empty">No se han podido cargar las noticias.</div>';}
   }
 

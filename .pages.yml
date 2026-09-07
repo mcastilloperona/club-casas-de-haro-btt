@@ -101,15 +101,40 @@ content:
       - { name: published, label: Publicada, type: boolean }
       - { name: title, label: Titular, type: string, required: true }
       - { name: date, label: Fecha, type: date }
+      - name: category
+        label: Categoría
+        type: select
+        options:
+          values:
+            - { name: salida, label: Salida }
+            - { name: marcha, label: Marcha }
+            - { name: evento, label: Evento }
+            - { name: miembros, label: Miembros del club }
+            - { name: equipacion, label: Equipación }
+            - { name: patrocinadores, label: Patrocinadores }
+            - { name: general, label: General }
       - { name: member, label: Miembro / protagonista, type: string }
       - { name: summary, label: Resumen, type: text }
       - { name: body, label: Noticia, type: text }
       - name: image
-        label: Imagen
+        label: Imagen principal
         type: image
         options:
           media: images
-      - { name: image_alt, label: Texto alternativo, type: string }
+      - { name: image_alt, label: Texto alternativo de la imagen principal, type: string }
+      - name: gallery
+        label: Galería de imágenes
+        type: object
+        list: true
+        fields:
+          - name: image
+            label: Foto
+            type: image
+            required: true
+            options:
+              media: images
+          - { name: alt, label: Texto alternativo, type: string }
+          - { name: caption, label: Pie de foto, type: string }
 
   - name: gallery
     label: Galería

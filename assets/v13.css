@@ -271,3 +271,12 @@ html,body{max-width:100%;overflow-x:hidden}
 .wikiloc-more{display:flex;justify-content:flex-end;margin:16px 0 2px}
 .legal-links{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:18px;padding-top:18px;border-top:1px solid #ffffff1f;font-size:13px}
 .legal-links a{color:#e9f7fb;text-decoration:underline;text-underline-offset:3px}
+
+
+/* SEO local fase 1 */
+.seo-local-block{background:#fff}
+.seo-local-block .lead{max-width:920px}
+.seo-local-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.seo-local-note{max-width:920px;color:#5d6873;line-height:1.65;margin:16px 0 0}
+.seo-local-note a{text-decoration:underline;text-underline-offset:3px;font-weight:800;color:var(--navy)}
+@media(max-width:760px){.seo-local-links .btn{width:100%;text-align:center}}

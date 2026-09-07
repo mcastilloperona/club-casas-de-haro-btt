@@ -272,7 +272,6 @@ html,body{max-width:100%;overflow-x:hidden}
 .legal-links{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:18px;padding-top:18px;border-top:1px solid #ffffff1f;font-size:13px}
 .legal-links a{color:#e9f7fb;text-decoration:underline;text-underline-offset:3px}
 
-
 /* SEO local fase 1 */
 .seo-local-block{background:#fff}
 .seo-local-block .lead{max-width:920px}
@@ -318,3 +317,6 @@ html,body{max-width:100%;overflow-x:hidden}
 
 /* GOOGLE_MAP_ALWAYS_LOADED */
 .google-map-actions-loaded{padding:0 18px 18px;margin-top:18px}
+
+/* Telegram es el único acceso flotante de contacto. */
+.wa-wrap{display:none!important}

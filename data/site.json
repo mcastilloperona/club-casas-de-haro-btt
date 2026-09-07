@@ -1,15 +1,11 @@
 {
   "next_route": {
-    "title": "Casas de Haro · El Picazo · Tébar",
-    "date": "",
+    "title": "Próximamente.....",
+    "date": "2026-09-13",
     "time": "Hora por confirmar",
-    "distance_km": 144,
-    "elevation_m": 1050,
     "discipline": "BTT",
-    "description": "Ruta circular con salida y llegada en Casas de Haro.",
+    "description": "En breve publicaremos la próxima salida",
     "image": "assets/camino-atardecer.jpg",
-    "image_alt": "Camino de Casas de Haro al atardecer",
-    "track_url": "",
-    "gpx": ""
+    "image_alt": "Camino de Casas de Haro al atardecer"
   }
 }

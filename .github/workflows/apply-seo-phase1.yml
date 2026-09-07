@@ -1,0 +1,90 @@
+name: Apply SEO phase 1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-seo-phase1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  seo:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply SEO improvements
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          def add_once(path, anchor, block, marker):
+              p=Path(path)
+              text=p.read_text(encoding='utf-8')
+              if marker in text:
+                  return False
+              if anchor not in text:
+                  raise SystemExit(f'No se encuentra anchor en {path}: {anchor[:80]}')
+              text=text.replace(anchor, block+anchor, 1)
+              p.write_text(text, encoding='utf-8')
+              return True
+
+          # INDEX: contenido local útil + datos estructurados
+          index_block='''\n<section class="section seo-local-block" aria-labelledby="seo-ciclismo-casas-de-haro">\n  <div class="wrap">\n    <div class="kicker">Ciclismo en Casas de Haro</div>\n    <h2 id="seo-ciclismo-casas-de-haro">BTT y carretera desde el corazón de La Mancha</h2>\n    <p class="lead">Casas de Haro, en la provincia de Cuenca, es nuestro punto de partida para recorrer en bicicleta caminos agrícolas, pistas de tierra y carreteras tranquilas del entorno manchego. El Club Casas de Haro BTT reúne rutas de montaña y de carretera, próximas salidas y tracks para descubrir sobre dos ruedas los paisajes del pueblo y localidades cercanas como Sisante, Pozoamargo, Vara de Rey, El Picazo y Tébar.</p>\n    <div class="seo-local-links">\n      <a class="btn dark" href="rutas.html">Ver rutas BTT y carretera</a>\n      <a class="btn secondary" href="historia.html">Conocer Casas de Haro</a>\n    </div>\n  </div>\n</section>\n'''
+          add_once('index.html','<section class="section" style="background:#fff"><div class="wrap"><div class="kicker">BTT News</div>',index_block,'seo-ciclismo-casas-de-haro')
+
+          index_schema='''\n<script type="application/ld+json" id="seo-schema-club">\n{\n  "@context":"https://schema.org",\n  "@type":"SportsOrganization",\n  "name":"Club Casas de Haro BTT",\n  "url":"https://casasdeharobtt.es/",\n  "logo":"https://casasdeharobtt.es/assets/logo-cdh.png",\n  "sport":["Mountain biking","Cycling"],\n  "areaServed":{"@type":"Place","name":"Casas de Haro, Cuenca, España"}\n}\n</script>\n'''
+          add_once('index.html','</head>',index_schema,'seo-schema-club')
+
+          # RUTAS: contexto geográfico y semántico
+          rutas_block='''\n<section class="section seo-local-block" aria-labelledby="seo-rutas-casas-de-haro">\n  <div class="wrap">\n    <div class="kicker">Rutas ciclistas en Casas de Haro</div>\n    <h2 id="seo-rutas-casas-de-haro">Recorridos BTT, MTB y carretera por Casas de Haro y su entorno</h2>\n    <p class="lead">El entorno de Casas de Haro ofrece recorridos muy variados para bicicleta de montaña y ciclismo de carretera. Las rutas del club y de la comunidad conectan el pueblo con zonas habituales como Sisante, Pozoamargo, Vara de Rey, El Picazo, Tébar y otros municipios de La Mancha conquense. Aquí reunimos distancia, desnivel, modalidad, track y procedencia de cada recorrido para que resulte sencillo elegir una salida adecuada.</p>\n    <p class="seo-local-note">Además de los tracks del club, enlazamos las rutas de Wikiloc respetando siempre su autoría original. Si quieres conocer mejor el paisaje y la historia del municipio, visita también <a href="historia.html">Casas de Haro: historia, entorno y ciclismo</a>.</p>\n  </div>\n</section>\n'''
+          add_once('rutas.html','<section class="section"><div class="wrap">\n<div class="kicker">Próxima salida</div>',rutas_block,'seo-rutas-casas-de-haro')
+
+          rutas_schema='''\n<script type="application/ld+json" id="seo-schema-rutas">\n{\n  "@context":"https://schema.org",\n  "@type":"CollectionPage",\n  "name":"Rutas BTT y ciclismo de carretera en Casas de Haro",\n  "url":"https://casasdeharobtt.es/rutas.html",\n  "description":"Rutas BTT, MTB y de ciclismo de carretera en Casas de Haro (Cuenca), con tracks, distancias, desniveles y próximas salidas.",\n  "isPartOf":{"@type":"WebSite","name":"Club Casas de Haro BTT","url":"https://casasdeharobtt.es/"},\n  "about":{"@type":"Place","name":"Casas de Haro, Cuenca, España"}\n}\n</script>\n'''
+          add_once('rutas.html','</head>',rutas_schema,'seo-schema-rutas')
+
+          # HISTORIA: refuerzo del vínculo local con ciclismo sin alterar navegación
+          historia_block='''\n<section class="section seo-local-block" aria-labelledby="seo-casas-de-haro-bici">\n  <div class="wrap">\n    <div class="kicker">Casas de Haro sobre dos ruedas</div>\n    <h2 id="seo-casas-de-haro-bici">Un paisaje manchego hecho para descubrirlo en bicicleta</h2>\n    <p class="lead">Los caminos agrícolas, los viñedos, la llanura y las carreteras del entorno forman parte de la identidad ciclista de Casas de Haro. El club utiliza el pueblo como punto de salida para rutas BTT y de carretera que recorren distintos rincones de La Mancha conquense. Esta relación entre territorio, bicicleta y vida local es una parte esencial de nuestra historia.</p>\n    <div class="seo-local-links"><a class="btn dark" href="rutas.html">Explorar las rutas desde Casas de Haro</a></div>\n  </div>\n</section>\n'''
+          add_once('historia.html','</main>',historia_block,'seo-casas-de-haro-bici')
+
+          historia_schema='''\n<script type="application/ld+json" id="seo-schema-historia">\n{\n  "@context":"https://schema.org",\n  "@type":"WebPage",\n  "name":"Casas de Haro (Cuenca): historia, entorno y ciclismo",\n  "url":"https://casasdeharobtt.es/historia.html",\n  "about":[\n    {"@type":"Place","name":"Casas de Haro, Cuenca, España"},\n    {"@type":"SportsOrganization","name":"Club Casas de Haro BTT","url":"https://casasdeharobtt.es/"}\n  ],\n  "inLanguage":"es"\n}\n</script>\n'''
+          add_once('historia.html','</head>',historia_schema,'seo-schema-historia')
+
+          # CSS compartido discreto, sin modificar menú ni identidad
+          css=Path('assets/v13.css')
+          c=css.read_text(encoding='utf-8')
+          marker='/* SEO local fase 1 */'
+          if marker not in c:
+              c += '''\n\n/* SEO local fase 1 */\n.seo-local-block{background:#fff}\n.seo-local-block .lead{max-width:920px}\n.seo-local-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}\n.seo-local-note{max-width:920px;color:#5d6873;line-height:1.65;margin:16px 0 0}\n.seo-local-note a{text-decoration:underline;text-underline-offset:3px;font-weight:800;color:var(--navy)}\n@media(max-width:760px){.seo-local-links .btn{width:100%;text-align:center}}\n'''
+              css.write_text(c, encoding='utf-8')
+
+          # Versionado
+          v=Path('VERSION.txt')
+          if v.exists():
+              txt=v.read_text(encoding='utf-8')
+              if 'SEO local fase 1' not in txt:
+                  txt=txt.rstrip()+"\nSEO local fase 1: contenido semántico, enlazado interno y datos estructurados.\n"
+                  v.write_text(txt,encoding='utf-8')
+
+          # Validaciones básicas
+          for f in ['index.html','rutas.html','historia.html']:
+              t=Path(f).read_text(encoding='utf-8')
+              if t.count('<h1') < 1:
+                  raise SystemExit(f'{f} sin H1')
+              if '<link rel="canonical"' not in t:
+                  raise SystemExit(f'{f} sin canonical')
+          PY
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-seo-phase1.yml
+          git add index.html rutas.html historia.html assets/v13.css VERSION.txt
+          git commit -m "V13 SEO 1: reforzar SEO local de Casas de Haro"
+          git push origin main

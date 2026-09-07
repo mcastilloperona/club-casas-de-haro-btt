@@ -1,0 +1,289 @@
+name: Aplicar espacio de colaboradores
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aplicar-colaboradores-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Aplicar cambios
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, json
+
+          page_path = Path('patrocinadores.html')
+          page = page_path.read_text(encoding='utf-8')
+
+          page = page.replace(
+              '<title>Patrocinadores | Club Casas de Haro BTT · Casas de Haro</title>',
+              '<title>Patrocinadores y colaboradores | Club Casas de Haro BTT</title>'
+          )
+          page = page.replace(
+              '<meta property="og:title" content="Patrocinadores | Club Casas de Haro BTT · Casas de Haro">',
+              '<meta property="og:title" content="Patrocinadores y colaboradores | Club Casas de Haro BTT">'
+          )
+          page = page.replace(
+              '"name":"Patrocinadores del Club Casas de Haro BTT"',
+              '"name":"Patrocinadores y colaboradores del Club Casas de Haro BTT"'
+          )
+
+          new_main = '''<main>
+          <section class="page-hero"><div class="wrap"><div class="kicker">Los que pedalean con nosotros</div><h1>Patrocinadores y colaboradores</h1><p>Empresas, entidades, profesionales y personas que ayudan a que el Club Casas de Haro BTT siga creciendo junto a su pueblo.</p></div></section>
+          <div class="kit-stripes"></div>
+
+          <section class="section sponsor-priority-section" aria-labelledby="patrocinadores-club">
+            <div class="wrap">
+              <div class="kicker">Apoyo principal</div>
+              <h2 id="patrocinadores-club">Patrocinadores del club</h2>
+              <p class="lead">Nuestros patrocinadores hacen posible una parte esencial del proyecto del Club Casas de Haro BTT y cuentan con la máxima visibilidad dentro de nuestros espacios y acciones de patrocinio.</p>
+              <div class="sponsors">
+                <a class="sponsor" target="_blank" rel="noopener" href="https://www.villaciclos.es/"><img src="assets/villaciclos.jpg" alt="Villaciclos" width="1177" height="1177" loading="lazy" decoding="async"></a>
+                <a class="sponsor" target="_blank" rel="noopener" href="https://recreativosaroca.es/"><img src="assets/recreativos-aroca.jpg" alt="Recreativos Aroca" width="1536" height="684" loading="lazy" decoding="async"></a>
+                <div class="sponsor"><img src="assets/herreria-san-julian.jpg" alt="Herrería San Julián" width="1536" height="1024" loading="lazy" decoding="async"></div>
+                <a class="sponsor" target="_blank" rel="noopener" href="https://www.turismocastillalamancha.es/es/destinos/encanto-rural/cuenca/casas-de-haro"><img src="assets/ayuntamiento-casas-de-haro.jpg" alt="Ayuntamiento de Casas de Haro" width="1536" height="1536" loading="lazy" decoding="async"></a>
+              </div>
+              <p class="sponsor-note">La presencia en la equipación del club queda reservada a acuerdos de patrocinio específicos.</p>
+            </div>
+          </section>
+
+          <section class="section collaborator-section" aria-labelledby="colaboradores-club">
+            <div class="wrap">
+              <div class="kicker">Comunidad que suma</div>
+              <h2 id="colaboradores-club">Colaboradores del club</h2>
+              <p class="lead">Abrimos este espacio a comercios, empresas, profesionales, entidades y personas que quieran apoyar al club. La colaboración puede ser general, estar vinculada a una actividad concreta o realizarse mediante productos, material o servicios.</p>
+
+              <div class="support-levels" aria-label="Formas de colaborar con el club">
+                <article class="support-level"><span>01</span><h3>Colaborador del club</h3><p>Apoyo general a las actividades e iniciativas que desarrollamos durante la temporada.</p></article>
+                <article class="support-level"><span>02</span><h3>Colaborador de una actividad</h3><p>Apoyo a una salida especial, marcha, encuentro, avituallamiento u otra acción concreta.</p></article>
+                <article class="support-level"><span>03</span><h3>Colaborador en especie</h3><p>Material, productos, servicios o recursos que puedan ayudar al club y a sus actividades.</p></article>
+              </div>
+
+              <div id="collaboratorsGrid" class="collaborators-grid" aria-live="polite">
+                <div class="collaborators-empty">Cargando colaboradores…</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section collaboration-cta-section" aria-labelledby="quieres-colaborar">
+            <div class="wrap">
+              <div class="collaboration-cta">
+                <div>
+                  <div class="kicker">Súmate al proyecto</div>
+                  <h2 id="quieres-colaborar">¿Quieres colaborar con Casas de Haro BTT?</h2>
+                  <p>Si tienes un comercio, una empresa, eres profesional o simplemente quieres apoyar las actividades del club, cuéntanos tu propuesta. Estaremos encantados de estudiarla contigo.</p>
+                </div>
+                <div class="collaboration-actions">
+                  <a class="btn" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Contactar por Telegram</a>
+                  <a class="btn secondary-light" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20colaborar%20con%20Club%20Casas%20de%20Haro%20BTT">Contactar por email</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          </main>'''
+
+          if not re.search(r'<main>.*?</main>', page, flags=re.S):
+              raise SystemExit('No se encontró el bloque <main> de patrocinadores.html')
+          page = re.sub(r'<main>.*?</main>', new_main, page, count=1, flags=re.S)
+
+          css_link = '<link rel="stylesheet" href="assets/colaboradores.css">'
+          if css_link not in page:
+              page = page.replace('</head>', css_link + '</head>', 1)
+
+          js_link = '<script src="assets/colaboradores.js" defer></script>'
+          if js_link not in page:
+              page = page.replace('</body>', js_link + '</body>', 1)
+
+          page_path.write_text(page, encoding='utf-8')
+
+          Path('data/collaborators.json').write_text('[]\n', encoding='utf-8')
+
+          Path('assets/colaboradores.css').write_text(r'''/* Colaboradores · Club Casas de Haro BTT */
+          .page-hero p{max-width:760px;margin:14px 0 0;color:#d9e7ef;font-size:18px;line-height:1.6}
+          .sponsor-priority-section{background:#fff}
+          .sponsor-note{margin:22px 0 0;color:#65727c;font-size:13px}
+          .collaborator-section{background:linear-gradient(135deg,#eef8fb,#f8fcfd)}
+          .support-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:30px 0 34px}
+          .support-level{background:#fff;border:1px solid #dbe8ed;border-radius:20px;padding:24px;box-shadow:0 12px 32px #09233b0d}
+          .support-level>span{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#e1f6fb;color:#067fa4;font-size:12px;font-weight:900;letter-spacing:.08em}
+          .support-level h3{margin:16px 0 8px;font-size:20px;color:var(--navy)}
+          .support-level p{margin:0;color:#63717b;line-height:1.55;font-size:14px}
+          .collaborators-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+          .collaborator-card{background:#fff;border:1px solid #dfe8ec;border-radius:20px;padding:22px;display:flex;flex-direction:column;min-height:250px;box-shadow:0 10px 28px #09233b0a}
+          .collaborator-logo{height:92px;border-radius:14px;background:#f7fbfc;border:1px solid #edf2f4;display:grid;place-items:center;padding:12px;margin-bottom:18px;overflow:hidden}
+          .collaborator-logo img{max-width:100%;max-height:68px;width:auto;height:auto;object-fit:contain}
+          .collaborator-logo-fallback{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-weight:900;font-size:22px}
+          .collaborator-type{display:inline-block;align-self:flex-start;padding:6px 9px;border-radius:999px;background:#e7f7fb;color:#087b9f;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+          .collaborator-card h3{font-size:20px;margin:12px 0 8px}
+          .collaborator-card p{color:#626f79;line-height:1.55;margin:0 0 12px;font-size:14px}
+          .collaborator-location{font-size:12px!important;color:#82909a!important;margin-top:auto!important}
+          .collaborator-card .btn{align-self:flex-start;margin-top:12px;background:var(--navy);color:#fff;padding:10px 14px;font-size:13px}
+          .collaborators-empty{grid-column:1/-1;border:1px dashed #b9cdd5;background:#ffffffb8;border-radius:18px;padding:28px;text-align:center;color:#61717b;line-height:1.6}
+          .collaboration-cta-section{background:#fff}
+          .collaboration-cta{background:linear-gradient(135deg,var(--navy2),var(--navy) 58%,#07557c);color:#fff;border-radius:28px;padding:38px;display:grid;grid-template-columns:1.3fr .7fr;gap:36px;align-items:center;box-shadow:0 20px 50px #031b3720}
+          .collaboration-cta .kicker{color:var(--ice)}
+          .collaboration-cta h2{margin:8px 0 12px;font-size:clamp(30px,4vw,46px)}
+          .collaboration-cta p{margin:0;max-width:720px;color:#d9e7ef;line-height:1.65}
+          .collaboration-actions{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+          .collaboration-actions .btn{text-align:center}
+          .collaboration-actions .secondary-light{background:transparent;color:#fff;border:1px solid #ffffff66}
+          @media(max-width:900px){.support-levels,.collaborators-grid{grid-template-columns:repeat(2,1fr)}.collaboration-cta{grid-template-columns:1fr}}
+          @media(max-width:620px){.support-levels,.collaborators-grid{grid-template-columns:1fr}.collaboration-cta{padding:26px 20px;border-radius:22px}.sponsor-note{font-size:12px}}
+          ''', encoding='utf-8')
+
+          Path('assets/colaboradores.js').write_text(r'''(function(){
+            'use strict';
+            const grid=document.getElementById('collaboratorsGrid');
+            if(!grid)return;
+
+            const labels={
+              club:'Colaborador del club',
+              actividad:'Colaborador de una actividad',
+              especie:'Colaborador en especie'
+            };
+
+            function safeUrl(value){
+              if(!value)return '';
+              try{
+                const u=new URL(String(value),location.href);
+                return ['http:','https:'].includes(u.protocol)?u.href:'';
+              }catch(e){return ''}
+            }
+
+            function make(tag,className,text){
+              const el=document.createElement(tag);
+              if(className)el.className=className;
+              if(text)el.textContent=text;
+              return el;
+            }
+
+            function card(item){
+              const article=make('article','collaborator-card');
+              const logo=make('div','collaborator-logo');
+              if(item.logo){
+                const img=document.createElement('img');
+                img.src=String(item.logo).replace(/^\/+/, '');
+                img.alt=item.name?`Logo de ${item.name}`:'Logo de colaborador';
+                img.loading='lazy';
+                img.decoding='async';
+                logo.appendChild(img);
+              }else{
+                const mark=make('div','collaborator-logo-fallback',(item.name||'C').trim().charAt(0).toUpperCase()||'C');
+                logo.appendChild(mark);
+              }
+              article.appendChild(logo);
+              article.appendChild(make('span','collaborator-type',labels[item.collaboration_type]||'Colaborador del club'));
+              article.appendChild(make('h3','',item.name||'Colaborador'));
+              if(item.description)article.appendChild(make('p','',item.description));
+              if(item.location)article.appendChild(make('p','collaborator-location',item.location));
+              const url=safeUrl(item.url);
+              if(url){
+                const a=make('a','btn','Conocer colaborador');
+                a.href=url;a.target='_blank';a.rel='noopener';
+                article.appendChild(a);
+              }
+              return article;
+            }
+
+            fetch('data/collaborators.json',{cache:'no-store'})
+              .then(r=>{if(!r.ok)throw new Error('No se pudieron cargar los colaboradores');return r.json()})
+              .then(data=>{
+                const items=(Array.isArray(data)?data:[])
+                  .filter(x=>x&&x.published!==false&&x.name)
+                  .sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)||String(a.name).localeCompare(String(b.name),'es'));
+                grid.replaceChildren();
+                if(!items.length){
+                  grid.appendChild(make('div','collaborators-empty','Este espacio está abierto a nuevos colaboradores. Si quieres sumar tu apoyo al Club Casas de Haro BTT, puedes contactar con nosotros por Telegram o por email.'));
+                  return;
+                }
+                items.forEach(item=>grid.appendChild(card(item)));
+              })
+              .catch(()=>{
+                grid.replaceChildren(make('div','collaborators-empty','Ahora mismo no se puede cargar el listado de colaboradores.'));
+              });
+          })();
+          ''', encoding='utf-8')
+
+          pages_path = Path('.pages.yml')
+          pages = pages_path.read_text(encoding='utf-8')
+          if '\n  - name: collaborators\n' not in pages:
+              block = '''
+  - name: collaborators
+    label: Colaboradores
+    type: file
+    path: data/collaborators.json
+    format: json
+    list: true
+    fields:
+      - name: published
+        label: Publicado
+        type: boolean
+        default: true
+      - { name: name, label: Nombre, type: string, required: true }
+      - name: collaboration_type
+        label: Tipo de colaboración
+        type: select
+        required: true
+        default: club
+        options:
+          values:
+            - { name: club, label: Colaborador del club }
+            - { name: actividad, label: Colaborador de una actividad }
+            - { name: especie, label: Colaborador en especie }
+      - { name: description, label: Descripción, type: text }
+      - name: logo
+        label: Logo
+        type: image
+        options:
+          media: images
+      - { name: url, label: Web / red social / enlace, type: string }
+      - { name: location, label: Localidad o ámbito, type: string }
+      - { name: order, label: Orden de aparición, type: number }
+
+'''
+              if '\nsettings:\n' not in pages:
+                  raise SystemExit('No se encontró settings en .pages.yml')
+              pages = pages.replace('\nsettings:\n', '\n' + block + 'settings:\n', 1)
+              pages_path.write_text(pages, encoding='utf-8')
+
+          # Validaciones básicas
+          final_page = page_path.read_text(encoding='utf-8')
+          required = [
+              'Patrocinadores y colaboradores',
+              'id="collaboratorsGrid"',
+              'Contactar por Telegram',
+              'Contactar por email',
+              'assets/colaboradores.css',
+              'assets/colaboradores.js'
+          ]
+          for token in required:
+              if token not in final_page:
+                  raise SystemExit('Falta en patrocinadores.html: ' + token)
+
+          json.loads(Path('data/collaborators.json').read_text(encoding='utf-8'))
+          if 'path: data/collaborators.json' not in pages_path.read_text(encoding='utf-8'):
+              raise SystemExit('No se añadió Colaboradores a Pages CMS')
+          PY
+
+      - name: Comprobar JavaScript
+        run: node --check assets/colaboradores.js
+
+      - name: Publicar cambios y retirar workflow temporal
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/aplicar-colaboradores-once.yml
+          git add patrocinadores.html data/collaborators.json assets/colaboradores.css assets/colaboradores.js .pages.yml
+          git commit -m "Añadir espacio de colaboradores del club"
+          git push

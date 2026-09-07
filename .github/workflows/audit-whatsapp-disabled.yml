@@ -1,4 +1,4 @@
-name: Aplicar Telegram email y mapa
+name: Aplicar espacio de colaboradores
 
 on:
   push:
@@ -17,35 +17,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Preparar contacto dinámico de próxima salida
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('assets/v13.js')
-          s = p.read_text(encoding='utf-8')
-          old = '<a class="btn secondary" aria-disabled="true" tabindex="-1" title="@mcastilloperona · próximamente disponible">WhatsApp · próximamente disponible</a>'
-          new = '<a class="btn secondary" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn secondary" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a>'
-          if old not in s:
-              raise SystemExit('No se encontró el contacto temporal esperado en assets/v13.js')
-          p.write_text(s.replace(old, new), encoding='utf-8')
-          PY
-
       - name: Aplicar cambios aprobados
-        run: python3 scripts/aplicar_contacto_mapa.py
+        run: python3 scripts/aplicar_colaboradores.py
 
       - name: Comprobar JavaScript
-        run: |
-          node --check assets/v13.js
-          node --check assets/mapa-google.js
+        run: node --check assets/colaboradores.js
 
-      - name: Commit de los cambios
+      - name: Publicar cambios
         run: |
-          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
-            echo "No hay cambios que confirmar"
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html rutas.html historia.html galeria.html news.html patrocinadores.html aviso-legal.html privacidad.html cookies.html assets/v13.js assets/v13.css assets/mapa-google.js
-          git commit -m "Contacto: Telegram, email y mapa de Google"
+          git rm -f .github/workflows/aplicar-colaboradores-once.yml scripts/aplicar_colaboradores.py
+          git add patrocinadores.html data/collaborators.json assets/colaboradores.css assets/colaboradores.js .pages.yml
+          git commit -m "Añadir espacio de colaboradores del club"
           git push

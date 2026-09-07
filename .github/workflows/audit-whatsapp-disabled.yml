@@ -1,4 +1,4 @@
-name: Simplificar colaboradores
+name: Visibilidad de colaboradores
 
 on:
   push:
@@ -17,17 +17,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Aplicar simplificación aprobada
-        run: python3 scripts/simplificar_colaboradores.py
+      - name: Aplicar cambios aprobados
+        run: python3 scripts/aplicar_visibilidad_colaboradores.py
 
       - name: Comprobar JavaScript
-        run: node --check assets/colaboradores.js
+        run: |
+          node --check assets/colaboradores.js
+          node --check assets/v13.js
 
       - name: Publicar cambios
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -f scripts/simplificar_colaboradores.py
-          git add patrocinadores.html assets/colaboradores.css assets/colaboradores.js .pages.yml
-          git commit -m "Simplificar espacio de colaboradores"
+          git rm -f scripts/aplicar_visibilidad_colaboradores.py
+          git add index.html patrocinadores.html assets/colaboradores.css assets/colaboradores.js assets/v13.js .pages.yml
+          git commit -m "Dar visibilidad a colaboradores en web y BTT News"
           git push

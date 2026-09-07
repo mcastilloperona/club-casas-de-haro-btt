@@ -50,7 +50,7 @@
 @media(max-width:760px){.gallery figure,.gallery figure:nth-child(n){grid-column:auto}}
 
 /* próxima ruta dinámica */
-.next-route-date{font-size:14px;color:#cbd6df;margin:0 0 5px}.next-route-desc{line-height:1.55;color:#e4ebf1}.route-actions-wide{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.next-route-date{font-size:14px;color:#cbd6df;margin:12px 0 6px}.next-route-desc{line-height:1.55;color:#e4ebf1}.route-actions-wide{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
 /* nota CMS / gestión */
 .content-note{background:#e9f8fc;border:1px solid #cbeaf3;border-radius:16px;padding:16px 18px;color:#365363;font-size:14px;margin-top:18px}

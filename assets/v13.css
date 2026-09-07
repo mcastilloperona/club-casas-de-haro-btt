@@ -322,7 +322,16 @@ html,body{max-width:100%;overflow-x:hidden}
 .wa-wrap{display:none!important}
 
 /* Logotipos completos, proporcionados y nítidos dentro de cada tarjeta. */
-.home-sponsors-section{background:#fff}
 .sponsor{height:230px!important;min-height:230px!important;padding:10px!important;overflow:hidden}
 .sponsor img{display:block;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}
 @media(max-width:760px){.sponsor{height:190px!important;min-height:190px!important;padding:8px!important}}
+
+/* Carrusel de portada: un patrocinador cada vez, grande y centrado. */
+.club-partners-band{height:270px!important}
+.club-partner-card{grid-template-columns:minmax(260px,420px) 1fr!important;gap:40px!important;padding:20px 0!important}
+.club-partner-card img{display:block;width:100%!important;height:220px!important;padding:10px!important;object-fit:contain!important;object-position:center!important}
+@media(max-width:760px){
+  .club-partners-band{height:360px!important}
+  .club-partner-card{grid-template-columns:1fr!important;gap:12px!important;padding:18px 0!important;text-align:center}
+  .club-partner-card img{width:min(100%,420px)!important;height:210px!important;margin:0 auto!important}
+}

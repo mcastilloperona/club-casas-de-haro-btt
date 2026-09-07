@@ -67,7 +67,7 @@
     }catch(e){box.innerHTML='<div class="weather-error">Ahora mismo no se puede cargar la previsión. Inténtalo de nuevo en unos minutos.</div>';}
   }
 
-  const newsCategoryLabel=v=>({salida:'Salida',marcha:'Marcha',evento:'Evento',miembros:'Miembros del club',equipacion:'Equipación',patrocinadores:'Patrocinadores',general:'General'})[v]||v||'General';
+  const newsCategoryLabel=v=>({salida:'Salida',marcha:'Marcha',evento:'Evento',miembros:'Miembros del club',equipacion:'Equipación',patrocinadores:'Patrocinadores',colaboradores:'Colaboradores',general:'General'})[v]||v||'General';
   function newsCard(n,full){
     const img=n.image?relPath(n.image):''; const date=n.date?fmtDate(n.date):'';
     const category=newsCategoryLabel(n.category);

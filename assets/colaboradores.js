@@ -1,7 +1,9 @@
 (function(){
   'use strict';
   const grid=document.getElementById('collaboratorsGrid');
-  if(!grid)return;
+  const homeSection=document.getElementById('colaboradores-portada');
+  const homeTrack=document.getElementById('homeCollaboratorsTrack');
+  if(!grid&&!homeTrack)return;
 
   function safeUrl(value){
     if(!value)return '';
@@ -15,9 +17,8 @@
     return el;
   }
 
-  function card(item){
-    const article=make('article','collaborator-card');
-    const logo=make('div','collaborator-logo');
+  function logoNode(item,compact){
+    const logo=make('div',compact?'home-collaborator-logo':'collaborator-logo');
     if(item.logo){
       const img=document.createElement('img');
       img.src=String(item.logo).replace(/^\/+/, '');
@@ -26,9 +27,14 @@
       img.decoding='async';
       logo.appendChild(img);
     }else{
-      logo.appendChild(make('div','collaborator-logo-fallback',(item.name||'C').trim().charAt(0).toUpperCase()||'C'));
+      logo.appendChild(make('div',compact?'home-collaborator-fallback':'collaborator-logo-fallback',(item.name||'C').trim().charAt(0).toUpperCase()||'C'));
     }
-    article.appendChild(logo);
+    return logo;
+  }
+
+  function card(item){
+    const article=make('article','collaborator-card');
+    article.appendChild(logoNode(item,false));
     article.appendChild(make('h3','',item.name||'Colaborador'));
     if(item.description)article.appendChild(make('p','',item.description));
     if(item.location)article.appendChild(make('p','collaborator-location',item.location));
@@ -41,18 +47,43 @@
     return article;
   }
 
+  function compactItem(item){
+    const url=safeUrl(item.url);
+    const node=make(url?'a':'div','home-collaborator-item');
+    if(url){node.href=url;node.target='_blank';node.rel='noopener'}
+    node.appendChild(logoNode(item,true));
+    node.appendChild(make('span','home-collaborator-name',item.name||'Colaborador'));
+    return node;
+  }
+
   fetch('data/collaborators.json',{cache:'no-store'})
     .then(r=>{if(!r.ok)throw new Error('No se pudieron cargar los colaboradores');return r.json()})
     .then(data=>{
       const items=(Array.isArray(data)?data:[])
         .filter(x=>x&&x.published!==false&&x.name)
         .sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)||String(a.name).localeCompare(String(b.name),'es'));
-      grid.replaceChildren();
-      if(!items.length){
-        grid.appendChild(make('div','collaborators-empty','Este espacio está abierto a nuevos colaboradores. Si quieres sumar tu apoyo al Club Casas de Haro BTT, puedes contactar con nosotros por Telegram o por email.'));
-        return;
+
+      if(grid){
+        grid.replaceChildren();
+        if(!items.length){
+          grid.appendChild(make('div','collaborators-empty','Este espacio está abierto a nuevos colaboradores. Si quieres sumar tu apoyo al Club Casas de Haro BTT, puedes contactar con nosotros por Telegram o por email.'));
+        }else{
+          items.forEach(item=>grid.appendChild(card(item)));
+        }
       }
-      items.forEach(item=>grid.appendChild(card(item)));
+
+      if(homeTrack&&homeSection){
+        homeTrack.replaceChildren();
+        if(items.length){
+          items.forEach(item=>homeTrack.appendChild(compactItem(item)));
+          homeSection.hidden=false;
+        }else{
+          homeSection.hidden=true;
+        }
+      }
     })
-    .catch(()=>grid.replaceChildren(make('div','collaborators-empty','Ahora mismo no se puede cargar el listado de colaboradores.')));
+    .catch(()=>{
+      if(grid)grid.replaceChildren(make('div','collaborators-empty','Ahora mismo no se puede cargar el listado de colaboradores.'));
+      if(homeSection)homeSection.hidden=true;
+    });
 })();

@@ -3,8 +3,6 @@
   const grid=document.getElementById('collaboratorsGrid');
   if(!grid)return;
 
-  const labels={club:'Colaborador del club',actividad:'Colaborador de una actividad',especie:'Colaborador en especie'};
-
   function safeUrl(value){
     if(!value)return '';
     try{const u=new URL(String(value),location.href);return ['http:','https:'].includes(u.protocol)?u.href:''}catch(e){return ''}
@@ -31,7 +29,6 @@
       logo.appendChild(make('div','collaborator-logo-fallback',(item.name||'C').trim().charAt(0).toUpperCase()||'C'));
     }
     article.appendChild(logo);
-    article.appendChild(make('span','collaborator-type',labels[item.collaboration_type]||'Colaborador del club'));
     article.appendChild(make('h3','',item.name||'Colaborador'));
     if(item.description)article.appendChild(make('p','',item.description));
     if(item.location)article.appendChild(make('p','collaborator-location',item.location));

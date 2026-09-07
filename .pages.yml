@@ -166,16 +166,6 @@ content:
         type: boolean
         default: true
       - { name: name, label: Nombre, type: string, required: true }
-      - name: collaboration_type
-        label: Tipo de colaboración
-        type: select
-        required: true
-        default: club
-        options:
-          values:
-            - { name: club, label: Colaborador del club }
-            - { name: actividad, label: Colaborador de una actividad }
-            - { name: especie, label: Colaborador en especie }
       - { name: description, label: Descripción, type: text }
       - name: logo
         label: Logo

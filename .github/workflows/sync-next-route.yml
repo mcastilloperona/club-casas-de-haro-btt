@@ -1,0 +1,35 @@
+name: Sincronizar próxima salida
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - data/site.json
+      - scripts/sync_next_route.py
+      - .github/workflows/sync-next-route.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync-next-route:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Sincronizar HTML estático
+        run: python3 scripts/sync_next_route.py
+
+      - name: Publicar sincronización
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "Sin cambios pendientes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "content: sincronizar próxima salida en index"
+          git push

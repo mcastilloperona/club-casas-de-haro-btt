@@ -1,4 +1,4 @@
-name: Aplicar espacio de colaboradores
+name: Simplificar colaboradores
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Aplicar cambios aprobados
-        run: python3 scripts/aplicar_colaboradores.py
+      - name: Aplicar simplificación aprobada
+        run: python3 scripts/simplificar_colaboradores.py
 
       - name: Comprobar JavaScript
         run: node --check assets/colaboradores.js
@@ -27,7 +27,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -f .github/workflows/aplicar-colaboradores-once.yml scripts/aplicar_colaboradores.py
-          git add patrocinadores.html data/collaborators.json assets/colaboradores.css assets/colaboradores.js .pages.yml
-          git commit -m "Añadir espacio de colaboradores del club"
+          git rm -f scripts/simplificar_colaboradores.py
+          git add patrocinadores.html assets/colaboradores.css assets/colaboradores.js .pages.yml
+          git commit -m "Simplificar espacio de colaboradores"
           git push

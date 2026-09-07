@@ -1,0 +1,195 @@
+/* V13 — contenido dinámico, weather y ajustes de identidad */
+.brand .club-logo{
+  background:#fff;
+  border-radius:50%;
+  padding:3px;
+  box-shadow:0 0 0 2px rgba(255,255,255,.18),0 5px 18px rgba(0,0,0,.22);
+}
+.cdh-logo-stack{
+  background:#fff;
+  border-radius:50%;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+  overflow:hidden;
+}
+.cdh-intro.cdh-fly .cdh-logo-stack{box-shadow:0 5px 18px rgba(0,0,0,.22)}
+.home-v12 .hero-v12-content{transform:translateY(-34px)}
+.hero-mark{margin-bottom:8px;filter:drop-shadow(0 14px 30px rgba(0,0,0,.32));border-radius:50%}
+@media(max-width:760px){
+  .home-v12 .hero-v12-content{transform:translateY(-18px)}
+  .hero-mark{width:min(220px,52vw)}
+}
+
+/* navegación V13 */
+.links a{position:relative}
+.links a[aria-current="page"]:after{content:"";position:absolute;left:8px;right:8px;bottom:5px;height:2px;background:var(--cyan);border-radius:2px}
+
+/* clima */
+.weather-shell{margin-top:28px;background:linear-gradient(135deg,var(--navy2),var(--navy));border-radius:26px;padding:28px;color:#fff;box-shadow:0 18px 45px #1112}
+.weather-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+.weather-head h3{font-size:28px;margin:4px 0 0}
+.weather-head p{margin:0;color:#c5d3df;font-size:14px}
+.weather-grid{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:10px;overflow-x:auto;padding-bottom:4px}
+.weather-card{min-width:128px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px}
+.weather-day{font-weight:900;text-transform:capitalize}.weather-icon{font-size:28px;margin:9px 0 4px}.weather-temp{font-weight:900;font-size:19px}.weather-summary{font-size:12px;color:#d5e0e9;min-height:32px;margin:4px 0 12px}
+.wind-box{border-top:1px solid rgba(255,255,255,.13);padding-top:10px}.wind-main{font-size:15px;font-weight:900}.wind-gust{font-size:12px;color:#c5d3df;margin-top:3px}.weather-error{padding:14px;border:1px solid #ffffff25;border-radius:14px;color:#e6edf3}
+.weather-credit{margin:12px 2px 0;font-size:11px;color:#b6c3cf}.weather-credit a{text-decoration:underline}
+@media(max-width:760px){.weather-shell{padding:20px;margin-top:20px}.weather-grid{grid-template-columns:repeat(7,132px)}}
+
+/* rutas por modalidad */
+.route-mode-nav{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 10px}.route-mode-nav a{padding:10px 16px;border-radius:999px;background:#fff;border:1px solid #dbe5eb;font-weight:900;color:var(--navy)}
+.route-mode-section{scroll-margin-top:100px;margin-top:54px}.route-mode-section:first-of-type{margin-top:34px}.route-mode-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}.route-mode-heading h2{margin-bottom:0}.route-empty{background:#fff;border:1px dashed #c9d7df;border-radius:20px;padding:28px;color:#65717c;margin-top:18px}
+.route-card .route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}.route-card .route-actions .btn{margin-top:0}.btn.secondary{background:#eef7fb!important;color:var(--navy)!important;border:1px solid #d4e7ef}
+.route-card .route-source{font-size:12px;color:#7a8792;margin:0 0 14px}
+
+/* BTT News */
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}.news-card{background:#fff;border:1px solid #e0e7ec;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;min-height:100%;box-shadow:0 10px 30px #1111}.news-card img{width:100%;height:210px;object-fit:cover}.news-card-body{padding:22px;display:flex;flex-direction:column;flex:1}.news-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#74808b;text-transform:uppercase;letter-spacing:.04em;font-weight:800}.news-card h3{font-size:22px;line-height:1.2;margin:10px 0}.news-card p{color:#5d6873;line-height:1.55}.news-card .btn{margin-top:auto;align-self:flex-start;background:var(--navy);color:#fff}.news-empty{background:#fff;border:1px dashed #c9d7df;border-radius:20px;padding:32px;color:#65717c;margin-top:24px}.news-body{white-space:pre-line}.news-teaser{margin-top:26px}
+@media(max-width:860px){.news-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.news-grid{grid-template-columns:1fr}}
+
+/* galería dinámica */
+.gallery figure{margin:0;position:relative}.gallery figure img{display:block}.gallery figcaption{font-size:12px;color:#65717c;padding:8px 4px 0}.gallery figure:nth-child(1){grid-column:span 7}.gallery figure:nth-child(2){grid-column:span 5}.gallery figure:nth-child(3),.gallery figure:nth-child(4),.gallery figure:nth-child(5){grid-column:span 4}
+@media(max-width:760px){.gallery figure,.gallery figure:nth-child(n){grid-column:auto}}
+
+/* próxima ruta dinámica */
+.next-route-date{font-size:14px;color:#cbd6df;margin:0 0 5px}.next-route-desc{line-height:1.55;color:#e4ebf1}.route-actions-wide{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+/* nota CMS / gestión */
+.content-note{background:#e9f8fc;border:1px solid #cbeaf3;border-radius:16px;padding:16px 18px;color:#365363;font-size:14px;margin-top:18px}
+.route-search{margin:24px 0 6px;display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #dbe5eb;border-radius:16px;padding:10px 14px;max-width:620px}.route-search input{border:0;outline:0;width:100%;font:inherit;color:var(--navy);background:transparent}.route-search span{font-size:20px}.route-count{font-size:12px;color:#6c7781;margin-top:8px}
+
+
+/* Historia de Casas de Haro */
+.town-history{background:linear-gradient(180deg,#f7fbfd 0%,#eef7f4 100%)}
+.town-history-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:22px}
+.town-history-grid .lead{font-size:17px;margin-top:0}
+.history-source{margin:24px 0 0;padding-top:14px;border-top:1px solid #cfdde3;font-size:11px;line-height:1.5;color:#6e7b84}
+.history-source a{text-decoration:underline;text-underline-offset:2px}
+@media(max-width:760px){.town-history-grid{grid-template-columns:1fr;gap:4px}.history-source{font-size:10.5px}}
+
+
+/* V13 RC4 — pulido de identidad y navegación */
+:root{
+  --navy:#062a50;
+  --navy2:#001934;
+}
+
+/* El logo ya contiene su propio fondo blanco interior: no añadimos un disco exterior. */
+.brand .club-logo{
+  background:transparent;
+  border-radius:0;
+  padding:0;
+  box-shadow:none;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.24)) !important;
+}
+.cdh-logo-stack{
+  background:transparent;
+  border-radius:0;
+  box-shadow:none;
+  overflow:visible;
+  filter:drop-shadow(0 20px 36px rgba(0,0,0,.26));
+}
+.cdh-intro.cdh-fly .cdh-logo-stack{
+  box-shadow:none;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.24));
+}
+
+/* Página activa: solo color, sin línea que invada el texto. */
+.links a[aria-current="page"]{
+  color:var(--cyan2);
+  font-weight:900;
+}
+.links a[aria-current="page"]:after{
+  content:none !important;
+  display:none !important;
+}
+
+/* V13 RC5 — contraste del logo */
+/* Disco blanco exactamente del mismo cuadro que el logo, sin padding ni halo exterior. */
+.brand .club-logo{
+  background:#fff !important;
+  border-radius:50% !important;
+  padding:0 !important;
+  box-shadow:none !important;
+}
+
+/* En portada, el fondo blanco hace que los calados y “CASAS DE HARO BTT” sean blancos,
+   manteniendo el sol como único acento amarillo. */
+.hero-mark{
+  background:#fff !important;
+  border-radius:50% !important;
+  padding:0 !important;
+  box-shadow:0 14px 30px rgba(0,0,0,.28) !important;
+}
+
+/* El giro inicial permanece como estaba. El disco blanco aparece solo al volar hacia la cabecera
+   y tiene exactamente el mismo tamaño que el logo que aterriza. */
+.cdh-intro.cdh-fly .cdh-logo-stack{
+  background:#fff !important;
+  border-radius:50% !important;
+  overflow:hidden !important;
+}
+
+/* V13 RC6 — logo: fondo blanco ajustado al plato, idéntico en giro, portada y cabecera */
+/* El blanco queda dentro del diámetro útil del plato (44% del cuadro),
+   por lo que no aparece un círculo exterior mayor que los dientes. */
+.brand .club-logo,
+.hero-mark{
+  background:radial-gradient(circle at 50% 50%, #fff 0 44%, transparent 44.25%) !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  box-shadow:none !important;
+}
+.hero-mark{
+  filter:drop-shadow(0 14px 30px rgba(0,0,0,.32)) !important;
+}
+
+/* Mismo fondo blanco desde el primer fotograma de la animación. */
+.cdh-logo-stack{
+  background:radial-gradient(circle at 50% 50%, #fff 0 44%, transparent 44.25%) !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  box-shadow:none !important;
+}
+.cdh-intro.cdh-fly .cdh-logo-stack{
+  background:radial-gradient(circle at 50% 50%, #fff 0 44%, transparent 44.25%) !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  box-shadow:none !important;
+}
+
+
+/* V13 RC7 — logo simplificado: usamos el logo completo con fondo blanco, sin discos ni halos CSS */
+.brand .club-logo,
+.hero-mark{
+  background:transparent !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  box-shadow:none !important;
+}
+.cdh-logo-stack{
+  background:transparent !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  box-shadow:none !important;
+}
+.cdh-intro.cdh-fly .cdh-logo-stack{
+  background:transparent !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  box-shadow:none !important;
+}
+
+
+/* V13 RC8 — logo definitivo aprobado */
+.brand .club-logo, .hero-mark {
+  background:transparent !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+.cdh-logo-stack, .cdh-intro.cdh-fly .cdh-logo-stack {
+  background:transparent !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  box-shadow:none !important;
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "id": "pozoamargo-la-losa-el-picazo",
+    "published": true,
+    "discipline": "btt",
+    "title": "Pozoamargo · La Losa · El Picazo",
+    "description": "Ruta circular desde Casas de Haro por caminos del entorno.",
+    "distance_km": "54,41",
+    "elevation_m": 214,
+    "difficulty": "Moderado",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-mountain-bike/casas-de-haro-pozoamargo-la-losa-el-picazo-pozoamargo-casas-de-haro-30564316",
+    "gpx": ""
+  },
+  {
+    "id": "vara-de-rey-la-muela-pozoamargo",
+    "published": true,
+    "discipline": "btt",
+    "title": "Vara de Rey · La Muela · Pozoamargo",
+    "description": "Recorrido BTT desde Casas de Haro hacia Vara de Rey y Pozoamargo.",
+    "distance_km": "55,39",
+    "elevation_m": 350,
+    "difficulty": "Moderado",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-mountain-bike/casas-de-haro-vara-de-rey-parque-eolico-la-muela-pozoamargo-casas-de-haro-31711594",
+    "gpx": ""
+  },
+  {
+    "id": "buenavista-la-roda-la-lobera-minaya",
+    "published": true,
+    "discipline": "btt",
+    "title": "Buenavista · La Roda · La Lobera · Minaya",
+    "description": "Ruta por pistas y caminos de la llanura manchega.",
+    "distance_km": "51,33",
+    "elevation_m": 50,
+    "difficulty": "Moderado",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-mountain-bike/casas-de-haro-buenavista-la-roda-la-lobera-minaya-20601871",
+    "gpx": ""
+  },
+  {
+    "id": "pozoamargo-sisante-vara-de-rey-san-clemente",
+    "published": true,
+    "discipline": "btt",
+    "title": "Pozoamargo · Sisante · Vara de Rey · San Clemente",
+    "description": "Ruta larga por varios municipios del entorno de Casas de Haro.",
+    "distance_km": "69,72",
+    "elevation_m": 197,
+    "difficulty": "Moderado",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-mountain-bike/casas-de-haro-pozo-amargo-sisante-vara-de-rey-villar-de-cantos-rus-san-clemente-teatinos-casas-de-19417136",
+    "gpx": ""
+  },
+  {
+    "id": "villalgordo-del-jucar",
+    "published": true,
+    "discipline": "btt",
+    "title": "Casas de Haro · Villalgordo del Júcar",
+    "description": "Ruta BTT circular de mayor exigencia.",
+    "distance_km": "70,63",
+    "elevation_m": 356,
+    "difficulty": "Difícil",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-mountain-bike/casas-de-haro-villargordo-del-jucar-79120939",
+    "gpx": ""
+  },
+  {
+    "id": "sisante",
+    "published": true,
+    "discipline": "btt",
+    "title": "Casas de Haro · Sisante",
+    "description": "Track desde Casas de Haro hacia Sisante.",
+    "distance_km": "41,68",
+    "elevation_m": 397,
+    "difficulty": "Moderado",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-mountain-bike/casas-de-haro-sisante-108357994",
+    "gpx": ""
+  }
+]

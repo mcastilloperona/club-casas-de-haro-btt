@@ -1,0 +1,10 @@
+PRUEBA LOCAL SENCILLA
+=====================
+
+1. Abre esta carpeta.
+2. Haz doble clic en index.html.
+3. Navega por la web normalmente.
+
+Esta RC3 incluye datos locales de respaldo para que las rutas, noticias, galería y próxima ruta se vean incluso al abrirla directamente desde Windows.
+
+La previsión meteorológica necesita conexión a Internet.

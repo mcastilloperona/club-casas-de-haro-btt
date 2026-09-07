@@ -1,0 +1,128 @@
+media:
+  - name: images
+    label: Imágenes
+    input: assets
+    output: assets
+    extensions: [jpg, jpeg, png, webp]
+    rename: safe
+  - name: tracks
+    label: Tracks GPX
+    input: tracks
+    output: tracks
+    extensions: [gpx]
+    rename: safe
+
+content:
+  - name: next_route
+    label: Próxima ruta
+    type: file
+    path: data/site.json
+    format: json
+    fields:
+      - name: next_route
+        label: Próxima ruta
+        type: object
+        fields:
+          - { name: title, label: Nombre, type: string, required: true }
+          - { name: date, label: Fecha, type: date }
+          - { name: time, label: Hora, type: string }
+          - { name: distance_km, label: Distancia (km), type: number }
+          - { name: elevation_m, label: Desnivel positivo (m), type: number }
+          - name: discipline
+            label: Modalidad
+            type: select
+            options:
+              values: [BTT, Carretera, Gravel]
+          - { name: description, label: Descripción, type: text }
+          - name: image
+            label: Imagen
+            type: image
+            options:
+              media: images
+          - { name: image_alt, label: Texto alternativo de la imagen, type: string }
+          - { name: track_url, label: Enlace externo del track, type: string }
+          - name: gpx
+            label: Archivo GPX
+            type: file
+            options:
+              media: tracks
+              extensions: [gpx]
+              rename: true
+
+  - name: routes
+    label: Rutas
+    type: file
+    path: data/routes.json
+    format: json
+    list: true
+    fields:
+      - { name: id, label: Identificador, type: string, required: true }
+      - { name: published, label: Publicada, type: boolean }
+      - name: discipline
+        label: Modalidad
+        type: select
+        required: true
+        options:
+          values:
+            - { name: btt, label: BTT / Montaña }
+            - { name: road, label: Carretera }
+      - { name: title, label: Nombre, type: string, required: true }
+      - { name: description, label: Descripción, type: text }
+      - { name: distance_km, label: Distancia (km), type: string }
+      - { name: elevation_m, label: Desnivel positivo (m), type: number }
+      - { name: difficulty, label: Dificultad, type: string }
+      - { name: source, label: Fuente, type: string }
+      - { name: source_url, label: Enlace externo, type: string }
+      - name: gpx
+        label: Archivo GPX
+        type: file
+        options:
+          media: tracks
+          extensions: [gpx]
+          rename: true
+
+  - name: news
+    label: BTT News
+    type: file
+    path: data/news.json
+    format: json
+    list: true
+    fields:
+      - { name: published, label: Publicada, type: boolean }
+      - { name: title, label: Titular, type: string, required: true }
+      - { name: date, label: Fecha, type: date }
+      - { name: member, label: Miembro / protagonista, type: string }
+      - { name: summary, label: Resumen, type: text }
+      - { name: body, label: Noticia, type: text }
+      - name: image
+        label: Imagen
+        type: image
+        options:
+          media: images
+      - { name: image_alt, label: Texto alternativo, type: string }
+
+  - name: gallery
+    label: Galería
+    type: file
+    path: data/gallery.json
+    format: json
+    list: true
+    fields:
+      - { name: published, label: Publicada, type: boolean }
+      - name: image
+        label: Foto
+        type: image
+        required: true
+        options:
+          media: images
+      - { name: alt, label: Texto alternativo (SEO/accesibilidad), type: string }
+      - { name: caption, label: Pie de foto, type: string }
+
+settings:
+  content:
+    merge: true
+  commit:
+    templates:
+      create: "content: crear {path}"
+      update: "content: actualizar {path}"
+      delete: "content: eliminar {path}"

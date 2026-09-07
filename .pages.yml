@@ -153,6 +153,39 @@ content:
       - { name: alt, label: Texto alternativo (SEO/accesibilidad), type: string }
       - { name: caption, label: Pie de foto, type: string }
 
+
+  - name: collaborators
+    label: Colaboradores
+    type: file
+    path: data/collaborators.json
+    format: json
+    list: true
+    fields:
+      - name: published
+        label: Publicado
+        type: boolean
+        default: true
+      - { name: name, label: Nombre, type: string, required: true }
+      - name: collaboration_type
+        label: Tipo de colaboración
+        type: select
+        required: true
+        default: club
+        options:
+          values:
+            - { name: club, label: Colaborador del club }
+            - { name: actividad, label: Colaborador de una actividad }
+            - { name: especie, label: Colaborador en especie }
+      - { name: description, label: Descripción, type: text }
+      - name: logo
+        label: Logo
+        type: image
+        options:
+          media: images
+      - { name: url, label: Web / red social / enlace, type: string }
+      - { name: location, label: Localidad o ámbito, type: string }
+      - { name: order, label: Orden de aparición, type: number }
+
 settings:
   content:
     merge: true

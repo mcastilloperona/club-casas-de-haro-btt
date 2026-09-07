@@ -271,6 +271,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .wikiloc-more{display:flex;justify-content:flex-end;margin:16px 0 2px}
 .legal-links{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:18px;padding-top:18px;border-top:1px solid #ffffff1f;font-size:13px}
 .legal-links a{color:#e9f7fb;text-decoration:underline;text-underline-offset:3px}
+.footer p a{color:#e9f7fb;text-decoration:underline;text-underline-offset:3px}
 
 /* SEO local fase 1 */
 .seo-local-block{background:#fff}

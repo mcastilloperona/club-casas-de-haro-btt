@@ -112,7 +112,7 @@
 
   function enhanceFooter(){
     const wrap=document.querySelector('.footer .wrap');
-    if(!wrap||wrap.querySelector('.legal-links'))return;
+    if(!wrap||wrap.querySelector('.legal-links')||wrap.querySelector('a[href="aviso-legal.html"]'))return;
     const nav=document.createElement('nav');
     nav.className='legal-links';
     nav.setAttribute('aria-label','Información legal');

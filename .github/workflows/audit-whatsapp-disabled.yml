@@ -17,6 +17,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Preparar contacto dinámico de próxima salida
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('assets/v13.js')
+          s = p.read_text(encoding='utf-8')
+          old = '<a class="btn secondary" aria-disabled="true" tabindex="-1" title="@mcastilloperona · próximamente disponible">WhatsApp · próximamente disponible</a>'
+          new = '<a class="btn secondary" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn secondary" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a>'
+          if old not in s:
+              raise SystemExit('No se encontró el contacto temporal esperado en assets/v13.js')
+          p.write_text(s.replace(old, new), encoding='utf-8')
+          PY
+
       - name: Aplicar cambios aprobados
         run: python3 scripts/aplicar_contacto_mapa.py
 

@@ -1,0 +1,190 @@
+name: Aplicar contacto y mapa
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aplicar-contacto-mapa.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Aplicar Telegram, email y mapa
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          TELEGRAM = 'https://t.me/mcastilloperona'
+          EMAIL = 'mcastillo@casasdeharobtt.es'
+          MAILTO = 'mailto:mcastillo@casasdeharobtt.es'
+          MAILTO_ROUTE = 'mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida'
+
+          contact_block = '''<div class="contact-wrap" aria-label="Contacto con el Club Casas de Haro BTT">
+            <span class="contact-note">Telegram · Email</span>
+            <div class="contact-actions">
+              <a class="contact-fab telegram" href="https://t.me/mcastilloperona" target="_blank" rel="noopener" aria-label="Contactar por Telegram con @mcastilloperona" title="Telegram @mcastilloperona">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21.7 2.3 2.9 9.5c-1.3.5-1.3 1.3-.2 1.6l4.8 1.5 1.8 5.7c.2.6.1.8.7.8.5 0 .8-.2 1.1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.3 1.7-.8l3.2-15c.3-1.3-.5-1.9-1.7-1.4zM9.3 12.3l9.4-5.9c.5-.3.9-.1.6.2l-7.8 7.1-.3 3.1-1.9-4.5z"/></svg>
+              </a>
+              <a class="contact-fab email" href="mailto:mcastillo@casasdeharobtt.es" aria-label="Enviar correo a mcastillo@casasdeharobtt.es" title="mcastillo@casasdeharobtt.es">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm9 7.2L20.4 7H3.6L12 12.2zM3 17h18V9l-8.5 5.3a1 1 0 0 1-1 0L3 9v8z"/></svg>
+              </a>
+            </div>
+          </div>'''
+
+          route_html_old = '<a class="btn secondary" aria-disabled="true" tabindex="-1" title="@mcastilloperona · próximamente disponible">WhatsApp · próximamente disponible</a>'
+          route_html_new = '<a class="btn secondary" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn secondary" href="' + MAILTO_ROUTE + '">Email</a>'
+          route_js_old = '<a class=\\"btn secondary\\" aria-disabled=\\"true\\" tabindex=\\"-1\\" title=\\"@mcastilloperona · próximamente disponible\\">WhatsApp · próximamente disponible</a>'
+          route_js_new = '<a class=\\"btn secondary\\" href=\\"https://t.me/mcastilloperona\\" target=\\"_blank\\" rel=\\"noopener\\">Telegram</a><a class=\\"btn secondary\\" href=\\"' + MAILTO_ROUTE + '\\">Email</a>'
+
+          html_files = [p for p in Path('.').glob('*.html') if p.is_file()]
+          changed = []
+
+          for path in html_files:
+              text = path.read_text(encoding='utf-8')
+              original = text
+
+              text = text.replace(route_html_old, route_html_new)
+              text = re.sub(r'<div class="wa-wrap">.*?</a></div>', contact_block, text, flags=re.S)
+              text = text.replace('https://wa.me/mcastilloperona', TELEGRAM)
+              text = text.replace('@mcastilloperona · próximamente disponible', '@mcastilloperona')
+              text = text.replace('WhatsApp', 'Telegram')
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed.append(str(path))
+
+          js_path = Path('assets/v13.js')
+          js = js_path.read_text(encoding='utf-8')
+          js_original = js
+          js = js.replace(route_js_old, route_js_new)
+          js = js.replace('https://wa.me/mcastilloperona', TELEGRAM)
+          js = js.replace('@mcastilloperona · próximamente disponible', '@mcastilloperona')
+          js = js.replace('WhatsApp', 'Telegram')
+          if js != js_original:
+              js_path.write_text(js, encoding='utf-8')
+              changed.append(str(js_path))
+
+          css_path = Path('assets/v13.css')
+          css = css_path.read_text(encoding='utf-8')
+          css_original = css
+          css = re.sub(r'/\* CONTACT_MAP_V13_START \*/.*?/\* CONTACT_MAP_V13_END \*/', '', css, flags=re.S)
+          css += '''
+
+/* CONTACT_MAP_V13_START */
+.contact-wrap{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.contact-note{background:var(--navy2,#031b37);color:#fff;padding:7px 10px;border-radius:10px;font-size:12px;font-weight:800;box-shadow:0 5px 18px #0003;white-space:nowrap}
+.contact-actions{display:flex;gap:8px}
+.contact-fab{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;color:#fff;border:3px solid #fff;box-shadow:0 8px 26px #0004;transition:transform .18s ease,box-shadow .18s ease}
+.contact-fab:hover{transform:translateY(-2px);box-shadow:0 10px 28px #0005}
+.contact-fab svg{width:25px;height:25px;fill:currentColor}
+.contact-fab.telegram{background:#229ED9}
+.contact-fab.email{background:var(--navy,#06264b)}
+.location-section{background:linear-gradient(135deg,#eef8fb,#f7fbfd)}
+.google-map-card{margin-top:28px;background:#fff;border:1px solid #dce7ec;border-radius:24px;overflow:hidden;box-shadow:0 18px 44px #09233b14}
+.google-map-placeholder{min-height:360px;display:grid;place-items:center;text-align:center;padding:36px;background:linear-gradient(135deg,#e6f4f8,#f7fbfd)}
+.google-map-placeholder-inner{max-width:620px}
+.google-map-pin{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:var(--navy,#06264b);color:#fff;font-size:30px;box-shadow:0 10px 24px #09233b2b}
+.google-map-placeholder h3{font-size:30px;margin:0 0 8px;color:var(--navy,#06264b)}
+.google-map-placeholder p{margin:6px 0;color:#5d6a73}
+.google-map-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+.google-map-note{font-size:12px!important;margin-top:16px!important;color:#73808a!important}
+.google-map-frame{display:block;width:100%;height:430px;border:0}
+@media(max-width:760px){.contact-wrap{right:14px;bottom:14px}.contact-fab{width:46px;height:46px}.contact-fab svg{width:23px;height:23px}.contact-note{font-size:11px}.google-map-placeholder{min-height:320px;padding:28px 18px}.google-map-frame{height:360px}}
+/* CONTACT_MAP_V13_END */
+'''
+          if css != css_original:
+              css_path.write_text(css, encoding='utf-8')
+              changed.append(str(css_path))
+
+          historia = Path('historia.html')
+          h = historia.read_text(encoding='utf-8')
+          h_original = h
+          h = re.sub(r'<!-- GOOGLE_MAP_SECTION_START -->.*?<!-- GOOGLE_MAP_SECTION_END -->', '', h, flags=re.S)
+          map_section = '''
+<!-- GOOGLE_MAP_SECTION_START -->
+<section class="section location-section" id="donde-estamos">
+  <div class="wrap">
+    <div class="kicker">Dónde estamos</div>
+    <h2>Casas de Haro, Cuenca</h2>
+    <p class="lead">Casas de Haro es nuestro punto de partida para disfrutar del BTT y la carretera por los caminos y paisajes de La Mancha conquense.</p>
+    <div class="google-map-card" data-map-holder>
+      <div class="google-map-placeholder">
+        <div class="google-map-placeholder-inner">
+          <div class="google-map-pin" aria-hidden="true">⌖</div>
+          <h3>Casas de Haro</h3>
+          <p>Cuenca · Castilla-La Mancha</p>
+          <div class="google-map-actions">
+            <button class="btn dark" type="button" data-load-google-map data-src="https://www.google.com/maps?q=Casas%20de%20Haro%2C%20Cuenca%2C%20Espa%C3%B1a&output=embed">Cargar Google Maps</button>
+            <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Casas+de+Haro%2C+Cuenca" target="_blank" rel="noopener">Abrir en Google Maps</a>
+          </div>
+          <p class="google-map-note">El mapa se carga solo cuando lo solicitas. Al hacerlo, se conectará con Google Maps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- GOOGLE_MAP_SECTION_END -->
+'''
+          if '</main>' not in h:
+              raise SystemExit('No se encontró </main> en historia.html')
+          h = h.replace('</main>', map_section + '\n</main>', 1)
+          script_tag = '<script src="assets/mapa-google.js" defer></script>'
+          if script_tag not in h:
+              h = h.replace('</body>', script_tag + '\n</body>', 1)
+          if h != h_original:
+              historia.write_text(h, encoding='utf-8')
+              if str(historia) not in changed:
+                  changed.append(str(historia))
+
+          map_js = Path('assets/mapa-google.js')
+          map_js.write_text("""(function(){\n  'use strict';\n  document.addEventListener('click',function(e){\n    const button=e.target.closest('[data-load-google-map]');\n    if(!button)return;\n    const holder=button.closest('[data-map-holder]');\n    if(!holder)return;\n    const iframe=document.createElement('iframe');\n    iframe.className='google-map-frame';\n    iframe.src=button.dataset.src;\n    iframe.title='Mapa de Casas de Haro en Google Maps';\n    iframe.loading='lazy';\n    iframe.referrerPolicy='no-referrer-when-downgrade';\n    iframe.allowFullscreen=true;\n    holder.replaceChildren(iframe);\n  });\n})();\n""", encoding='utf-8')
+          changed.append(str(map_js))
+
+          # Validaciones de seguridad y consistencia
+          public_targets = html_files + [Path('assets/v13.js')]
+          leftovers = []
+          for path in public_targets:
+              text = path.read_text(encoding='utf-8')
+              if 'wa.me/' in text or 'WhatsApp' in text or 'próximamente disponible' in text:
+                  leftovers.append(str(path))
+          if leftovers:
+              raise SystemExit('Quedan referencias antiguas en: ' + ', '.join(leftovers))
+
+          v13 = Path('assets/v13.js').read_text(encoding='utf-8')
+          if v13.count('const LOCAL_DATA=') != 1:
+              raise SystemExit('Validación JS fallida: LOCAL_DATA no aparece exactamente una vez')
+          if TELEGRAM not in v13 or EMAIL not in v13:
+              raise SystemExit('Validación JS fallida: faltan Telegram o email en la próxima salida')
+
+          hcheck = Path('historia.html').read_text(encoding='utf-8')
+          if 'GOOGLE_MAP_SECTION_START' not in hcheck or 'assets/mapa-google.js' not in hcheck:
+              raise SystemExit('Validación del mapa fallida')
+
+          print('Archivos modificados:', ', '.join(sorted(set(changed))))
+          PY
+
+      - name: Comprobar sintaxis JavaScript
+        run: |
+          node --check assets/v13.js
+          node --check assets/mapa-google.js
+
+      - name: Commit de los cambios
+        run: |
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "No hay cambios que confirmar"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html rutas.html historia.html galeria.html news.html patrocinadores.html aviso-legal.html privacidad.html cookies.html assets/v13.js assets/v13.css assets/mapa-google.js
+          git commit -m "Contacto: Telegram, email y mapa de Google"
+          git push

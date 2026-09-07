@@ -193,3 +193,81 @@
   overflow:visible !important;
   box-shadow:none !important;
 }
+
+/* V13 RC12 — responsive real en móvil y tablet */
+html,body{max-width:100%;overflow-x:hidden}
+
+@media(max-width:900px){
+  .wrap{width:min(94%,1120px)}
+  .top{position:sticky;top:0;z-index:80}
+  .nav{min-height:auto!important;display:block!important;padding:7px 0 0!important}
+  .brand{justify-content:flex-start!important;gap:8px!important;padding:0 0 7px!important;min-width:0}
+  .brand .club-logo{width:46px!important;height:46px!important;flex:0 0 46px}
+  .brand span{font-size:clamp(14px,4.4vw,18px)!important;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand small{font-size:.72em}
+  .links{display:flex!important;gap:0!important;overflow-x:auto!important;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:none;border-top:1px solid rgba(255,255,255,.10);margin:0 -3%!important;padding:0 3%!important;justify-content:flex-start!important;max-width:none!important}
+  .links::-webkit-scrollbar{display:none}
+  .links a{flex:0 0 auto!important;scroll-snap-align:start;padding:10px 11px 11px!important;font-size:12px!important;line-height:1!important;white-space:nowrap}
+  .menu-btn,.mobile-menu{display:none!important}
+
+  /* En escritorio mantenemos la portada aprobada exacta. En móvil usamos el mismo concepto visual
+     en una composición apilada: imagen completa arriba y textos debajo, sin solapes ni zoom agresivo. */
+  .approved-hero-desktop{display:none!important}
+  .home-v12{display:flex!important;flex-direction:column!important;min-height:0!important;background:#031b37!important;color:#fff!important;overflow:hidden!important;align-items:stretch!important}
+  .home-v12:before{content:"";display:block;flex:0 0 auto;width:100%;aspect-ratio:1672/941;background:url('hero-casas-de-haro.webp') center center/contain no-repeat;background-color:#031b37}
+  .home-v12 .hero-v12-content{width:100%!important;margin:0!important;padding:26px 5% 34px!important;transform:none!important;text-align:center!important;background:linear-gradient(180deg,#031b37 0%,#062a50 100%)}
+  .hero-mark{display:none!important}
+  .home-v12 .overline{font-size:15px!important;letter-spacing:.20em!important;line-height:1.2!important;margin:0 0 6px!important}
+  .home-v12 h1{font-size:clamp(34px,10vw,46px)!important;letter-spacing:.055em!important;line-height:.98!important;margin:0 auto 12px!important;max-width:100%!important;overflow-wrap:anywhere}
+  .home-v12 .cyan-rule{width:66px!important;margin:14px auto!important}
+  .home-v12 .hero-v12-content>p[style]{font-size:15px!important;line-height:1.45!important;margin:0 auto 12px!important;max-width:34rem!important;padding:0 2px}
+  .home-v12 .values{font-size:10px!important;letter-spacing:.11em!important;line-height:1.6!important;margin:0 auto!important;max-width:34rem!important}
+  .home-v12 .hero-actions{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;width:min(100%,330px)!important;margin:22px auto 0!important}
+  .home-v12 .hero-actions a{width:100%!important;padding:13px 16px!important;text-align:center!important}
+
+  .wa-wrap{right:12px!important;bottom:12px!important;z-index:90!important}
+  .wa-note{display:none!important}
+  .wa{width:52px!important;height:52px!important;border-width:2px!important}
+
+  .page-hero{padding:44px 0 30px!important}
+  .page-hero h1{font-size:clamp(33px,9.5vw,46px)!important;line-height:1.04!important;margin:7px 0!important}
+  .page-hero p{font-size:15px!important;line-height:1.5!important}
+  .section{padding:48px 0!important}
+  .section h2{font-size:clamp(30px,8.5vw,42px)!important;line-height:1.08}
+  .lead{font-size:16px!important;line-height:1.55!important}
+
+  .route .info{padding:26px!important}
+  .route h3{font-size:27px!important;line-height:1.12!important}
+  .stats{gap:14px 22px!important;margin:18px 0!important}
+  .stat b{font-size:20px!important}
+  .sponsors{grid-template-columns:1fr 1fr!important;gap:10px!important}
+  .sponsor{min-height:125px!important;padding:14px!important}
+  .sponsor img{max-width:125px!important;max-height:95px!important}
+  .footer{padding:30px 0!important}
+}
+
+@media(max-width:520px){
+  .brand{justify-content:center!important}
+  .brand .club-logo{width:44px!important;height:44px!important;flex-basis:44px}
+  .brand span{font-size:16px!important;max-width:calc(100vw - 78px)}
+  .links a{font-size:11.5px!important;padding:10px 10px 11px!important}
+  .home-v12:before{aspect-ratio:1672/941}
+  .home-v12 .hero-v12-content{padding:24px 18px 30px!important}
+  .home-v12 h1{font-size:36px!important}
+  .sponsors{grid-template-columns:1fr!important}
+  .club-partners-band{height:270px!important}
+  .club-partner-card{padding:16px 0!important;gap:8px!important}
+  .club-partner-card img{height:112px!important}
+  .weather-shell{border-radius:20px!important}
+  .route-mode-nav{gap:7px!important}
+  .route-mode-nav a{padding:9px 13px!important;font-size:13px!important}
+}
+
+/* V13 final — rutas, autoría y enlaces legales */
+.route-source{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 17px;color:#667480;font-size:13px}
+.route-source span{display:inline-flex;align-items:center;gap:5px}
+.mode-icon{display:inline-grid;place-items:center;min-width:42px;height:26px;padding:0 8px;border:1px solid #ffffff55;border-radius:999px;font-size:10px;letter-spacing:.08em;font-weight:950;background:#ffffff12}
+.mode-icon-road{color:#c9f3ff}.mode-icon-btt{color:#a9f0cf}
+.wikiloc-more{display:flex;justify-content:flex-end;margin:16px 0 2px}
+.legal-links{display:flex;flex-wrap:wrap;gap:10px 20px;margin-top:18px;padding-top:18px;border-top:1px solid #ffffff1f;font-size:13px}
+.legal-links a{color:#e9f7fb;text-decoration:underline;text-underline-offset:3px}

@@ -1,2 +1,2 @@
-Club Casas de Haro BTT — V13 RC11
-Portada exacta aprobada, sin regenerar. Se conserva Villaciclos como patrocinador.
+Club Casas de Haro BTT — V13
+Versión publicada: responsive, rutas BTT/carretera, autoría, Pages CMS y paquete legal.

@@ -28,8 +28,10 @@
 
   function routeCard(r){
     const url=safeUrl(r.source_url); const gpx=r.gpx?relPath(r.gpx):'';
+    const kind=r.route_type==='club'?'Ruta del Club':'Ruta de la comunidad';
+    const author=r.author?`<span>Autor: ${esc(r.author)}</span>`:'';
     const meta=[r.distance_km?`<b>${esc(r.distance_km)} km</b>`:'',r.elevation_m!==''&&r.elevation_m!=null?`<span>+${esc(r.elevation_m)} m</span>`:'',r.difficulty?`<span>${esc(r.difficulty)}</span>`:''].filter(Boolean).join('');
-    return `<article class="route-card"><span class="pill">${esc(r.source||((r.discipline||'btt').toUpperCase()))}</span><h3>${esc(r.title)}</h3>${r.description?`<p>${esc(r.description)}</p>`:''}<div class="meta">${meta}</div>${r.source?`<p class="route-source">${esc(r.source)}</p>`:''}<div class="route-actions">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" target="_blank" rel="noopener" href="${esc(url)}">Ver track</a>`:''}</div></article>`;
+    return `<article class="route-card"><span class="pill">${esc(kind)}</span><h3>${esc(r.title)}</h3>${r.description?`<p>${esc(r.description)}</p>`:''}<div class="meta">${meta}</div><p class="route-source">${author}${r.source?`<span>Fuente: ${esc(r.source)}</span>`:''}</p><div class="route-actions">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" target="_blank" rel="noopener" href="${esc(url)}">Ver track</a>`:''}</div></article>`;
   }
 
   async function renderRoutes(){
@@ -39,7 +41,7 @@
       const search=document.getElementById('routeSearch'), count=document.getElementById('routeCount');
       const paint=()=>{
         const q=(search?.value||'').trim().toLocaleLowerCase('es');
-        const filtered=q?routes.filter(r=>[r.title,r.description,r.difficulty,r.source].some(v=>String(v||'').toLocaleLowerCase('es').includes(q))):routes;
+        const filtered=q?routes.filter(r=>[r.title,r.description,r.difficulty,r.source,r.author,r.route_type].some(v=>String(v||'').toLocaleLowerCase('es').includes(q))):routes;
         const btt=filtered.filter(r=>r.discipline==='btt');
         const road=filtered.filter(r=>r.discipline==='road');
         if(b)b.innerHTML=btt.length?btt.map(routeCard).join(''):'<div class="route-empty">No hay rutas BTT que coincidan con la búsqueda.</div>';
@@ -86,5 +88,15 @@
     }catch(e){g.innerHTML='<div class="news-empty">No se ha podido cargar la galería.</div>'}
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();renderNextRoute();renderRoutes();renderWeather();renderNews();renderGallery();});
+  function enhanceFooter(){
+    const wrap=document.querySelector('.footer .wrap');
+    if(!wrap||wrap.querySelector('.legal-links'))return;
+    const nav=document.createElement('nav');
+    nav.className='legal-links';
+    nav.setAttribute('aria-label','Información legal');
+    nav.innerHTML='<a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a>';
+    wrap.append(nav);
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();renderNextRoute();renderRoutes();renderWeather();renderNews();renderGallery();enhanceFooter();});
 })();

@@ -32,7 +32,7 @@ content:
             label: Modalidad
             type: select
             options:
-              values: [BTT, Carretera, Gravel]
+              values: [BTT, Carretera]
           - { name: description, label: Descripción, type: text }
           - name: image
             label: Imagen
@@ -68,6 +68,16 @@ content:
             - { name: road, label: Carretera }
       - { name: title, label: Nombre, type: string, required: true }
       - { name: description, label: Descripción, type: text }
+      - name: route_type
+        label: Tipo de publicación
+        type: select
+        required: true
+        default: community
+        options:
+          values:
+            - { name: club, label: Ruta del Club }
+            - { name: community, label: Ruta de la comunidad }
+      - { name: author, label: Autor de la ruta, type: string }
       - { name: distance_km, label: Distancia (km), type: string }
       - { name: elevation_m, label: Desnivel positivo (m), type: number }
       - { name: difficulty, label: Dificultad, type: string }

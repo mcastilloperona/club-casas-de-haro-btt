@@ -17,6 +17,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Ajustar script de aplicación
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('scripts/corregir_produccion_y_rutas.py')
+          s=p.read_text(encoding='utf-8')
+          s,n=re.subn(r"# Etiqueta más precisa para enlaces de Wikiloc\..*?JS_PATH\.write_text\(js, encoding='utf-8'\)", "JS_PATH.write_text(js, encoding='utf-8')", s, count=1, flags=re.S)
+          if n!=1:
+              raise SystemExit(f'No se pudo ajustar el bloque de enlace Wikiloc: {n}')
+          p.write_text(s, encoding='utf-8')
+          PY
+
       - name: Aplicar cambios aprobados
         run: python3 scripts/corregir_produccion_y_rutas.py
 

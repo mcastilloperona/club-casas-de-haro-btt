@@ -1,4 +1,4 @@
-name: Ajustes de mapa y patrocinadores
+name: Mejora visual de rutas y patrocinadores
 
 on:
   push:
@@ -18,16 +18,23 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Aplicar cambios aprobados
-        run: python3 scripts/ajustar_patrocinadores_mapa.py
+        run: python3 scripts/mejorar_rutas_patrocinadores.py
 
       - name: Comprobar JavaScript principal
         run: node --check assets/v13.js
+
+      - name: Verificar alcance
+        run: |
+          grep -q 'route-origin-external' assets/v13.js
+          ! grep -q 'Ruta de la comunidad' assets/v13.js
+          grep -q 'MEJORA_RUTAS_VISUAL_START' rutas.html
+          grep -q 'SPONSOR_MOBILE_FIX_START' patrocinadores.html
 
       - name: Publicar cambios
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -f scripts/ajustar_patrocinadores_mapa.py
-          git add index.html patrocinadores.html historia.html privacidad.html cookies.html assets/v13.css
-          git commit -m "Corregir patrocinadores y cargar mapa automáticamente"
+          git rm -f scripts/mejorar_rutas_patrocinadores.py
+          git add assets/v13.js rutas.html patrocinadores.html
+          git commit -m "Mejorar visualización de rutas y patrocinadores en móvil"
           git push

@@ -59,8 +59,7 @@ def build_fallback(route):
     track = route.get("track_url")
     if track:
         actions.append(f'<a class="btn secondary" href="{e(track)}" target="_blank" rel="noopener">Ver track</a>')
-    actions.append('<a class="btn secondary" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a>')
-    actions.append('<a class="btn secondary" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a>')
+    actions.append('<button class="btn secondary signup-open" type="button">¡Me apunto!</button>')
 
     return (
         START + "\n"

@@ -13,6 +13,29 @@
     document.querySelectorAll('.links a').forEach(a=>{const href=(a.getAttribute('href')||'').split('#')[0].toLowerCase();if(href===file||(file===''&&href==='index.html'))a.setAttribute('aria-current','page')});
   }
 
+  function setupSignupModal(){
+    if(document.getElementById('signupModal'))return;
+    const style=document.createElement('style');
+    style.id='signupModalStyles';
+    style.textContent='.signup-open{font:inherit;cursor:pointer}.signup-modal[hidden]{display:none}.signup-modal{position:fixed;inset:0;z-index:10000;background:rgba(3,27,55,.72);display:grid;place-items:center;padding:20px}.signup-modal-card{position:relative;width:min(430px,100%);background:#fff;color:#06264b;border-radius:22px;padding:28px;box-shadow:0 24px 70px #0006}.signup-modal-card h3{margin:0 42px 8px 0;font-size:28px}.signup-modal-card p{margin:0;color:#56606b;line-height:1.55}.signup-modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;border:0;border-radius:50%;background:#eef5f8;color:#06264b;font-size:24px;line-height:1;cursor:pointer}.signup-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.signup-modal-actions .btn{display:block;text-align:center;background:#06264b;color:#fff;border:1px solid #1b527d}@media(max-width:520px){.signup-modal-actions{grid-template-columns:1fr}}';
+    document.head.appendChild(style);
+    const modal=document.createElement('div');
+    modal.id='signupModal';
+    modal.className='signup-modal';
+    modal.hidden=true;
+    modal.innerHTML='<div class="signup-modal-card" role="dialog" aria-modal="true" aria-labelledby="signupModalTitle"><button class="signup-modal-close" type="button" aria-label="Cerrar">×</button><h3 id="signupModalTitle">¡Me apunto!</h3><p>Elige cómo quieres contactar con el club para confirmar que vienes a la salida.</p><div class="signup-modal-actions"><a class="btn" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a></div></div>';
+    document.body.appendChild(modal);
+    let lastFocus=null;
+    const open=()=>{lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';modal.querySelector('.signup-modal-close').focus()};
+    const close=()=>{modal.hidden=true;document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus()};
+    document.addEventListener('click',e=>{
+      const opener=e.target.closest('.signup-open');
+      if(opener){e.preventDefault();open();return}
+      if(e.target===modal||e.target.closest('.signup-modal-close'))close();
+    });
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
+  }
+
   async function renderNextRoute(){
     const targets=document.querySelectorAll('[data-next-route]');
     if(!targets.length)return;
@@ -21,7 +44,7 @@
       const gpx=r.gpx?relPath(r.gpx):''; const url=safeUrl(r.track_url);
       targets.forEach(t=>{
         const img=relPath(r.image||'assets/camino-atardecer.jpg');
-        t.innerHTML=`<img src="${esc(img)}" alt="${esc(r.image_alt||'Próxima ruta del Club Casas de Haro BTT')}" loading="lazy" decoding="async"><div class="info"><span class="pill">Próxima salida</span><p class="next-route-date">${esc(fmtDate(r.date))}${r.time?' · '+esc(r.time):''}</p><h3>${esc(r.title||'Próxima ruta')}</h3><p class="next-route-desc">${esc(r.description||'Ruta con salida desde Casas de Haro.')}</p><div class="stats"><div class="stat"><b>${esc(r.distance_km||'—')} km</b><span>DISTANCIA</span></div><div class="stat"><b>+${esc(r.elevation_m||'—')} m</b><span>DESNIVEL</span></div><div class="stat"><b>${esc((r.discipline||'BTT').toUpperCase())}</b><span>MODALIDAD</span></div></div><div class="route-actions-wide">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" href="${esc(url)}" target="_blank" rel="noopener">Ver track</a>`:''}<a class="btn secondary" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn secondary" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a></div></div>`;
+        t.innerHTML=`<img src="${esc(img)}" alt="${esc(r.image_alt||'Próxima ruta del Club Casas de Haro BTT')}" loading="lazy" decoding="async"><div class="info"><span class="pill">Próxima salida</span><p class="next-route-date">${esc(fmtDate(r.date))}${r.time?' · '+esc(r.time):''}</p><h3>${esc(r.title||'Próxima ruta')}</h3><p class="next-route-desc">${esc(r.description||'Ruta con salida desde Casas de Haro.')}</p><div class="stats"><div class="stat"><b>${esc(r.distance_km||'—')} km</b><span>DISTANCIA</span></div><div class="stat"><b>+${esc(r.elevation_m||'—')} m</b><span>DESNIVEL</span></div><div class="stat"><b>${esc((r.discipline||'BTT').toUpperCase())}</b><span>MODALIDAD</span></div></div><div class="route-actions-wide">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" href="${esc(url)}" target="_blank" rel="noopener">Ver track</a>`:''}<button class="btn secondary signup-open" type="button">¡Me apunto!</button></div></div>`;
       });
     }catch(e){console.warn(e)}
   }
@@ -126,5 +149,5 @@
     wrap.append(nav);
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();renderNextRoute();renderRoutes();renderWeather();renderNews();renderGallery();enhanceFooter();});
+  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();setupSignupModal();renderNextRoute();renderRoutes();renderWeather();renderNews();renderGallery();enhanceFooter();});
 })();

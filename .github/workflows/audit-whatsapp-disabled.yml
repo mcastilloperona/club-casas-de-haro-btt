@@ -27,6 +27,11 @@ jobs:
           s,n=re.subn(r"# Etiqueta más precisa para enlaces de Wikiloc\..*?JS_PATH\.write_text\(js, encoding='utf-8'\)", "JS_PATH.write_text(js, encoding='utf-8')", s, count=1, flags=re.S)
           if n!=1:
               raise SystemExit(f'No se pudo ajustar el bloque de enlace Wikiloc: {n}')
+          old="js, nlocal = re.subn(r'const LOCAL_DATA=\\{.*?\\};\\n  async function json', replacement, js, count=1, flags=re.S)"
+          new="js, nlocal = re.subn(r'const LOCAL_DATA=\\{.*?\\};\\n  async function json', lambda m: replacement, js, count=1, flags=re.S)"
+          if old not in s:
+              raise SystemExit('No se encontró la sustitución de LOCAL_DATA esperada')
+          s=s.replace(old,new,1)
           p.write_text(s, encoding='utf-8')
           PY
 

@@ -1,0 +1,48 @@
+name: Microcambio destacar Me apunto
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/microcambio-destacar-me-apunto.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Destacar botón Me apunto
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/v13.js')
+          text = path.read_text(encoding='utf-8')
+          old = '.signup-open{font:inherit;cursor:pointer}'
+          new = '.signup-open{font:inherit;cursor:pointer;background:#65d7a1!important;color:#031b37!important;border:1px solid #65d7a1!important;box-shadow:0 8px 20px rgba(101,215,161,.28)!important;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}.signup-open:hover{background:#7ee2b2!important;transform:translateY(-1px);box-shadow:0 10px 24px rgba(101,215,161,.36)!important}.signup-open:focus-visible{outline:3px solid #b9e9f4!important;outline-offset:3px}'
+          if text.count(old) != 1:
+              raise SystemExit(f'Se esperaban 1 regla signup-open y hay {text.count(old)}')
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+
+          check = path.read_text(encoding='utf-8')
+          if '#65d7a1!important' not in check or check.count('const LOCAL_DATA') != 1:
+              raise SystemExit('Validación del cambio fallida')
+          PY
+
+      - name: Validar JavaScript
+        run: node --check assets/v13.js
+
+      - name: Publicar microcambio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/v13.js
+          git commit -m "Interfaz: destacar botón Me apunto"
+          git push

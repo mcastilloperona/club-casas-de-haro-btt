@@ -95,18 +95,10 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
     <div class="kicker">Dónde estamos</div>
     <h2>Casas de Haro, Cuenca</h2>
     <p class="lead">Casas de Haro es nuestro punto de partida para disfrutar del BTT y la carretera por los caminos y paisajes de La Mancha conquense.</p>
-    <div class="google-map-card" data-map-holder>
-      <div class="google-map-placeholder">
-        <div class="google-map-placeholder-inner">
-          <div class="google-map-pin" aria-hidden="true">⌖</div>
-          <h3>Mapa de Casas de Haro</h3>
-          <p>El mapa pertenece a Google y solo se conectará con sus servicios si decides cargarlo.</p>
-          <div class="google-map-actions">
-            <button class="btn dark" type="button" data-load-google-map data-src="https://www.google.com/maps?q=Casas%20de%20Haro%2C%20Cuenca%2C%20Espa%C3%B1a&amp;output=embed">Cargar mapa de Google</button>
-            <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Casas+de+Haro%2C+Cuenca" target="_blank" rel="noopener">Abrir en Google Maps</a>
-          </div>
-          <p class="google-map-note">Al cargarlo se aplicarán la política de privacidad y las condiciones de Google.</p>
-        </div>
+    <div class="google-map-card">
+      <iframe class="google-map-frame" src="https://www.google.com/maps?q=Casas%20de%20Haro%2C%20Cuenca%2C%20Espa%C3%B1a&amp;output=embed" title="Mapa de Casas de Haro en Google Maps" loading="eager" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div class="google-map-actions" style="padding:18px">
+        <a class="btn dark" href="https://www.google.com/maps/search/?api=1&amp;query=Casas+de+Haro%2C+Cuenca" target="_blank" rel="noopener">Abrir en Google Maps</a>
       </div>
     </div>
   </div>
@@ -147,5 +139,4 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 </script>
 
 <script src="assets/v13.js" defer></script>
-<script src="assets/mapa-google.js" defer></script>
 </body></html>

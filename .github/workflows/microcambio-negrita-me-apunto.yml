@@ -1,0 +1,45 @@
+name: Microcambio negrita Me apunto
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/microcambio-negrita-me-apunto.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Aplicar negrita al botón Me apunto
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/v13.js')
+          s=p.read_text(encoding='utf-8')
+          old='.signup-open{font:inherit;cursor:pointer;'
+          new='.signup-open{font:inherit;font-weight:800!important;cursor:pointer;'
+          if s.count(old)!=1:
+              raise SystemExit(f'Se esperaba una regla signup-open y se encontraron {s.count(old)}')
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          if s.count('const LOCAL_DATA')!=1:
+              raise SystemExit('Validación LOCAL_DATA fallida')
+          PY
+
+      - name: Validar JavaScript
+        run: node --check assets/v13.js
+
+      - name: Publicar microcambio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/v13.js
+          git commit -m "Interfaz: poner Me apunto en negrita"
+          git push

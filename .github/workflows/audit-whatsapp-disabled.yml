@@ -1,4 +1,4 @@
-name: Corrección de producción y ampliación de rutas
+name: Limpieza final de producción
 
 on:
   push:
@@ -17,48 +17,78 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Ajustar script de aplicación
+      - name: Limpiar último texto técnico visible y sincronizar la próxima salida
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
-          p=Path('scripts/corregir_produccion_y_rutas.py')
+          import html, json, re
+
+          p=Path('rutas.html')
           s=p.read_text(encoding='utf-8')
-          s,n=re.subn(r"# Etiqueta más precisa para enlaces de Wikiloc\..*?JS_PATH\.write_text\(js, encoding='utf-8'\)", "JS_PATH.write_text(js, encoding='utf-8')", s, count=1, flags=re.S)
-          if n!=1:
-              raise SystemExit(f'No se pudo ajustar el bloque de enlace Wikiloc: {n}')
-          old="js, nlocal = re.subn(r'const LOCAL_DATA=\\{.*?\\};\\n  async function json', replacement, js, count=1, flags=re.S)"
-          new="js, nlocal = re.subn(r'const LOCAL_DATA=\\{.*?\\};\\n  async function json', lambda m: replacement, js, count=1, flags=re.S)"
-          if old not in s:
-              raise SystemExit('No se encontró la sustitución de LOCAL_DATA esperada')
-          s=s.replace(old,new,1)
+          s=s.replace(
+            'La próxima ruta del Club Casas de Haro BTT se actualiza desde el panel de contenidos.',
+            'Consulta aquí la próxima salida programada por el Club Casas de Haro BTT.'
+          )
+
+          site=json.loads(Path('data/site.json').read_text(encoding='utf-8'))
+          r=site.get('next_route',{})
+          title=html.escape(str(r.get('title') or 'Próxima ruta'))
+          desc=html.escape(str(r.get('description') or 'Ruta con salida desde Casas de Haro.'))
+          image=html.escape(str(r.get('image') or 'assets/camino-atardecer.jpg'))
+          image_alt=html.escape(str(r.get('image_alt') or 'Próxima ruta del Club Casas de Haro BTT'))
+          distance=html.escape(str(r.get('distance_km') or '—'))
+          elev=html.escape(str(r.get('elevation_m') or '—'))
+          discipline=html.escape(str(r.get('discipline') or 'BTT').upper())
+          date='viernes, 11 de septiembre'
+          time=html.escape(str(r.get('time') or ''))
+          track=html.escape(str(r.get('track_url') or ''), quote=True)
+          actions=''
+          if track:
+              actions += f'<a class="btn secondary" href="{track}" target="_blank" rel="noopener">Ver track</a>'
+          actions += '<a class="btn secondary" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn secondary" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a>'
+          article=(f'<article class="route" data-next-route><img src="{image}" alt="{image_alt}" loading="lazy" decoding="async">'
+                   f'<div class="info"><span class="pill">Próxima salida</span><p class="next-route-date">{date}{" · "+time if time else ""}</p>'
+                   f'<h3>{title}</h3><p>{desc}</p><div class="stats"><div class="stat"><b>{distance} km</b><span>DISTANCIA</span></div>'
+                   f'<div class="stat"><b>+{elev} m</b><span>DESNIVEL</span></div><div class="stat"><b>{discipline}</b><span>MODALIDAD</span></div></div>'
+                   f'<div class="route-actions-wide">{actions}</div></div></article>')
+          s,n=re.subn(r'<article class="route" data-next-route>.*?</article>', article, s, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit(f'No se pudo sincronizar la tarjeta estática de próxima salida: {n}')
           p.write_text(s, encoding='utf-8')
+
+          def visible_text(raw):
+              raw=re.sub(r'<!--.*?-->', ' ', raw, flags=re.S)
+              raw=re.sub(r'<script\b.*?</script>', ' ', raw, flags=re.S|re.I)
+              raw=re.sub(r'<style\b.*?</style>', ' ', raw, flags=re.S|re.I)
+              raw=re.sub(r'<[^>]+>', ' ', raw)
+              return re.sub(r'\s+', ' ', raw).lower()
+
+          public=['index.html','rutas.html','historia.html','galeria.html','news.html','patrocinadores.html']
+          forbidden=['sin tocar el html','gestión preparada','panel conectado a github','panel de contenidos','archivos de contenido']
+          for name in public:
+              text=visible_text(Path(name).read_text(encoding='utf-8'))
+              for term in forbidden:
+                  if term in text:
+                      raise SystemExit(f'Texto técnico visible en {name}: {term}')
+          print('Limpieza visible verificada en todas las páginas públicas principales.')
           PY
 
-      - name: Aplicar cambios aprobados
-        run: python3 scripts/corregir_produccion_y_rutas.py
-
-      - name: Validar JavaScript y JSON
+      - name: Validar estado de producción
         run: |
           node --check assets/v13.js
           python3 -m json.tool data/routes.json >/dev/null
-          python3 -m json.tool data/site.json >/dev/null
-
-      - name: Verificar producción
-        run: |
-          grep -q 'Casas de Haro · Pantano de Alarcón' data/routes.json
-          grep -q 'Casas de Haro · Torcas · Senda de Sisante' data/routes.json
-          ! grep -q 'sin tocar el HTML' rutas.html
-          ! grep -q 'Gestión preparada' rutas.html
+          test "$(grep -c '"discipline": "road"' data/routes.json)" -eq 6
+          test "$(grep -c '"discipline": "btt"' data/routes.json)" -eq 12
+          ! grep -q 'Casas de Haro · El Picazo · Tébar' assets/v13.js
+          ! grep -q 'Casas de Haro · El Picazo · Tébar' rutas.html
+          grep -q 'Ruta circular Carretera' rutas.html
           grep -q '<iframe class="google-map-frame"' historia.html
           ! grep -q 'data-load-google-map' historia.html
-          ! grep -q 'Casas de Haro · El Picazo · Tébar' assets/v13.js
 
-      - name: Publicar cambios
+      - name: Publicar limpieza final
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -f scripts/corregir_produccion_y_rutas.py
-          git add data/routes.json rutas.html index.html historia.html privacidad.html cookies.html assets/v13.js
-          git commit -m "Corregir textos de producción y ampliar rutas BTT y carretera"
+          git add rutas.html
+          git commit -m "Limpiar textos técnicos restantes en Rutas"
           git push

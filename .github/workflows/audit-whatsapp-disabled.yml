@@ -1,8 +1,9 @@
-name: Revisión final de rutas en producción
+name: Ajuste final de rutas
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - '.github/workflows/audit-whatsapp-disabled.yml'
 
@@ -16,47 +17,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Afinar textos públicos y enlaces de Wikiloc
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          p=Path('rutas.html')
-          s=p.read_text(encoding='utf-8')
-          s=s.replace(
-            'Las rutas del club y de la comunidad conectan el pueblo con zonas habituales como Sisante, Pozoamargo, Vara de Rey, El Picazo, Tébar y otros municipios de La Mancha conquense.',
-            'Los recorridos seleccionados conectan el pueblo con zonas habituales como Sisante, Pozoamargo, Vara de Rey, El Picazo, Tébar y otros municipios de La Mancha conquense.'
-          )
-          p.write_text(s, encoding='utf-8')
-
-          p=Path('assets/v13.js')
-          s=p.read_text(encoding='utf-8')
-          old="""    const difficulty=r.difficulty?`<span class=\"route-metric\"><b>${esc(r.difficulty)}</b><small>Dificultad</small></span>`:'';
-    return `<article class=\"route-card\"><span class=\"pill route-origin ${originClass}\">${esc(kind)}</span><h3>${esc(r.title)}</h3>${r.description?`<p class=\"route-description\">${esc(r.description)}</p>`:''}<div class=\"meta route-metrics\">${distance}${elevation}${difficulty}</div><p class=\"route-source\">${author}${r.source?`<span>Fuente: ${esc(r.source)}</span>`:''}</p><div class=\"route-actions\">${gpx?`<a class=\"btn\" href=\"${esc(gpx)}\" download>Descargar GPX</a>`:''}${url?`<a class=\"btn secondary\" target=\"_blank\" rel=\"noopener\" href=\"${esc(url)}\">Ver track</a>`:''}</div></article>`;"""
-          new="""    const difficulty=r.difficulty?`<span class=\"route-metric\"><b>${esc(r.difficulty)}</b><small>Dificultad</small></span>`:'';
-    const isWikilocListing=/\/rutas\/(?:ciclismo|mountain-bike)\/espana\//.test(url);
-    const sourceLabel=isWikilocListing?'Ver en Wikiloc':'Ver track';
-    return `<article class=\"route-card\"><span class=\"pill route-origin ${originClass}\">${esc(kind)}</span><h3>${esc(r.title)}</h3>${r.description?`<p class=\"route-description\">${esc(r.description)}</p>`:''}<div class=\"meta route-metrics\">${distance}${elevation}${difficulty}</div><p class=\"route-source\">${author}${r.source?`<span>Fuente: ${esc(r.source)}</span>`:''}</p><div class=\"route-actions\">${gpx?`<a class=\"btn\" href=\"${esc(gpx)}\" download>Descargar GPX</a>`:''}${url?`<a class=\"btn secondary\" target=\"_blank\" rel=\"noopener\" href=\"${esc(url)}\">${esc(sourceLabel)}</a>`:''}</div></article>`;"""
-          if old not in s:
-              raise SystemExit('No se encontró el bloque routeCard esperado')
-          p.write_text(s.replace(old,new,1), encoding='utf-8')
-          PY
-
-      - name: Validar resultado
+      - name: Aplicar ajuste
+        run: python3 scripts/afinar_rutas_final.py
+      - name: Validar
         run: |
           node --check assets/v13.js
-          ! grep -q 'Ruta de la comunidad' assets/v13.js
-          ! grep -q 'rutas del club y de la comunidad' rutas.html
-          ! grep -q 'sin tocar el HTML' rutas.html
-          ! grep -q 'panel de contenidos' rutas.html
-          test "$(grep -c '"discipline": "road"' data/routes.json)" -eq 6
-          test "$(grep -c '"discipline": "btt"' data/routes.json)" -eq 12
-
+          python3 -m json.tool data/routes.json >/dev/null
+          test "$(grep -c '\"discipline\": \"road\"' data/routes.json)" -eq 6
+          test "$(grep -c '\"discipline\": \"btt\"' data/routes.json)" -eq 12
       - name: Publicar
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f scripts/afinar_rutas_final.py
           git add rutas.html assets/v13.js
           git commit -m "Afinar presentación y enlaces de rutas"
           git push

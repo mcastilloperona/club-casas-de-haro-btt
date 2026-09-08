@@ -1,4 +1,4 @@
-name: Mejora visual de rutas y patrocinadores
+name: Corrección de producción y ampliación de rutas
 
 on:
   push:
@@ -18,23 +18,29 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Aplicar cambios aprobados
-        run: python3 scripts/mejorar_rutas_patrocinadores.py
+        run: python3 scripts/corregir_produccion_y_rutas.py
 
-      - name: Comprobar JavaScript principal
-        run: node --check assets/v13.js
-
-      - name: Verificar alcance
+      - name: Validar JavaScript y JSON
         run: |
-          grep -q 'route-origin-external' assets/v13.js
-          ! grep -q 'Ruta de la comunidad' assets/v13.js
-          grep -q 'MEJORA_RUTAS_VISUAL_START' rutas.html
-          grep -q 'SPONSOR_MOBILE_FIX_START' patrocinadores.html
+          node --check assets/v13.js
+          python3 -m json.tool data/routes.json >/dev/null
+          python3 -m json.tool data/site.json >/dev/null
+
+      - name: Verificar producción
+        run: |
+          grep -q 'Casas de Haro · Pantano de Alarcón' data/routes.json
+          grep -q 'Casas de Haro · Torcas · Senda de Sisante' data/routes.json
+          ! grep -q 'sin tocar el HTML' rutas.html
+          ! grep -q 'Gestión preparada' rutas.html
+          grep -q '<iframe class="google-map-frame"' historia.html
+          ! grep -q 'data-load-google-map' historia.html
+          ! grep -q 'Casas de Haro · El Picazo · Tébar' assets/v13.js
 
       - name: Publicar cambios
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -f scripts/mejorar_rutas_patrocinadores.py
-          git add assets/v13.js rutas.html patrocinadores.html
-          git commit -m "Mejorar visualización de rutas y patrocinadores en móvil"
+          git rm -f scripts/corregir_produccion_y_rutas.py
+          git add data/routes.json rutas.html index.html historia.html privacidad.html cookies.html assets/v13.js
+          git commit -m "Corregir textos de producción y ampliar rutas BTT y carretera"
           git push

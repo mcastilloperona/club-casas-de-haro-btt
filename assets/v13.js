@@ -35,7 +35,9 @@
     const distance=r.distance_km?`<span class="route-metric"><b>${esc(r.distance_km)} km</b><small>Distancia</small></span>`:'';
     const elevation=r.elevation_m!==''&&r.elevation_m!=null?`<span class="route-metric"><b>+${esc(r.elevation_m)} m</b><small>Desnivel</small></span>`:'';
     const difficulty=r.difficulty?`<span class="route-metric"><b>${esc(r.difficulty)}</b><small>Dificultad</small></span>`:'';
-    return `<article class="route-card"><span class="pill route-origin ${originClass}">${esc(kind)}</span><h3>${esc(r.title)}</h3>${r.description?`<p class="route-description">${esc(r.description)}</p>`:''}<div class="meta route-metrics">${distance}${elevation}${difficulty}</div><p class="route-source">${author}${r.source?`<span>Fuente: ${esc(r.source)}</span>`:''}</p><div class="route-actions">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" target="_blank" rel="noopener" href="${esc(url)}">Ver track</a>`:''}</div></article>`;
+    const isWikilocListing=/\/rutas\/(?:ciclismo|mountain-bike)\/espana\//.test(url);
+    const sourceLabel=isWikilocListing?'Ver en Wikiloc':'Ver track';
+    return `<article class="route-card"><span class="pill route-origin ${originClass}">${esc(kind)}</span><h3>${esc(r.title)}</h3>${r.description?`<p class="route-description">${esc(r.description)}</p>`:''}<div class="meta route-metrics">${distance}${elevation}${difficulty}</div><p class="route-source">${author}${r.source?`<span>Fuente: ${esc(r.source)}</span>`:''}</p><div class="route-actions">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" target="_blank" rel="noopener" href="${esc(url)}">${esc(sourceLabel)}</a>`:''}</div></article>`;
   }
 
   async function renderRoutes(){

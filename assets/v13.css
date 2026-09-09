@@ -336,3 +336,9 @@ html,body{max-width:100%;overflow-x:hidden}
   .club-partner-card{grid-template-columns:1fr!important;gap:12px!important;padding:18px 0!important;text-align:center}
   .club-partner-card img{width:min(100%,420px)!important;height:210px!important;margin:0 auto!important}
 }
+
+
+/* V13 — contraste del plato en cabecera */
+.club-logo{
+  filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 3px rgba(52,201,239,.72))!important;
+}

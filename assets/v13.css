@@ -338,7 +338,12 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 
 
-/* V13 — contraste del plato en cabecera */
+/* V13 — contraste sólido del plato en cabecera */
 .club-logo{
-  filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 3px rgba(52,201,239,.72))!important;
+  box-sizing:border-box!important;
+  background:#fff!important;
+  border:2px solid #fff!important;
+  border-radius:50%!important;
+  box-shadow:0 0 0 2px rgba(52,201,239,.68),0 3px 10px rgba(0,0,0,.28)!important;
+  filter:none!important;
 }

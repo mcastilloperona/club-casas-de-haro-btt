@@ -108,6 +108,11 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 }
 </script>
 <link rel="stylesheet" href="assets/colaboradores.css">
+
+<style id="home-section-title-size">
+.home-content-section h2{font-size:clamp(36px,5.4vw,56px)}
+@media(max-width:760px){.home-content-section h2{font-size:36px;line-height:1.08}}
+</style>
 </head>
 <body>
 <div class="cdh-intro" id="cdhIntro" aria-hidden="true"><div class="cdh-logo-stack"><img class="cdh-logo-inner" src="assets/logo-cdh-inner.png" alt=""><img class="cdh-logo-plate" src="assets/logo-cdh-plate.png" alt=""></div></div>
@@ -144,30 +149,9 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 <div class="club-partners-progress"><i></i></div>
 </section>
 
-<section class="home-collaborators-section" id="colaboradores-portada" hidden>
-  <div class="wrap">
-    <div class="home-collaborators-head">
-      <div>
-        <div class="kicker">Colaboradores del club</div>
-        <h2>Comercios y personas que suman</h2>
-      </div>
-      <a class="home-collaborators-link" href="patrocinadores.html#colaboradores-club">Ver colaboradores</a>
-    </div>
-    <div id="homeCollaboratorsTrack" class="home-collaborators-track" aria-label="Colaboradores del Club Casas de Haro BTT"></div>
-  </div>
-</section>
+<section class="section home-content-section"><div class="wrap"><div class="kicker">El club</div><h2>Donde empieza el camino.</h2><p class="lead">La bicicleta nos une. Pedaleamos por La Mancha para disfrutar del entorno, compartir kilómetros y seguir creando historias juntos.</p><div class="all-routes"><a class="btn dark" href="historia.html">Conoce nuestra historia</a></div></div></section>
 
-
-<section class="section" id="proxima-ruta"><div class="wrap"><div class="kicker">Próxima salida</div><h2>De Casas de Haro al camino</h2><p class="lead">La próxima salida del Club Casas de Haro BTT. El resto de tracks y rutas están disponibles en nuestra sección de Rutas.</p>
-<!-- NEXT_ROUTE_FALLBACK_START -->
-<article class="route" data-next-route><img src="assets/1000015927.jpg" alt="Camino de Casas de Haro al atardecer" loading="lazy" decoding="async"><div class="info"><span class="pill">Próxima salida</span><p class="next-route-date">viernes, 11 de septiembre · 18:00</p><h3>Ruta circular Carretera</h3><p>Vuelta circular con carretera. Casas de haro- Benitez- Sisante-Pozoamargo-Casas de Haro</p><div class="stats"><div class="stat"><b>43 km</b><span>DISTANCIA</span></div><div class="stat"><b>+200 m</b><span>DESNIVEL</span></div><div class="stat"><b>CARRETERA</b><span>MODALIDAD</span></div></div><div class="route-actions-wide"><a class="btn secondary" href="https://connect.garmin.com/modern/activity/24140425659?share_unique_id=4" target="_blank" rel="noopener">Ver track</a><button class="btn secondary signup-open" type="button">¡Me apunto!</button></div></div></article>
-<!-- NEXT_ROUTE_FALLBACK_END -->
-
-<div class="all-routes" style="margin-top:28px"><a class="btn dark" href="rutas.html">Explorar todas las rutas</a></div>
-</div></section>
-
-
-<section class="section seo-local-block" aria-labelledby="seo-ciclismo-casas-de-haro">
+<section class="section seo-local-block home-content-section" aria-labelledby="seo-ciclismo-casas-de-haro">
   <div class="wrap">
     <div class="kicker">Ciclismo en Casas de Haro</div>
     <h2 id="seo-ciclismo-casas-de-haro">BTT y carretera desde el corazón de La Mancha</h2>
@@ -178,9 +162,16 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
     </div>
   </div>
 </section>
-<section class="section" style="background:#fff"><div class="wrap"><div class="kicker">BTT News</div><h2>Lo que pasa en el club</h2><p class="lead">Novedades del Club Casas de Haro BTT, salidas, retos, marchas, nuevos colaboradores y noticias de sus miembros.</p><div id="newsTeaser" class="news-teaser"><div class="news-empty">Cargando BTT News…</div></div></div></section>
 
-<section class="section"><div class="wrap"><div class="kicker">El club</div><h2>Donde empieza el camino.</h2><p class="lead">La bicicleta nos une. Pedaleamos por La Mancha para disfrutar del entorno, compartir kilómetros y seguir creando historias juntos.</p><div class="all-routes"><a class="btn dark" href="historia.html">Conoce nuestra historia</a></div></div></section>
+<section class="section home-content-section" id="proxima-ruta"><div class="wrap"><div class="kicker">Próxima salida</div><h2>De Casas de Haro al camino</h2><p class="lead">La próxima salida del Club Casas de Haro BTT. El resto de tracks y rutas están disponibles en nuestra sección de Rutas.</p>
+<!-- NEXT_ROUTE_FALLBACK_START -->
+<article class="route" data-next-route><img src="assets/1000015927.jpg" alt="Camino de Casas de Haro al atardecer" loading="lazy" decoding="async"><div class="info"><span class="pill">Próxima salida</span><p class="next-route-date">viernes, 11 de septiembre · 18:00</p><h3>Ruta circular Carretera</h3><p>Vuelta circular con carretera. Casas de haro- Benitez- Sisante-Pozoamargo-Casas de Haro</p><div class="stats"><div class="stat"><b>43 km</b><span>DISTANCIA</span></div><div class="stat"><b>+200 m</b><span>DESNIVEL</span></div><div class="stat"><b>CARRETERA</b><span>MODALIDAD</span></div></div><div class="route-actions-wide"><a class="btn secondary" href="https://connect.garmin.com/modern/activity/24140425659?share_unique_id=4" target="_blank" rel="noopener">Ver track</a><button class="btn secondary signup-open" type="button">¡Me apunto!</button></div></div></article>
+<!-- NEXT_ROUTE_FALLBACK_END -->
+
+<div class="all-routes" style="margin-top:28px"><a class="btn dark" href="rutas.html">Explorar todas las rutas</a></div>
+</div></section>
+
+<section class="section home-content-section" style="background:#fff"><div class="wrap"><div class="kicker">BTT News</div><h2>Lo que pasa en el club</h2><p class="lead">Novedades del Club Casas de Haro BTT, salidas, retos, marchas, nuevos colaboradores y noticias de sus miembros.</p><div id="newsTeaser" class="news-teaser"><div class="news-empty">Cargando BTT News…</div></div></div></section>
 </main>
 <div class="contact-wrap" aria-label="Contacto con el Club Casas de Haro BTT">
   <span class="contact-note">Telegram · Email</span>

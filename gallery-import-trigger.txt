@@ -1,0 +1,1 @@
+Ejecutar importación de las fotos de galería al repositorio.

@@ -77,8 +77,7 @@
       status.textContent='Abriendo '+(channel==='telegram'?'Telegram':'tu aplicación de correo')+'…';
       if(channel==='telegram'){
         const url='https://t.me/mcastilloperona?text='+encodeURIComponent(message);
-        const opened=window.open(url,'_blank','noopener');
-        if(!opened)window.location.href=url;
+        window.location.href=url;
       }else{
         const subject=mode==='signup'?'Quiero apuntarme a la próxima salida':'Baja de la próxima salida';
         window.location.href='mailto:mcastillo@casasdeharobtt.es?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(message);

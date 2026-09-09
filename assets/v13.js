@@ -17,20 +17,94 @@
     if(document.getElementById('signupModal'))return;
     const style=document.createElement('style');
     style.id='signupModalStyles';
-    style.textContent='.signup-open{font:inherit;font-weight:800!important;cursor:pointer;background:#65d7a1!important;color:#031b37!important;border:1px solid #65d7a1!important;box-shadow:0 8px 20px rgba(101,215,161,.28)!important;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}.signup-open:hover{background:#7ee2b2!important;transform:translateY(-1px);box-shadow:0 10px 24px rgba(101,215,161,.36)!important}.signup-open:focus-visible{outline:3px solid #b9e9f4!important;outline-offset:3px}.signup-modal[hidden]{display:none}.signup-modal{position:fixed;inset:0;z-index:10000;background:rgba(3,27,55,.72);display:grid;place-items:center;padding:20px}.signup-modal-card{position:relative;width:min(430px,100%);background:#fff;color:#06264b;border-radius:22px;padding:28px;box-shadow:0 24px 70px #0006}.signup-modal-card h3{margin:0 42px 8px 0;font-size:28px}.signup-modal-card p{margin:0;color:#56606b;line-height:1.55}.signup-modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;border:0;border-radius:50%;background:#eef5f8;color:#06264b;font-size:24px;line-height:1;cursor:pointer}.signup-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.signup-modal-actions .btn{display:block;text-align:center;background:#06264b;color:#fff;border:1px solid #1b527d}@media(max-width:520px){.signup-modal-actions{grid-template-columns:1fr}}';
+    style.textContent='.signup-open{font:inherit;font-weight:800!important;cursor:pointer;background:#65d7a1!important;color:#031b37!important;border:1px solid #65d7a1!important;box-shadow:0 8px 20px rgba(101,215,161,.28)!important;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}.signup-open:hover{background:#7ee2b2!important;transform:translateY(-1px);box-shadow:0 10px 24px rgba(101,215,161,.36)!important}.signup-open:focus-visible{outline:3px solid #b9e9f4!important;outline-offset:3px}.signup-modal[hidden]{display:none}.signup-modal{position:fixed;inset:0;z-index:10000;background:rgba(3,27,55,.76);display:grid;place-items:center;padding:18px;overflow:auto}.signup-modal-card{position:relative;width:min(520px,100%);max-height:calc(100vh - 36px);overflow:auto;background:#fff;color:#06264b;border-radius:22px;padding:28px;box-shadow:0 24px 70px #0006}.signup-modal-card h3{margin:0 42px 6px 0;font-size:28px}.signup-modal-card>p{margin:0;color:#56606b;line-height:1.5}.signup-modal-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border:0;border-radius:50%;background:#eef5f8;color:#06264b;font-size:24px;line-height:1;cursor:pointer}.signup-route-summary{margin:18px 0!important;padding:13px 15px;border-radius:14px;background:#eef8fb;color:#06264b!important;font-weight:750}.signup-form{display:grid;gap:14px;margin-top:18px}.signup-field{display:grid;gap:6px;font-weight:800;font-size:14px}.signup-field input,.signup-field select,.signup-field textarea{width:100%;font:inherit;color:#06264b;background:#fff;border:1px solid #bdcbd4;border-radius:11px;padding:11px 12px}.signup-field textarea{min-height:76px;resize:vertical}.signup-field input:focus,.signup-field select:focus,.signup-field textarea:focus{outline:3px solid rgba(19,185,232,.25);border-color:#078db5}.signup-privacy{font-size:12px!important;color:#687782!important}.signup-mode{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #e1eaee;padding-top:13px}.signup-mode button{border:0;background:none;color:#075da0;padding:4px 0;font:inherit;font-size:13px;font-weight:850;text-decoration:underline;cursor:pointer}.signup-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.signup-channel{border:1px solid #1b527d;border-radius:999px;padding:12px 16px;background:#06264b;color:#fff;font:inherit;font-weight:850;cursor:pointer}.signup-channel.telegram{background:#229ed9;border-color:#229ed9}.signup-channel:hover{filter:brightness(1.08)}.signup-status{min-height:20px;margin:0!important;font-size:13px;color:#56606b!important}.signup-field[hidden]{display:none}@media(max-width:520px){.signup-modal{padding:10px}.signup-modal-card{padding:24px 20px;max-height:calc(100vh - 20px);border-radius:18px}.signup-modal-actions{grid-template-columns:1fr}.signup-mode{align-items:flex-start;flex-direction:column}}';
     document.head.appendChild(style);
     const modal=document.createElement('div');
     modal.id='signupModal';
     modal.className='signup-modal';
     modal.hidden=true;
-    modal.innerHTML='<div class="signup-modal-card" role="dialog" aria-modal="true" aria-labelledby="signupModalTitle"><button class="signup-modal-close" type="button" aria-label="Cerrar">×</button><h3 id="signupModalTitle">¡Me apunto!</h3><p>Elige cómo quieres contactar con el club para confirmar que vienes a la salida.</p><div class="signup-modal-actions"><a class="btn" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a></div></div>';
+    modal.innerHTML='<div class="signup-modal-card" role="dialog" aria-modal="true" aria-labelledby="signupModalTitle"><button class="signup-modal-close" type="button" aria-label="Cerrar">×</button><h3 id="signupModalTitle">Apuntarme a la salida</h3><p id="signupModalIntro">Completa tus datos y elige cómo quieres enviar la solicitud al club.</p><p class="signup-route-summary" id="signupRouteSummary"></p><form class="signup-form" id="signupForm"><label class="signup-field">Nombre o apodo<input id="signupName" name="name" type="text" maxlength="60" autocomplete="name" required></label><label class="signup-field" id="signupPaceField">Ritmo previsto<select id="signupPace" name="pace"><option value="">Prefiero no indicarlo</option><option>Tranquilo</option><option>Medio</option><option>Rápido</option><option>No lo sé</option></select></label><label class="signup-field">Comentario opcional<textarea id="signupComment" name="comment" maxlength="180" placeholder="Cualquier información útil para la salida"></textarea></label><p class="signup-privacy">Estos datos no se guardan en la web. Se incorporan al mensaje que enviarás por Telegram o correo electrónico.</p><div class="signup-modal-actions"><button class="signup-channel telegram" type="button" data-channel="telegram">Enviar por Telegram</button><button class="signup-channel email" type="button" data-channel="email">Enviar por email</button></div><p class="signup-status" id="signupStatus" aria-live="polite">La plaza quedará pendiente de confirmación por parte del club.</p><div class="signup-mode"><span id="signupModeHint">¿Ya te habías apuntado?</span><button id="signupModeToggle" type="button">Comunicar una baja</button></div></form></div>';
     document.body.appendChild(modal);
+
+    const form=modal.querySelector('#signupForm');
+    const title=modal.querySelector('#signupModalTitle');
+    const intro=modal.querySelector('#signupModalIntro');
+    const summary=modal.querySelector('#signupRouteSummary');
+    const paceField=modal.querySelector('#signupPaceField');
+    const hint=modal.querySelector('#signupModeHint');
+    const toggle=modal.querySelector('#signupModeToggle');
+    const status=modal.querySelector('#signupStatus');
     let lastFocus=null;
-    const open=()=>{lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';modal.querySelector('.signup-modal-close').focus()};
-    const close=()=>{modal.hidden=true;document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus()};
+    let mode='signup';
+    let routeTitle='Próxima salida';
+    let routeDate='Fecha por confirmar';
+
+    function setMode(next){
+      mode=next;
+      const signup=mode==='signup';
+      title.textContent=signup?'Apuntarme a la salida':'Comunicar una baja';
+      intro.textContent=signup?'Completa tus datos y elige cómo quieres enviar la solicitud al club.':'Indica tu nombre y avisa al club de que finalmente no podrás asistir.';
+      paceField.hidden=!signup;
+      hint.textContent=signup?'¿Ya te habías apuntado?':'¿Finalmente quieres asistir?';
+      toggle.textContent=signup?'Comunicar una baja':'Volver a apuntarme';
+      status.textContent=signup?'La plaza quedará pendiente de confirmación por parte del club.':'La baja quedará pendiente hasta que el club reciba tu mensaje.';
+    }
+
+    function routeDetails(opener){
+      const card=opener&&opener.closest('[data-next-route]');
+      const h3=card&&card.querySelector('.info h3');
+      const date=card&&card.querySelector('.next-route-date');
+      routeTitle=h3&&h3.textContent.trim()?h3.textContent.trim():'Próxima salida';
+      routeDate=date&&date.textContent.trim()?date.textContent.trim():'Fecha por confirmar';
+      summary.textContent=routeTitle+' · '+routeDate;
+    }
+
+    function buildMessage(){
+      const name=form.querySelector('#signupName').value.trim();
+      const pace=form.querySelector('#signupPace').value;
+      const comment=form.querySelector('#signupComment').value.trim();
+      const lines=mode==='signup'
+        ? ['Hola, quiero apuntarme a la próxima salida del Club Casas de Haro BTT.','Ruta: '+routeTitle,'Fecha: '+routeDate,'Nombre o apodo: '+name]
+        : ['Hola, finalmente no podré asistir a la próxima salida del Club Casas de Haro BTT.','Ruta: '+routeTitle,'Fecha: '+routeDate,'Nombre o apodo: '+name];
+      if(mode==='signup'&&pace)lines.push('Ritmo previsto: '+pace);
+      if(comment)lines.push('Comentario: '+comment);
+      return lines.join('\n');
+    }
+
+    function openChannel(channel){
+      if(!form.reportValidity())return;
+      const message=buildMessage();
+      status.textContent='Abriendo '+(channel==='telegram'?'Telegram':'tu aplicación de correo')+'…';
+      if(channel==='telegram'){
+        const url='https://t.me/mcastilloperona?text='+encodeURIComponent(message);
+        const opened=window.open(url,'_blank','noopener');
+        if(!opened)window.location.href=url;
+      }else{
+        const subject=mode==='signup'?'Quiero apuntarme a la próxima salida':'Baja de la próxima salida';
+        window.location.href='mailto:mcastillo@casasdeharobtt.es?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(message);
+      }
+    }
+
+    const open=opener=>{
+      lastFocus=document.activeElement;
+      form.reset();
+      routeDetails(opener);
+      setMode('signup');
+      modal.hidden=false;
+      document.body.style.overflow='hidden';
+      window.setTimeout(()=>form.querySelector('#signupName').focus(),0);
+    };
+    const close=()=>{
+      modal.hidden=true;
+      document.body.style.overflow='';
+      if(lastFocus&&lastFocus.focus)lastFocus.focus();
+    };
+
+    toggle.addEventListener('click',()=>setMode(mode==='signup'?'cancel':'signup'));
+    modal.querySelectorAll('[data-channel]').forEach(button=>button.addEventListener('click',()=>openChannel(button.dataset.channel)));
     document.addEventListener('click',e=>{
       const opener=e.target.closest('.signup-open');
-      if(opener){e.preventDefault();open();return}
+      if(opener){e.preventDefault();open(opener);return}
       if(e.target===modal||e.target.closest('.signup-modal-close'))close();
     });
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});

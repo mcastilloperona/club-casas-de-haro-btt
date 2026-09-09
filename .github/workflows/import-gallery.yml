@@ -27,18 +27,31 @@ jobs:
           ids = ['15aY9j2njWHHQoQ5UWh6P42qGs1IsGwJS','1xHgKkbZg2u2Hf4MlGXY_7n7Q5HYdCBCG','1c0N1_au4SPZORR5OPNVl-ajO4zY5cx2Q','1DS_fFDplzF6Jmeetmh_NvU05zPE0_QcJ','1OQL7YkwhIKGoYhOoN3EBQVSMNG04TPyN','1Z2hdsacVejUmH8_0imisJoy7Xzz4YuyF','1i4Udse3VTpWpuft9zCZSFUHBsHkwsaHL','1JTo4yFLrNGB23G-7Vpmbj_QjTFnYBC78','1gklijf9K5DYwLqfQtqVJGYifUM-4IrKz','1ntiBjR8wXqmcW2FKUv7e03i0FS50xleH']
           for i, fid in enumerate(ids, 1):
               tmp=f'/tmp/gallery-{i:02}.img'; out=Path(f'assets/gallery/galeria-{i:02}.jpg')
-              gdown.download(id=fid, output=tmp, quiet=False, fuzzy=True)
+              result=gdown.download(id=fid, output=tmp, quiet=False)
+              if not result: raise RuntimeError(f'No se pudo descargar la foto {i}')
               im=ImageOps.exif_transpose(Image.open(tmp)).convert('RGB'); im.thumbnail((1920,1920), Image.Resampling.LANCZOS)
               im.save(out,'JPEG',quality=84,optimize=True,progressive=True)
           PY
-      - name: Point gallery to repository files
+      - name: Point gallery to repository files with descriptions
         run: |
           python - <<'PY'
           import json
           p='data/gallery.json'
-          with open(p,encoding='utf-8') as f: data=json.load(f)
-          data=data[:5]
-          for i in range(1,11): data.append({'published':True,'image':f'assets/gallery/galeria-{i:02}.jpg','alt':'Foto del Club Casas de Haro BTT','caption':'Club Casas de Haro BTT'})
+          with open(p,encoding='utf-8') as f: data=json.load(f)[:5]
+          photos = [
+            ('Atardecer sobre los viñedos y campos de Casas de Haro','Atardecer entre viñedos de Casas de Haro'),
+            ('Grupo de ciclistas BTT durante una ruta junto a un edificio histórico','Una parada en el camino'),
+            ('Atardecer entre los cultivos y árboles del entorno de Casas de Haro','Luz de atardecer en nuestros campos'),
+            ('Bicicleta de montaña descansando bajo un pino junto a los campos','BTT, pinos y caminos manchegos'),
+            ('Silueta del campanario de Casas de Haro durante la puesta de sol','El campanario al atardecer'),
+            ('Logotipo de Herrería San Julián, colaborador del Club Casas de Haro BTT','Herrería San Julián, colaborador del club'),
+            ('Grupo de ciclistas recorriendo un camino entre viñedos al atardecer','Rodando entre viñedos'),
+            ('Ruta BTT junto a un canal rodeado de pinos','Ruta junto al canal'),
+            ('Bicicleta junto a una ermita durante una ruta por el entorno de Casas de Haro','BTT y patrimonio de nuestro entorno'),
+            ('Grupo de ciclistas durante una salida BTT','Compañeros de ruta')
+          ]
+          for i,(alt,caption) in enumerate(photos,1):
+              data.append({'published':True,'image':f'assets/gallery/galeria-{i:02}.jpg','alt':alt,'caption':caption})
           with open(p,'w',encoding='utf-8') as f: json.dump(data,f,ensure_ascii=False,indent=2); f.write('\n')
           PY
       - name: Commit repository-hosted gallery and remove importer

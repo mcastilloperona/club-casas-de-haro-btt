@@ -1,4 +1,5 @@
-Club Casas de Haro BTT — V13
-Versión publicada: responsive, rutas BTT/carretera, autoría, Pages CMS y paquete legal.
-SEO local fase 1: contenido semántico, enlazado interno y datos estructurados.
-V13 BTT News: galería múltiple, categorías, buscador e histórico por años.
+Club Casas de Haro BTT — V14 (rama de pruebas)
+Base: V13 publicada, mantenida intacta en la rama main.
+V14: mejora del flujo «Me apunto» mediante formulario previo para Telegram y email.
+Incluye datos de la salida en el mensaje, nombre o apodo, ritmo opcional, comentario y comunicación de baja.
+No almacena datos personales en la web ni incorpora servicios externos.

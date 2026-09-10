@@ -387,3 +387,12 @@ html,body{max-width:100%;overflow-x:hidden}
     border-top:0!important;
   }
 }
+
+
+/* V13 RC14 — logo completo en cabecera clara */
+.brand .club-logo{
+  border-radius:50%!important;
+  overflow:hidden!important;
+  object-fit:contain!important;
+  flex-shrink:0!important;
+}

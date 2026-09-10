@@ -1,0 +1,19 @@
+name: Fix history image direct
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-history-image-direct.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sed -i 's#assets/historia-club-cdh\.svg#assets/historia-club-cdh.webp#g' historia.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add historia.html
+          git commit -m 'Use history WebP directly'
+          git push

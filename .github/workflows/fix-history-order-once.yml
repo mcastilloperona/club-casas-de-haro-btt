@@ -1,0 +1,42 @@
+name: Fix history order once
+
+on:
+  push:
+    branches:
+      - tmp-history-order-fix
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore stable Historia order
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('historia.html')
+          text = p.read_text(encoding='utf-8')
+          a = text.index('<section class="section town-history">')
+          b = text.index('<section class="section town-story">')
+          c = text.index('<section class="section history">')
+          d = text.index('<section class="section"><div class="wrap"><div class="kicker">Nuestro escudo')
+          if not (a < b < c < d):
+              raise SystemExit('Unexpected section order; aborting safely')
+          prefix = text[:a]
+          town_history = text[a:b]
+          town_story = text[b:c]
+          club = text[c:d]
+          rest = text[d:]
+          fixed = prefix + town_story + town_history + club + rest
+          assert fixed.index('La tierra que nos une') < fixed.index('De cruce de caminos a municipio manchego') < fixed.index('Mucho más que montar en bici')
+          p.write_text(fixed, encoding='utf-8')
+      - name: Commit correction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add historia.html
+          git commit -m "Restore stable Historia section order"
+          git push

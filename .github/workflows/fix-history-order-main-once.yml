@@ -1,0 +1,53 @@
+name: Fix Historia order main once
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore stable Historia order
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('historia.html')
+          text = p.read_text(encoding='utf-8')
+          story_marker = '<section class="section town-story">'
+          history_marker = '<section class="section town-history">'
+          club_marker = '<section class="section history">'
+          shield_marker = '<section class="section"><div class="wrap"><div class="kicker">Nuestro escudo'
+          s = text.index(story_marker)
+          h = text.index(history_marker)
+          c = text.index(club_marker)
+          d = text.index(shield_marker)
+          if s < h < c < d:
+              print('Historia order already correct')
+          elif h < s < c < d:
+              prefix = text[:h]
+              town_history = text[h:s]
+              town_story = text[s:c]
+              club = text[c:d]
+              rest = text[d:]
+              fixed = prefix + town_story + town_history + club + rest
+              assert fixed.index('La tierra que nos une') < fixed.index('De cruce de caminos a municipio manchego') < fixed.index('Mucho más que montar en bici')
+              p.write_text(fixed, encoding='utf-8')
+          else:
+              raise SystemExit('Unexpected Historia structure; aborting safely')
+      - name: Commit correction if needed
+        run: |
+          if git diff --quiet -- historia.html; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add historia.html
+          git commit -m "Restore stable Historia section order"
+          git push

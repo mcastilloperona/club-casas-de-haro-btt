@@ -51,3 +51,4 @@ jobs:
           git add historia.html
           git commit -m "Restore stable Historia section order"
           git push
+# trigger once

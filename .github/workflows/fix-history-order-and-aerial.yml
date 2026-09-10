@@ -1,0 +1,51 @@
+name: Fix history order and aerial photo
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-history-order-and-aerial.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild and validate aerial photo
+        run: |
+          cat .github/tmp/aerial-part-00.b64 .github/tmp/aerial-part-01.b64 .github/tmp/aerial-part-02.b64 | tr -d '\n\r' | base64 -d > /tmp/vista-aerea.jpg
+          python3 - <<'PY'
+          from pathlib import Path
+          f=Path('/tmp/vista-aerea.jpg')
+          b=f.read_bytes()
+          assert len(b)==94910, f'Unexpected size: {len(b)}'
+          assert b[:2]==b'\xff\xd8' and b[-2:]==b'\xff\xd9', 'Invalid JPEG markers'
+          Path('assets/vista-aerea-casas-de-haro-v2.jpg').write_bytes(b)
+          PY
+      - name: Put Wikipedia history first and use validated photo
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('historia.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('assets/vista-aerea-casas-de-haro.jpg?v=20260910-1','assets/vista-aerea-casas-de-haro-v2.jpg?v=20260910-2')
+          story=re.search(r'<section class="section town-story">.*?</section>',s,re.S)
+          hist=re.search(r'<section class="section town-history">.*?</section>',s,re.S)
+          club=re.search(r'<section class="section history">.*?</section>',s,re.S)
+          shield=re.search(r'<section class="section"><div class="wrap"><div class="kicker">Nuestro escudo</div>.*?</section>',s,re.S)
+          assert story and hist and club and shield, 'Expected sections not found'
+          assert hist.start()>story.start(), 'Wikipedia history is already first or layout changed unexpectedly'
+          blocks=[story.group(0),hist.group(0),club.group(0),shield.group(0)]
+          start=min(story.start(),hist.start(),club.start(),shield.start())
+          end=max(story.end(),hist.end(),club.end(),shield.end())
+          new='\n'.join([hist.group(0),story.group(0),club.group(0),shield.group(0)])
+          s=s[:start]+new+s[end:]
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add historia.html assets/vista-aerea-casas-de-haro-v2.jpg
+          git commit -m 'Put Casas de Haro history first and fix aerial photo'
+          git push

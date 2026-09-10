@@ -357,7 +357,7 @@ html,body{max-width:100%;overflow-x:hidden}
 /* V13 RC16 — portada móvil restaurada: encuadre completo y logo oficial */
 @media(max-width:900px){
   .home-v12:before{
-    background-image:url('hero-casas-de-haro-oficial-85.webp')!important;
+    background-image:url('hero-casas-de-haro-oficial-85-sin-borde.webp')!important;
     background-position:center center!important;
     background-size:contain!important;
     background-repeat:no-repeat!important;

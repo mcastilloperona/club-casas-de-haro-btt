@@ -1,0 +1,64 @@
+name: Unify desktop and mobile homepage
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/unify-home-desktop-mobile.yml']
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unify homepage hero and distinct Casas de Haro CTA
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          index = Path('index.html')
+          s = index.read_text(encoding='utf-8')
+
+          old_desktop = '''@media(min-width:901px){
+  .home-v12{display:none!important}
+  .approved-hero-desktop{display:block}
+  .wa-wrap{display:none!important}
+}'''
+          new_desktop = '''@media(min-width:901px){
+  .home-v12{display:flex!important}
+  .approved-hero-desktop{display:none!important}
+  .wa-wrap{display:none!important}
+}'''
+          assert old_desktop in s, 'Desktop hero media block not found'
+          s = s.replace(old_desktop, new_desktop, 1)
+
+          old_cta = '<a class="btn secondary" href="historia.html">Conocer Casas de Haro</a>'
+          new_cta = '<a class="btn secondary" href="historia.html#casas-de-haro">Descubre Casas de Haro</a>'
+          assert old_cta in s, 'Lower Casas de Haro CTA not found'
+          s = s.replace(old_cta, new_cta, 1)
+          index.write_text(s, encoding='utf-8')
+
+          historia = Path('historia.html')
+          h = historia.read_text(encoding='utf-8')
+          old_section = '<section class="section town-story">'
+          new_section = '<section class="section town-story" id="casas-de-haro">'
+          if new_section not in h:
+              assert old_section in h, 'Casas de Haro town-story section not found'
+              h = h.replace(old_section, new_section, 1)
+          historia.write_text(h, encoding='utf-8')
+
+          # Validation
+          si = index.read_text(encoding='utf-8')
+          sh = historia.read_text(encoding='utf-8')
+          assert '.home-v12{display:flex!important}' in si
+          assert '.approved-hero-desktop{display:none!important}' in si
+          assert 'href="historia.html#casas-de-haro">Descubre Casas de Haro</a>' in si
+          assert 'class="section town-story" id="casas-de-haro"' in sh
+          print('Validated unified hero and distinct Casas de Haro CTA')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html historia.html
+          git commit -m 'Unify homepage hero across desktop and mobile'
+          git push

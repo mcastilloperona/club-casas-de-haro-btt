@@ -1,0 +1,47 @@
+name: Reorder navigation and home actions
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/reorder-home-navigation.yml']
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reorder navigation and homepage actions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          old_nav = '<a href="index.html">Inicio</a><a href="rutas.html">Rutas</a><a href="historia.html">Historia</a>'
+          new_nav = '<a href="index.html">Inicio</a><a href="historia.html">Historia</a><a href="rutas.html">Rutas</a>'
+
+          changed = []
+          for p in Path('.').glob('*.html'):
+              s = p.read_text(encoding='utf-8')
+              n = s.replace(old_nav, new_nav)
+              if n != s:
+                  p.write_text(n, encoding='utf-8')
+                  changed.append(str(p))
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old_actions = '<div class="hero-actions"><a class="primary" href="rutas.html">Próximas rutas</a><a href="historia.html">Conoce nuestra historia</a></div>'
+          new_actions = '<div class="hero-actions"><a class="primary" href="historia.html">Conoce nuestra historia</a><a href="rutas.html">Próximas rutas</a></div>'
+          assert old_actions in s, 'Homepage action buttons not found in expected form'
+          s = s.replace(old_actions, new_actions, 1)
+          p.write_text(s, encoding='utf-8')
+
+          assert 'href="index.html">Inicio</a><a href="historia.html">Historia</a><a href="rutas.html">Rutas</a>' in p.read_text(encoding='utf-8'), 'Desktop/mobile nav order was not updated in index'
+          assert new_actions in p.read_text(encoding='utf-8'), 'Homepage buttons were not reordered'
+          print('Navigation updated in:', ', '.join(changed))
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add '*.html'
+          git commit -m 'Put Historia before Rutas in navigation and homepage'
+          git push

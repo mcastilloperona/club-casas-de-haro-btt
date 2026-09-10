@@ -1,0 +1,103 @@
+name: Fix gallery local images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-gallery-local-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download gallery images and update data
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import urllib.request
+
+          ids = [
+              '15aY9j2njWHHQoQ5UWh6P42qGs1IsGwJS',
+              '1xHgKkbZg2u2Hf4MlGXY_7n7Q5HYdCBCG',
+              '1c0N1_au4SPZORR5OPNVl-ajO4zY5cx2Q',
+              '1DS_fFDplzF6Jmeetmh_NvU05zPE0_QcJ',
+              '1OQL7YkwhIKGoYhOoN3EBQVSMNG04TPyN',
+              '1Z2hdsacVejUmH8_0imisJoy7Xzz4YuyF',
+              '1i4Udse3VTpWpuft9zCZSFUHBsHkwsaHL',
+              '1JTo4yFLrNGB23G-7Vpmbj_QjTFnYBC78',
+              '1gklijf9K5DYwLqfQtqVJGYifUM-4IrKz',
+              '1ntiBjR8wXqmcW2FKUv7e03i0FS50xleH',
+          ]
+
+          assets = pathlib.Path('assets')
+          assets.mkdir(exist_ok=True)
+          replacements = {}
+
+          for index, file_id in enumerate(ids, 1):
+              target = assets / f'galeria-drive-{index:02d}.jpg'
+              url = f'https://drive.google.com/thumbnail?id={file_id}&sz=w1920'
+              req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  data = response.read()
+                  content_type = response.headers.get_content_type()
+              if not data.startswith(b'\xff\xd8\xff'):
+                  raise RuntimeError(f'{file_id}: respuesta no JPEG ({content_type}, {len(data)} bytes)')
+              if len(data) < 10_000:
+                  raise RuntimeError(f'{file_id}: imagen sospechosamente pequeña ({len(data)} bytes)')
+              target.write_bytes(data)
+              replacements[file_id] = target.as_posix()
+              print(f'{file_id} -> {target} ({len(data)} bytes)')
+
+          gallery_path = pathlib.Path('data/gallery.json')
+          gallery = json.loads(gallery_path.read_text(encoding='utf-8'))
+          replaced = 0
+          for photo in gallery:
+              image = str(photo.get('image', ''))
+              for file_id, local_path in replacements.items():
+                  if file_id in image:
+                      photo['image'] = local_path
+                      replaced += 1
+                      break
+
+          if replaced != len(ids):
+              raise RuntimeError(f'Se esperaban {len(ids)} sustituciones y se hicieron {replaced}')
+
+          external = [p.get('image') for p in gallery if 'drive.google.com' in str(p.get('image', ''))]
+          if external:
+              raise RuntimeError(f'Siguen quedando referencias a Drive: {external}')
+
+          missing = []
+          for photo in gallery:
+              image = str(photo.get('image', ''))
+              if image.startswith('assets/') and not pathlib.Path(image).is_file():
+                  missing.append(image)
+          if missing:
+              raise RuntimeError(f'Rutas locales inexistentes: {missing}')
+
+          gallery_path.write_text(json.dumps(gallery, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(f'Galería validada: {len(gallery)} fotos; 0 referencias a Drive.')
+          PY
+
+      - name: Commit fixed gallery
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/galeria-drive-*.jpg data/gallery.json
+          if git diff --cached --quiet; then
+            echo 'No hay cambios que guardar.'
+            exit 0
+          fi
+          git commit -m 'Fix gallery broken images: use local assets'
+          git push

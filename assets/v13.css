@@ -337,3 +337,53 @@ html,body{max-width:100%;overflow-x:hidden}
   .club-partner-card img{width:min(100%,420px)!important;height:210px!important;margin:0 auto!important}
 }
 
+
+
+/* V13 RC13 — cabecera blanca aprobada */
+.top{
+  background:#fff!important;
+  color:var(--navy)!important;
+  backdrop-filter:none!important;
+}
+.wrap.nav{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  display:block!important;
+  padding:0!important;
+}
+.brand{
+  min-height:78px;
+  justify-content:center!important;
+  padding:7px 4%!important;
+  color:var(--navy)!important;
+}
+.links{
+  width:100%!important;
+  min-height:48px;
+  margin:0!important;
+  padding:0 4%!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:22px!important;
+  background:var(--navy2)!important;
+  color:#fff!important;
+  border-top:0!important;
+}
+.cdh-intro{background:#fff!important}
+.cdh-intro.cdh-fly{background:rgba(255,255,255,0)!important}
+@media(max-width:900px){
+  .wrap.nav{padding:0!important}
+  .brand{
+    min-height:68px!important;
+    justify-content:center!important;
+    padding:7px 4%!important;
+  }
+  .links{
+    justify-content:flex-start!important;
+    margin:0!important;
+    padding:0 3%!important;
+    gap:0!important;
+    border-top:0!important;
+  }
+}

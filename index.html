@@ -21,13 +21,13 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 
 .club-partners-band{position:relative;width:100%;height:190px;overflow:hidden;background:linear-gradient(100deg,var(--navy2),var(--navy) 52%,#07557c);color:#fff;border-top:5px solid var(--cyan)}
 .club-partners-carousel{position:relative;width:min(1120px,92%);height:100%;margin:auto}
-.club-partner-card{position:absolute;inset:0;display:grid;grid-template-columns:minmax(180px,340px) 1fr;align-items:center;gap:34px;color:#fff;opacity:0;transform:translateX(35px);animation:partnerCycle 16s infinite ease-in-out}
+.club-partner-card{position:absolute;inset:0;display:grid;grid-template-columns:minmax(180px,340px) 1fr;align-items:center;gap:34px;color:#fff;opacity:0;visibility:hidden;pointer-events:none;transform:translateX(35px);animation:partnerCycle 16s infinite ease-in-out}
 .club-partner-card img{width:100%;height:125px;object-fit:contain;background:#fff;border-radius:18px;padding:8px}
 .club-partner-card .club-partner-copy span{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:#b9e9f4;font-weight:900}
 .club-partner-card .club-partner-copy h3{font-size:clamp(24px,4vw,38px);margin:7px 0}
 .club-partner-card .club-partner-copy p{margin:0;color:#d7edf4}
 .partner1{animation-delay:0s}.partner2{animation-delay:4s}.partner3{animation-delay:8s}.partner4{animation-delay:12s}
-@keyframes partnerCycle{0%{opacity:0;transform:translateX(35px)}4%,21%{opacity:1;transform:translateX(0)}25%,100%{opacity:0;transform:translateX(-35px)}}
+@keyframes partnerCycle{0%{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(35px)}4%,21%{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0)}25%,100%{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(-35px)}}
 .club-partners-progress{position:absolute;bottom:0;left:0;width:100%;height:4px;background:#ffffff20}.club-partners-progress i{display:block;height:100%;background:var(--mint);animation:partnerProgress 4s linear infinite}@keyframes partnerProgress{from{width:0}to{width:100%}}
 @media(max-width:760px){.club-partners-band{height:285px}.club-partner-card{grid-template-columns:1fr;gap:10px;padding:18px 0}.club-partner-card img{height:125px}.club-partner-card .club-partner-copy h3{margin:4px 0}.club-partner-card .club-partner-copy p{font-size:14px}}
 
@@ -57,7 +57,7 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 </style>
 <style>
 .wa-wrap{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px}.wa-note{background:var(--navy2,#031b37);color:#fff;padding:7px 10px;border-radius:10px;font-size:12px;font-weight:800;box-shadow:0 5px 18px #0003;white-space:nowrap}.wa-note:after{content:"";position:absolute}.wa{position:static!important;width:58px!important;height:58px!important;padding:0!important;border-radius:50%!important;background:#128C4A!important;color:#fff!important;display:grid!important;place-items:center!important;font-size:27px!important;border:3px solid #fff;box-shadow:0 8px 26px #0004!important}.wa span{font-family:Arial,sans-serif;transform:rotate(-18deg);display:block}@media(max-width:760px){.wa-wrap{right:14px;bottom:14px}.wa{width:54px!important;height:54px!important}.wa-note{font-size:11px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.club-partner-card,.club-partners-progress i{animation:none!important}.club-partner-card{opacity:0!important;transform:none!important}.club-partner-card.partner1{opacity:1!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.club-partner-card,.club-partners-progress i{animation:none!important}.club-partner-card{opacity:0!important;transform:none!important}.club-partner-card.partner1{opacity:1!important;visibility:visible!important;pointer-events:auto!important}}
 
 /* V12 — identidad y navegación */
 .club-logo{filter:none!important;width:58px!important;height:58px!important}

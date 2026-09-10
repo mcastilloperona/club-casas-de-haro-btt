@@ -337,3 +337,18 @@ html,body{max-width:100%;overflow-x:hidden}
   .club-partner-card img{width:min(100%,420px)!important;height:210px!important;margin:0 auto!important}
 }
 
+
+
+/* V13 RC15 — cabecera blanca con el archivo oficial y portada móvil corregida */
+.top{background:#fff!important;color:var(--navy)!important;backdrop-filter:none!important}
+.brand{color:var(--navy)!important}
+.brand .club-logo{background:transparent!important;border-radius:0!important;object-fit:contain!important;filter:none!important}
+.cdh-intro{background:#fff!important}
+.cdh-intro.cdh-fly{background:rgba(255,255,255,0)!important}
+@media(min-width:901px){.links{color:var(--navy)!important}}
+@media(max-width:900px){
+ .top{background:#fff!important}
+ .brand{justify-content:center!important}
+ .links{background:var(--navy2)!important;color:#fff!important;border-top:0!important}
+ .home-v12:before{background-image:url('hero-portada-mobile-oficial.webp')!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;aspect-ratio:16/9!important}
+}

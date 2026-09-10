@@ -1,0 +1,32 @@
+name: Update Casas de Haro aerial photo
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/update-cdh-aerial-photo.yml']
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use aerial photo in first history block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('historia.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<img src="assets/iglesia-atardecer.jpg" alt="Casas de Haro al atardecer" width="1536" height="864" loading="lazy" decoding="async">'
+          new = '<img src="assets/vista-aerea-casas-de-haro.jpg?v=20260910-1" alt="Vista aérea de Casas de Haro, provincia de Cuenca" width="1200" height="800" loading="lazy" decoding="async">'
+          if old not in s:
+              raise SystemExit('Expected old Casas de Haro image tag not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add historia.html
+          git commit -m 'Use aerial Casas de Haro photo in history'
+          git push

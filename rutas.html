@@ -113,6 +113,12 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 }
 /* MEJORA_RUTAS_VISUAL_END */
 </style>
+
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/logo-cdh-oficial-2026.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Casas de Haro BTT">
 </head>
 <body>
 <div class="cdh-intro" id="cdhIntro" aria-hidden="true"><div class="cdh-logo-stack"><img class="cdh-logo-inner" src="assets/logo-cdh-inner.png" alt=""><img class="cdh-logo-plate" src="assets/logo-cdh-plate-v2.png" alt=""></div></div>
@@ -191,4 +197,12 @@ mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mobi
 </script>
 
 <script src="assets/v13.js" defer></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
+</script>
 </body></html>

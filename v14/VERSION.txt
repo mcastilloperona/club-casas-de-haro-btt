@@ -1,0 +1,3 @@
+Club Casas de Haro BTT — V14 Preview
+Área Socios visible en modo «En construcción».
+La aplicación funcional permanece desactivada hasta validar Supabase y los permisos.

@@ -2,9 +2,10 @@ name: Fix BTT News images
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - '.github/workflows/fix-btt-news-images.yml'
+      - .github/workflows/fix-btt-news-images.yml
 
 permissions:
   contents: write
@@ -18,60 +19,43 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Apply BTT News image layout fix
+      - name: Apply image layout fix
         shell: bash
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
+          cat >> assets/v13.css <<'EOF'
 
-          css_path = Path('assets/v13.css')
-          css = css_path.read_text(encoding='utf-8')
-          marker = '/* V13 RC19 — BTT News: imagen a sangre y proporción uniforme */'
-          rule = r'''
+          /* V13 RC19 — BTT News: imagen a sangre y proporción uniforme */
+          .news-card{
+            align-items:stretch!important;
+          }
+          .news-card .news-main-image{
+            display:block!important;
+            width:100%!important;
+            max-width:none!important;
+            height:auto!important;
+            aspect-ratio:4 / 3!important;
+            object-fit:cover!important;
+            object-position:center center!important;
+            margin:0!important;
+            padding:0!important;
+            background:transparent!important;
+            align-self:stretch!important;
+          }
+          EOF
 
-/* V13 RC19 — BTT News: imagen a sangre y proporción uniforme */
-.news-card{
-  align-items:stretch!important;
-}
-.news-card .news-main-image{
-  display:block!important;
-  width:100%!important;
-  max-width:none!important;
-  height:auto!important;
-  aspect-ratio:4 / 3!important;
-  object-fit:cover!important;
-  object-position:center center!important;
-  margin:0!important;
-  padding:0!important;
-  background:transparent!important;
-  align-self:stretch!important;
-}
-'''
-          if marker not in css:
-              css = css.rstrip() + rule + '\n'
-              css_path.write_text(css, encoding='utf-8')
+          for f in *.html; do
+            sed -E -i 's#assets/v13\.css(\?v=[^" ]*)?#assets/v13.css?v=20260912-rc19#g' "$f"
+          done
 
-          for html_path in Path('.').glob('*.html'):
-              html = html_path.read_text(encoding='utf-8')
-              updated = re.sub(
-                  r'assets/v13\.css(?:\?v=[^"\']*)?',
-                  'assets/v13.css?v=20260912-rc19',
-                  html
-              )
-              if updated != html:
-                  html_path.write_text(updated, encoding='utf-8')
-          PY
-
-      - name: Commit fix
+      - name: Commit and push
         shell: bash
         run: |
-          if git diff --quiet; then
-            echo "No changes needed"
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/v13.css *.html
-          git commit -m "fix: adaptar imágenes de BTT News a la tarjeta"
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git commit -m "fix: imágenes BTT News a sangre en las tarjetas"
           git push

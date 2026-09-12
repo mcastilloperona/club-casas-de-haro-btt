@@ -395,3 +395,21 @@ html,body{max-width:100%;overflow-x:hidden}
   object-position:center!important;
   background:transparent!important;
 }
+
+/* V13 RC19 — BTT News: imagen a sangre y proporción uniforme */
+.news-card{
+  align-items:stretch!important;
+}
+.news-card .news-main-image{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  height:auto!important;
+  aspect-ratio:4 / 3!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  align-self:stretch!important;
+}

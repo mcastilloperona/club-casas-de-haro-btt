@@ -1,4 +1,4 @@
-Club Casas de Haro BTT — V14 Preview RC1
+Club Casas de Haro BTT — V14 Preview RC2
 Área Socios visible en modo «En construcción».
 La aplicación funcional permanece desactivada hasta validar Supabase y los permisos.
-Simulación del wizard «¿Es este club para mí?» disponible en la portada.
+Wizard accesible desde una tarjeta situada después de «Próxima salida» y mostrado en una ventana a pantalla completa.

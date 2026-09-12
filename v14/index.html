@@ -108,7 +108,7 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 }
 </script>
 <link rel="stylesheet" href="../assets/colaboradores.css">
-<link rel="stylesheet" href="wizard.css?v=20260912-rc1">
+<link rel="stylesheet" href="wizard.css?v=20260912-rc2">
 
 <style id="home-section-title-size">
 .home-content-section h2{font-size:clamp(36px,5.4vw,56px)}
@@ -158,8 +158,10 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 
 <section class="section home-content-section"><div class="wrap"><div class="kicker">El club</div><h2>Donde empieza el camino.</h2><p class="lead">La bicicleta nos une. Pedaleamos por La Mancha para disfrutar del entorno, compartir kilómetros y seguir creando historias juntos.</p><div class="all-routes"><a class="btn dark" href="historia.html">Conoce nuestra historia</a></div></div></section>
 
-<section class="club-fit section" id="club-fit" aria-labelledby="club-fit-title">
-  <div class="wrap club-fit-layout">
+<div class="club-fit-modal" data-club-fit-modal hidden>
+  <div class="club-fit-panel" role="dialog" aria-modal="true" aria-labelledby="club-fit-title">
+    <button class="club-fit-close" type="button" data-club-fit-close aria-label="Cerrar cuestionario">×</button>
+    <div class="club-fit-layout">
     <div class="club-fit-intro">
       <div class="kicker">Encuentra tu sitio</div>
       <h2 id="club-fit-title">¿Es este club para mí?</h2>
@@ -244,8 +246,9 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 
       <p class="club-fit-privacy">Esta simulación no guarda ni envía tus respuestas.</p>
     </div>
+    </div>
   </div>
-</section>
+</div>
 
 <section class="section seo-local-block home-content-section" aria-labelledby="seo-ciclismo-casas-de-haro">
   <div class="wrap">
@@ -267,6 +270,18 @@ Punto de encuentro: Parque del cruce, Casas De haro</p><div class="stats"><div c
 
 <div class="all-routes" style="margin-top:28px"><a class="btn dark" href="rutas.html">Explorar todas las rutas</a></div>
 </div></section>
+
+<section class="club-fit-teaser" aria-labelledby="club-fit-teaser-title">
+  <div class="wrap club-fit-teaser-card">
+    <div class="club-fit-teaser-icon" aria-hidden="true">🚴</div>
+    <div class="club-fit-teaser-copy">
+      <div class="kicker">Tu primera salida</div>
+      <h2 id="club-fit-teaser-title">¿Te gustaría salir con nosotros?</h2>
+      <p>No importa tu nivel. Descubre en menos de un minuto qué salida encaja contigo.</p>
+    </div>
+    <button class="club-fit-open" type="button" data-club-fit-open>¿Es este club para mí?</button>
+  </div>
+</section>
 
 <section class="section home-content-section" style="background:#fff"><div class="wrap"><div class="kicker">BTT News</div><h2>Lo que pasa en el club</h2><p class="lead">Novedades del Club Casas de Haro BTT, salidas, retos, marchas, nuevos colaboradores y noticias de sus miembros.</p><div id="newsTeaser" class="news-teaser"><div class="news-empty">Cargando BTT News…</div></div></div></section>
 </main>
@@ -313,7 +328,7 @@ if(menuBtn&&mobileMenu){
 
 <script src="../assets/v13.js" defer></script>
 <script src="../assets/colaboradores.js" defer></script>
-<script src="wizard.js?v=20260912-rc1" defer></script>
+<script src="wizard.js?v=20260912-rc2" defer></script>
 
 <script>
 if ('serviceWorker' in navigator) {

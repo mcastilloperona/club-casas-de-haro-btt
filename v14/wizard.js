@@ -1,8 +1,10 @@
 (function(){
   'use strict';
 
+  const modal=document.querySelector('[data-club-fit-modal]');
   const root=document.querySelector('[data-club-fit]');
-  if(!root)return;
+  const openButtons=Array.from(document.querySelectorAll('[data-club-fit-open]'));
+  if(!modal||!root||!openButtons.length)return;
 
   const form=root.querySelector('[data-club-fit-form]');
   const steps=Array.from(root.querySelectorAll('[data-step]'));
@@ -13,7 +15,22 @@
   const progressLabel=root.querySelector('[data-progress-label]');
   const progressPercent=root.querySelector('[data-progress-percent]');
   const progressBar=root.querySelector('[data-progress-bar]');
+  const closeButton=modal.querySelector('[data-club-fit-close]');
   let current=0;
+  let returnFocus=null;
+
+  function openWizard(trigger){
+    returnFocus=trigger;
+    modal.hidden=false;
+    document.body.classList.add('club-fit-lock');
+    closeButton.focus({preventScroll:true});
+  }
+
+  function closeWizard(){
+    modal.hidden=true;
+    document.body.classList.remove('club-fit-lock');
+    if(returnFocus)returnFocus.focus({preventScroll:true});
+  }
 
   const selectedValue=name=>{
     const input=form.querySelector('input[name="'+name+'"]:checked');
@@ -120,6 +137,14 @@
     form.hidden=false;
     progress.hidden=false;
     showStep(0,true);
+  });
+  openButtons.forEach(button=>button.addEventListener('click',()=>openWizard(button)));
+  closeButton.addEventListener('click',closeWizard);
+  modal.addEventListener('click',event=>{
+    if(event.target===modal)closeWizard();
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!modal.hidden)closeWizard();
   });
 
   showStep(0,false);

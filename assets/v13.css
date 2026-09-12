@@ -414,7 +414,7 @@ html,body{max-width:100%;overflow-x:hidden}
   align-self:stretch!important;
 }
 
-/* V13 RC21 — las siete secciones quedan visibles en una sola fila en móvil */
+/* V13 RC22 — navegación móvil limpia, sin separadores y con contador compacto */
 @media(max-width:900px){
   .links{
     display:grid!important;
@@ -434,7 +434,7 @@ html,body{max-width:100%;overflow-x:hidden}
     min-height:44px!important;
     width:auto!important;
     padding:0 2px!important;
-    border-right:1px solid rgba(255,255,255,.08)!important;
+    border-right:0!important;
     border-bottom:0!important;
     font-size:clamp(8.5px,2.55vw,12px)!important;
     line-height:1!important;
@@ -442,15 +442,16 @@ html,body{max-width:100%;overflow-x:hidden}
     text-align:center!important;
     white-space:nowrap!important;
   }
-  .links a[href$="news.html"]{gap:2px!important}
+  .links a[href$="news.html"]{gap:3px!important}
   .news-future-badge{
     box-sizing:border-box!important;
-    flex:0 0 16px!important;
-    width:16px!important;
-    min-width:16px!important;
-    height:16px!important;
+    flex:0 0 14px!important;
+    width:14px!important;
+    min-width:14px!important;
+    height:14px!important;
     padding:0!important;
     overflow:visible!important;
-    font-size:9px!important;
+    font-size:8px!important;
+    box-shadow:0 0 0 1px rgba(255,255,255,.12)!important;
   }
 }

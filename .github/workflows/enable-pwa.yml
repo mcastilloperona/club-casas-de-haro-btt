@@ -1,0 +1,52 @@
+name: Enable club PWA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/enable-pwa.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  enable-pwa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add PWA metadata and service worker registration
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          head_block = '''\n<link rel="manifest" href="/manifest.webmanifest">\n<link rel="apple-touch-icon" href="/assets/logo-cdh-oficial-2026.png">\n<meta name="mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-title" content="Casas de Haro BTT">\n'''
+          sw_block = '''\n<script>\nif ('serviceWorker' in navigator) {\n  window.addEventListener('load', function () {\n    navigator.serviceWorker.register('/sw.js').catch(function () {});\n  });\n}\n</script>\n'''
+
+          for path in Path('.').glob('*.html'):
+              html = path.read_text(encoding='utf-8')
+              changed = False
+              if 'rel="manifest"' not in html:
+                  html = html.replace('</head>', head_block + '</head>', 1)
+                  changed = True
+              if "serviceWorker.register('/sw.js')" not in html:
+                  html = html.replace('</body>', sw_block + '</body>', 1)
+                  changed = True
+              if changed:
+                  path.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit and push
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html'
+          git commit -m "feat: habilitar instalación PWA con logo del club"
+          git push

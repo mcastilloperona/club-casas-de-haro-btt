@@ -1,4 +1,5 @@
-Club Casas de Haro BTT — V14 Preview RC2
+Club Casas de Haro BTT — V14 Preview RC3
 Área Socios visible en modo «En construcción».
 La aplicación funcional permanece desactivada hasta validar Supabase y los permisos.
 Wizard accesible desde una tarjeta situada después de «Próxima salida» y mostrado en una ventana a pantalla completa.
+Icono vectorial de dos ciclistas aplicado a la invitación y al resultado.

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Dos ciclistas rodando juntos</title>
+  <desc id="desc">Icono de dos ciclistas que representa compañerismo y pertenencia al club</desc>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#13b9e8" stroke-width="3.2">
+      <circle cx="14" cy="71" r="10"/>
+      <circle cx="42" cy="71" r="10"/>
+      <path d="M14 71 24 51l18 20H27l-8-13h21"/>
+      <path d="m24 51 9-13 10 7"/>
+      <path d="m33 38-9 13 12 8 7-14"/>
+    </g>
+    <circle cx="35" cy="29" r="5.5" fill="#65d7a1"/>
+    <g stroke="#06264b" stroke-width="3.7">
+      <circle cx="52" cy="72" r="12"/>
+      <circle cx="82" cy="72" r="12"/>
+      <path d="M52 72 63 48l19 24H66l-9-15h22"/>
+      <path d="m63 48 10-16 10 7"/>
+      <path d="m73 32-10 16 13 9 7-18"/>
+    </g>
+    <circle cx="75" cy="22" r="6" fill="#13b9e8"/>
+    <path d="M79 38h8" stroke="#65d7a1" stroke-width="3.7"/>
+  </g>
+</svg>

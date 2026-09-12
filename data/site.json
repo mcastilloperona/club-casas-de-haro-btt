@@ -1,14 +1,13 @@
 {
   "next_route": {
-    "title": "Ruta circular Carretera",
-    "date": "2026-09-11",
-    "time": "18:00",
-    "discipline": "Carretera",
-    "description": "Vuelta circular con carretera. Casas de haro- Benitez- Sisante-Pozoamargo-Casas de Haro",
-    "image": "assets/1000015927.jpg",
-    "image_alt": "Camino de Casas de Haro al atardecer",
-    "distance_km": 43,
-    "elevation_m": 200,
-    "track_url": "https://connect.garmin.com/modern/activity/24140425659?share_unique_id=4"
+    "title": "Salida BTT",
+    "date": "2026-09-13",
+    "time": "08:30",
+    "discipline": "BTT",
+    "description": "Salida BTT. El día la marcha de decidirá el camino exacto.\nPunto de encuentro: Parque del cruce, Casas De haro",
+    "image": "assets/1000027240.jpg",
+    "image_alt": "Moragons",
+    "distance_km": 60,
+    "elevation_m": 300
   }
 }

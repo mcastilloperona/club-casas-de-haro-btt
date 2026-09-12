@@ -365,3 +365,20 @@ html,body{max-width:100%;overflow-x:hidden}
     background-color:#031b37!important;
   }
 }
+
+/* V13 RC17 — BTT News: imágenes completas dentro del espacio de la tarjeta */
+.news-card .news-main-image{
+  display:block!important;
+  width:100%!important;
+  height:250px!important;
+  max-width:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:#eef3f6!important;
+}
+@media(max-width:760px){
+  .news-card .news-main-image{height:240px!important}
+}
+@media(max-width:460px){
+  .news-card .news-main-image{height:220px!important}
+}

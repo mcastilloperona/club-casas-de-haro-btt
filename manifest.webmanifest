@@ -1,0 +1,25 @@
+{
+  "name": "Club Casas de Haro BTT",
+  "short_name": "Casas de Haro BTT",
+  "description": "Web oficial del Club Casas de Haro BTT",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#06264b",
+  "icons": [
+    {
+      "src": "/assets/logo-cdh-oficial-2026.png",
+      "sizes": "1200x1200",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo-cdh-oficial-2026.png",
+      "sizes": "1200x1200",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -382,3 +382,16 @@ html,body{max-width:100%;overflow-x:hidden}
 @media(max-width:460px){
   .news-card .news-main-image{height:220px!important}
 }
+
+/* V13 RC18 — BTT News: proporción automática de cada imagen */
+.news-card .news-main-image{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:transparent!important;
+}

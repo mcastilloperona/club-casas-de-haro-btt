@@ -1,0 +1,7 @@
+node_modules/
+socios-app/.env
+socios-app/.env.*
+!socios-app/.env.example
+*.tsbuildinfo
+socios-app/vite.config.js
+socios-app/vite.config.d.ts

@@ -97,6 +97,42 @@
   }
 
   const newsCategoryLabel=v=>({salida:'Salida',marcha:'Marcha',evento:'Evento',miembros:'Miembros del club',equipacion:'Equipación',patrocinadores:'Patrocinadores',colaboradores:'Colaboradores',general:'General'})[v]||v||'General';
+
+  function localIsoDate(){
+    const d=new Date();
+    const y=d.getFullYear();
+    const m=String(d.getMonth()+1).padStart(2,'0');
+    const day=String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+
+  async function renderNewsBadge(){
+    const links=[...document.querySelectorAll('.links a[href$="news.html"]')];
+    if(!links.length)return;
+    if(!document.getElementById('newsBadgeStyles')){
+      const style=document.createElement('style');
+      style.id='newsBadgeStyles';
+      style.textContent='.links a[href$="news.html"]{display:inline-flex;align-items:center;gap:6px}.news-future-badge{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#facc15;color:#031b37;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 0 2px rgba(255,255,255,.12)}@media(max-width:760px){.news-future-badge{min-width:17px;height:17px;padding:0 4px;font-size:10px}}';
+      document.head.appendChild(style);
+    }
+    try{
+      const today=localIsoDate();
+      const news=(await json('data/news.json')).filter(n=>n.published!==false);
+      const count=news.filter(n=>/^\d{4}-\d{2}-\d{2}$/.test(String(n.date||''))&&n.date>today).length;
+      links.forEach(link=>{
+        link.querySelector('.news-future-badge')?.remove();
+        link.removeAttribute('title');
+        if(!count)return;
+        const badge=document.createElement('span');
+        badge.className='news-future-badge';
+        badge.textContent=count>99?'99+':String(count);
+        badge.setAttribute('aria-label',`${count} noticia${count===1?'':'s'} con fecha futura`);
+        link.appendChild(badge);
+        link.title=`${count} noticia${count===1?'':'s'} pendiente${count===1?'':'s'} por fecha`;
+      });
+    }catch(e){console.warn('No se pudo calcular el contador de BTT News',e)}
+  }
+
   function newsCard(n,full){
     const img=n.image?relPath(n.image):''; const date=n.date?fmtDate(n.date):'';
     const category=newsCategoryLabel(n.category);
@@ -149,5 +185,5 @@
     wrap.append(nav);
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();setupSignupModal();renderNextRoute();renderRoutes();renderWeather();renderNews();renderGallery();enhanceFooter();});
+  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();setupSignupModal();renderNextRoute();renderRoutes();renderWeather();renderNewsBadge();renderNews();renderGallery();enhanceFooter();});
 })();

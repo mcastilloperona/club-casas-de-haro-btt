@@ -108,6 +108,7 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 }
 </script>
 <link rel="stylesheet" href="../assets/colaboradores.css">
+<link rel="stylesheet" href="wizard.css?v=20260912-rc1">
 
 <style id="home-section-title-size">
 .home-content-section h2{font-size:clamp(36px,5.4vw,56px)}
@@ -156,6 +157,95 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 </section>
 
 <section class="section home-content-section"><div class="wrap"><div class="kicker">El club</div><h2>Donde empieza el camino.</h2><p class="lead">La bicicleta nos une. Pedaleamos por La Mancha para disfrutar del entorno, compartir kilómetros y seguir creando historias juntos.</p><div class="all-routes"><a class="btn dark" href="historia.html">Conoce nuestra historia</a></div></div></section>
+
+<section class="club-fit section" id="club-fit" aria-labelledby="club-fit-title">
+  <div class="wrap club-fit-layout">
+    <div class="club-fit-intro">
+      <div class="kicker">Encuentra tu sitio</div>
+      <h2 id="club-fit-title">¿Es este club para mí?</h2>
+      <p>Da igual si estás pensando en empezar o si ya acumulas kilómetros. Responde cinco preguntas y te diremos cómo podrías comenzar a rodar con nosotros.</p>
+      <ul>
+        <li><span aria-hidden="true">✓</span> Menos de un minuto</li>
+        <li><span aria-hidden="true">✓</span> Sin registros ni compromisos</li>
+        <li><span aria-hidden="true">✓</span> Nadie se queda solo</li>
+      </ul>
+    </div>
+
+    <div class="club-fit-card" data-club-fit>
+      <div class="club-fit-progress" aria-label="Progreso del cuestionario">
+        <div class="club-fit-progress-copy"><span data-progress-label>Pregunta 1 de 5</span><strong data-progress-percent>20%</strong></div>
+        <div class="club-fit-progress-track" aria-hidden="true"><span data-progress-bar></span></div>
+      </div>
+
+      <form class="club-fit-form" data-club-fit-form>
+        <fieldset class="club-fit-step is-active" data-step="1">
+          <legend>¿Montas actualmente en bicicleta?</legend>
+          <p class="club-fit-help">No hay una respuesta mejor que otra.</p>
+          <label class="club-fit-option"><input type="radio" name="experience" value="new"><span><b>Todavía no</b><small>Estoy pensando en empezar</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="experience" value="sometimes"><span><b>Alguna vez</b><small>Salgo de forma ocasional</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="experience" value="regular"><span><b>Sí, habitualmente</b><small>La bici ya forma parte de mi semana</small></span></label>
+        </fieldset>
+
+        <fieldset class="club-fit-step" data-step="2" hidden>
+          <legend>¿Qué bicicleta utilizas?</legend>
+          <p class="club-fit-help">Puedes elegir la que uses con más frecuencia.</p>
+          <label class="club-fit-option"><input type="radio" name="bike" value="mtb"><span><b>Montaña</b><small>Para caminos y pistas</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="bike" value="gravel"><span><b>Gravel</b><small>Un poco de asfalto y un poco de tierra</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="bike" value="road"><span><b>Carretera</b><small>Prefiero rodar sobre asfalto</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="bike" value="none"><span><b>Todavía no tengo bicicleta</b><small>Necesito orientación para empezar</small></span></label>
+        </fieldset>
+
+        <fieldset class="club-fit-step" data-step="3" hidden>
+          <legend>¿Con qué frecuencia sales?</legend>
+          <p class="club-fit-help">Piensa en un mes normal.</p>
+          <label class="club-fit-option"><input type="radio" name="frequency" value="rare"><span><b>Casi nunca</b><small>Quiero encontrar la motivación</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="frequency" value="monthly"><span><b>Una o dos veces al mes</b><small>Cuando encuentro el momento</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="frequency" value="weekly"><span><b>Una o dos veces por semana</b><small>Tengo cierta continuidad</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="frequency" value="often"><span><b>Tres o más veces por semana</b><small>Entreno con frecuencia</small></span></label>
+        </fieldset>
+
+        <fieldset class="club-fit-step" data-step="4" hidden>
+          <legend>¿Qué distancia haces con comodidad?</legend>
+          <p class="club-fit-help">No buscamos medir tu velocidad.</p>
+          <label class="club-fit-option"><input type="radio" name="distance" value="short"><span><b>Menos de 15 km</b><small>Estoy dando mis primeras pedaladas</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="distance" value="medium"><span><b>Entre 15 y 30 km</b><small>Una salida tranquila me encaja</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="distance" value="long"><span><b>Entre 30 y 50 km</b><small>Ya tengo una buena base</small></span></label>
+          <label class="club-fit-option"><input type="radio" name="distance" value="very-long"><span><b>Más de 50 km</b><small>Me gustan las rutas largas</small></span></label>
+        </fieldset>
+
+        <fieldset class="club-fit-step" data-step="5" hidden>
+          <legend>¿Qué te frena para salir con un grupo?</legend>
+          <p class="club-fit-help">Esto nos ayuda a darte una recomendación útil.</p>
+          <label class="club-fit-option"><input type="radio" name="barrier" value="level"><span><b>Creo que no tengo nivel</b></span></label>
+          <label class="club-fit-option"><input type="radio" name="barrier" value="left-behind"><span><b>Me preocupa quedarme atrás</b></span></label>
+          <label class="club-fit-option"><input type="radio" name="barrier" value="routes"><span><b>No conozco las rutas</b></span></label>
+          <label class="club-fit-option"><input type="radio" name="barrier" value="people"><span><b>No conozco a nadie</b></span></label>
+          <label class="club-fit-option"><input type="radio" name="barrier" value="ready"><span><b>Nada, quiero probar</b></span></label>
+        </fieldset>
+
+        <div class="club-fit-nav">
+          <button class="club-fit-back" type="button" data-back hidden>Anterior</button>
+          <button class="club-fit-next" type="button" data-next disabled>Siguiente</button>
+        </div>
+      </form>
+
+      <section class="club-fit-result" data-result hidden aria-live="polite">
+        <div class="club-fit-result-icon" aria-hidden="true">🚴</div>
+        <p class="club-fit-result-kicker">Tu punto de partida</p>
+        <h3 data-result-title></h3>
+        <p data-result-copy></p>
+        <div class="club-fit-reassurance" data-result-reassurance></div>
+        <div class="club-fit-result-actions">
+          <a class="club-fit-cta" data-result-telegram href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Quiero probar una salida</a>
+          <a class="club-fit-email" data-result-email href="mailto:mcastillo@casasdeharobtt.es">Prefiero escribir por email</a>
+        </div>
+        <button class="club-fit-restart" type="button" data-restart>Repetir el cuestionario</button>
+      </section>
+
+      <p class="club-fit-privacy">Esta simulación no guarda ni envía tus respuestas.</p>
+    </div>
+  </div>
+</section>
 
 <section class="section seo-local-block home-content-section" aria-labelledby="seo-ciclismo-casas-de-haro">
   <div class="wrap">
@@ -223,6 +313,7 @@ if(menuBtn&&mobileMenu){
 
 <script src="../assets/v13.js" defer></script>
 <script src="../assets/colaboradores.js" defer></script>
+<script src="wizard.js?v=20260912-rc1" defer></script>
 
 <script>
 if ('serviceWorker' in navigator) {

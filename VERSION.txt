@@ -1,4 +1,4 @@
-Club Casas de Haro BTT — V13 RC23
+Club Casas de Haro BTT — V13 RC24
 Versión publicada: responsive, rutas BTT/carretera, autoría, Pages CMS y paquete legal.
 SEO local fase 1: contenido semántico, enlazado interno y datos estructurados.
 V13 BTT News: galería múltiple, categorías, buscador e histórico por años.

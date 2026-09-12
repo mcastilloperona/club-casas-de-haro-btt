@@ -414,7 +414,7 @@ html,body{max-width:100%;overflow-x:hidden}
   align-self:stretch!important;
 }
 
-/* V13 RC23 — contador de BTT News elevado sobre su pestaña */
+/* V13 RC24 — navegación adaptada a móvil vertical y horizontal */
 @media(max-width:900px){
   .links{
     display:grid!important;
@@ -458,5 +458,14 @@ html,body{max-width:100%;overflow-x:hidden}
     font-size:8px!important;
     box-shadow:0 0 0 1px rgba(255,255,255,.12)!important;
     transform:none!important;
+  }
+}
+
+/* En horizontal, agrupamos las pestañas en el centro en lugar de estirarlas. */
+@media(max-width:900px) and (orientation:landscape){
+  .links{
+    grid-template-columns:repeat(7,max-content)!important;
+    column-gap:clamp(14px,3vw,24px)!important;
+    justify-content:center!important;
   }
 }

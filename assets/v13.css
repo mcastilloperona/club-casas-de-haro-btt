@@ -413,3 +413,36 @@ html,body{max-width:100%;overflow-x:hidden}
   background:transparent!important;
   align-self:stretch!important;
 }
+
+/* V13 RC20 — las siete secciones quedan visibles en móvil, sin desplazamiento lateral */
+@media(max-width:900px){
+  .links{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:0!important;
+    overflow:visible!important;
+    margin:0 -3%!important;
+    padding:0 3% 4px!important;
+    scroll-snap-type:none!important;
+  }
+  .links a{
+    display:flex!important;
+    flex:none!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-width:0!important;
+    min-height:42px!important;
+    width:auto!important;
+    padding:7px 4px!important;
+    border-right:1px solid rgba(255,255,255,.08)!important;
+    border-bottom:1px solid rgba(255,255,255,.08)!important;
+    font-size:10.5px!important;
+    line-height:1.1!important;
+    overflow-wrap:anywhere!important;
+    text-align:center!important;
+    white-space:normal!important;
+  }
+}
+@media(max-width:380px){
+  .links a{padding:7px 2px!important;font-size:10px!important}
+}

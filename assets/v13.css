@@ -414,7 +414,7 @@ html,body{max-width:100%;overflow-x:hidden}
   align-self:stretch!important;
 }
 
-/* V13 RC22 — navegación móvil limpia, sin separadores y con contador compacto */
+/* V13 RC23 — contador de BTT News elevado sobre su pestaña */
 @media(max-width:900px){
   .links{
     display:grid!important;
@@ -442,8 +442,12 @@ html,body{max-width:100%;overflow-x:hidden}
     text-align:center!important;
     white-space:nowrap!important;
   }
-  .links a[href$="news.html"]{gap:3px!important}
+  .links a[href$="news.html"]{gap:0!important}
   .news-future-badge{
+    position:absolute!important;
+    top:3px!important;
+    right:3px!important;
+    z-index:1!important;
     box-sizing:border-box!important;
     flex:0 0 14px!important;
     width:14px!important;
@@ -453,5 +457,6 @@ html,body{max-width:100%;overflow-x:hidden}
     overflow:visible!important;
     font-size:8px!important;
     box-shadow:0 0 0 1px rgba(255,255,255,.12)!important;
+    transform:none!important;
   }
 }

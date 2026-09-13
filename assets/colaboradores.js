@@ -1,5 +1,11 @@
 (function(){
   'use strict';
+
+  const homeTitle=document.querySelector('.home-v12 .hero-v12-content h1');
+  if(homeTitle&&homeTitle.textContent.trim()==='Nuestro terreno'){
+    homeTitle.textContent='Somos Casas de Haro';
+  }
+
   const grid=document.getElementById('collaboratorsGrid');
   const homeSection=document.getElementById('colaboradores-portada');
   const homeTrack=document.getElementById('homeCollaboratorsTrack');

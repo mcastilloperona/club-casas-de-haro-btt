@@ -95,7 +95,7 @@ body.club-fit-lock{overflow:hidden}
 .club-fit-cta{padding:14px 20px;border-radius:999px;background:#075da0;color:#fff;font-weight:950}
 .club-fit-email{padding:10px;color:#526473;font-size:14px;font-weight:800;text-decoration:underline}
 .club-fit-restart{margin-top:12px;padding:8px;background:transparent;color:#078db5;font-size:13px}
-.club-fit-privacy{margin:22px 0 0;color:#7d8991;text-align:center;font-size:11px}
+.club-fit-privacy{display:none!important}
 @keyframes clubFitBackdropIn{from{opacity:0}to{opacity:1}}
 @keyframes clubFitPanelIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes clubFitResultIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}

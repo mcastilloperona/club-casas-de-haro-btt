@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">Mesón Bar Toñi</title>
+  <desc id="desc">Logo de Mesón Bar Toñi de Casas de Haro. Teléfono 603 038 601.</desc>
+  <rect width="1200" height="650" fill="#fff"/>
+  <path d="M92 102 C135 72 194 80 238 94 C282 79 348 88 394 91 C467 82 520 98 592 90 C674 80 738 98 819 92 C898 83 962 91 1057 84 L1104 111 L1088 162 L1108 221 L1094 278 L1112 331 L1091 391 L1105 446 L1080 512 C1008 523 946 518 878 526 C797 516 736 528 660 519 C582 529 510 515 438 525 C363 516 302 531 229 520 C180 528 134 521 95 501 L111 449 L91 390 L108 334 L89 276 L105 220 L91 163 Z" fill="none" stroke="#111" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M115 119 L178 92 L229 117 L189 147 L150 140 Z M1007 109 L1063 91 L1090 133 L1057 151 L1017 141 Z M111 476 L154 505 L211 491 L182 461 L139 455 Z M1002 492 L1050 512 L1088 479 L1054 455 L1017 462 Z" fill="#111" opacity=".94"/>
+  <text x="310" y="215" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="700" text-anchor="middle">Bar</text>
+  <text x="310" y="306" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="700" text-anchor="middle">Mesón</text>
+  <text x="715" y="306" font-family="Georgia, 'Times New Roman', serif" font-size="170" font-weight="700" font-style="italic" text-anchor="middle">Toñi</text>
+  <text x="615" y="390" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-style="italic" font-weight="700" text-anchor="middle">Toñi Moya</text>
+  <text x="600" y="455" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700" text-anchor="middle">Ctra. La Roda, 27 · Tel. 603 038 601</text>
+  <text x="600" y="503" font-family="Arial, Helvetica, sans-serif" font-size="35" font-weight="700" text-anchor="middle">16611 CASAS DE HARO (Cuenca)</text>
+</svg>

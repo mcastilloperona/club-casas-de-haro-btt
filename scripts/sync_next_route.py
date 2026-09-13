@@ -12,6 +12,14 @@ INDEX_HTML = ROOT / "index.html"
 START = "<!-- NEXT_ROUTE_FALLBACK_START -->"
 END = "<!-- NEXT_ROUTE_FALLBACK_END -->"
 
+CLOUDFLARE_TOKEN = "aefb84cd8fa546bda853ceec721b8746"
+CLOUDFLARE_SNIPPET = (
+    "<!-- Cloudflare Web Analytics -->"
+    "<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
+    "data-cf-beacon='{\"token\": \"" + CLOUDFLARE_TOKEN + "\"}'></script>"
+    "<!-- End Cloudflare Web Analytics -->"
+)
+
 WEEKDAYS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
 MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 
@@ -74,6 +82,14 @@ def build_fallback(route):
     )
 
 
+def ensure_cloudflare_analytics(source):
+    if CLOUDFLARE_TOKEN in source:
+        return source
+    if "</body>" not in source:
+        raise SystemExit("No se encontró </body> en index.html")
+    return source.replace("</body>", CLOUDFLARE_SNIPPET + "\n</body>", 1)
+
+
 def main():
     data = json.loads(SITE_JSON.read_text(encoding="utf-8"))
     route = data.get("next_route", {})
@@ -89,9 +105,11 @@ def main():
             raise SystemExit("No se encontró el bloque estático de próxima salida en index.html")
         updated = article_pattern.sub(replacement, source, count=1)
 
+    updated = ensure_cloudflare_analytics(updated)
+
     if updated != source:
         INDEX_HTML.write_text(updated, encoding="utf-8")
-        print("index.html sincronizado con data/site.json")
+        print("index.html sincronizado con data/site.json y Cloudflare Web Analytics")
     else:
         print("index.html ya estaba sincronizado")
 

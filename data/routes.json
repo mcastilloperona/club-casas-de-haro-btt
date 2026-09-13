@@ -195,6 +195,21 @@
     "gpx": ""
   },
   {
+    "id": "btt-club-wikiloc-284268626",
+    "published": true,
+    "discipline": "btt",
+    "title": "Casas de Haro · Ruta BTT del Club",
+    "description": "Ruta BTT del Club Casas de Haro BTT enlazada desde Wikiloc.",
+    "route_type": "club",
+    "author": "",
+    "distance_km": "",
+    "elevation_m": "",
+    "difficulty": "",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/wikiloc/spatialArtifacts.do?event=setCurrentSpatialArtifact&id=284268626",
+    "gpx": ""
+  },
+  {
     "id": "road-pantano-alarcon",
     "published": true,
     "discipline": "road",

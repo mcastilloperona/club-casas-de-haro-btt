@@ -11,10 +11,6 @@ on:
       - .tmp/meson-toni-photo-03.b64
       - .tmp/meson-toni-photo-04.b64
       - .tmp/meson-toni-photo-05.b64
-      - .tmp/meson-toni-logo-a.b64
-      - .tmp/meson-toni-logo-b.b64
-      - .tmp/meson-toni-logo-c.b64
-      - .tmp/meson-toni-logo-02.b64
 
 permissions:
   contents: write
@@ -26,23 +22,21 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Reconstruir imágenes
+      - name: Reconstruir imagen
         run: |
           cat .tmp/meson-toni-photo-01.b64 .tmp/meson-toni-photo-02.b64 .tmp/meson-toni-photo-03.b64 .tmp/meson-toni-photo-04.b64 .tmp/meson-toni-photo-05.b64 | tr -d '\n\r ' | base64 --decode > assets/meson-toni-colaborador.jpg
-          cat .tmp/meson-toni-logo-a.b64 .tmp/meson-toni-logo-b.b64 .tmp/meson-toni-logo-c.b64 .tmp/meson-toni-logo-02.b64 | tr -d '\n\r ' | base64 --decode > assets/meson-toni-logo.jpg
           test -s assets/meson-toni-colaborador.jpg
-          test -s assets/meson-toni-logo.jpg
-          file assets/meson-toni-colaborador.jpg assets/meson-toni-logo.jpg
+          file assets/meson-toni-colaborador.jpg
 
-      - name: Publicar recursos
+      - name: Publicar recurso
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/meson-toni-colaborador.jpg assets/meson-toni-logo.jpg
+          git add assets/meson-toni-colaborador.jpg
           if git diff --cached --quiet; then
-            echo "Recursos ya actualizados"
+            echo "Recurso ya actualizado"
             exit 0
           fi
-          git commit -m "V14: añadir recursos de Mesón Bar Toñi"
+          git commit -m "V14: añadir foto de Mesón Bar Toñi"
           git pull --rebase origin main
           git push

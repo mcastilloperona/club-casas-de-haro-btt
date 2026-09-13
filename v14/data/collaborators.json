@@ -3,8 +3,10 @@
     "published": true,
     "order": 1,
     "name": "Mesón Bar Toñi",
-    "description": "Punto de encuentro en Casas de Haro para vecinos, amigos y ciclistas. Gracias por apoyar al Club Casas de Haro BTT.",
-    "location": "Ctra. La Roda, 27 · 16611 Casas de Haro (Cuenca) · Tel. 603038601",
-    "logo": "meson-toni-logo.svg"
+    "business_type": "Bar · Mesón · Hostelería local",
+    "description": "Bar-mesón situado en Casas de Haro, en la Ctra. La Roda, 27. Un espacio de hostelería local para tomar algo, reunirse y compartir un rato en el pueblo. Mesón Bar Toñi se suma como colaborador del Club Casas de Haro BTT.",
+    "location": "Ctra. La Roda, 27 · 16611 Casas de Haro (Cuenca)",
+    "phone": "603038601",
+    "logo": "meson-toni-logo-approved.jpg"
   }
 ]

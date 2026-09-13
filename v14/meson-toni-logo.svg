@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Mesón Bar Toñi</title>
+<desc id="desc">Logo de Mesón Bar Toñi. Ctra. La Roda, 27. Teléfono 603038601. Casas de Haro, Cuenca.</desc>
+<defs>
+  <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" seed="11" result="noise"/>
+    <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+    <feComponentTransfer in="mono" result="faded"><feFuncA type="table" tableValues="0 .10"/></feComponentTransfer>
+    <feBlend in="SourceGraphic" in2="faded" mode="multiply"/>
+  </filter>
+</defs>
+<rect width="1200" height="675" fill="#e8dfc8"/>
+<g filter="url(#paper)">
+  <path d="M52 37 H1148 V638 H52 Z" fill="none" stroke="#1b1b19" stroke-width="5"/>
+  <path d="M76 63 H1125 V611 H76 Z" fill="none" stroke="#1b1b19" stroke-width="2" opacity=".8"/>
+  <g fill="#191918">
+    <rect x="180" y="96" width="285" height="116" rx="3"/>
+    <rect x="490" y="96" width="540" height="116" rx="3"/>
+    <rect x="180" y="224" width="848" height="196" rx="3"/>
+  </g>
+  <text x="322" y="176" fill="#eee6d3" font-family="Georgia,'Times New Roman',serif" font-size="72" font-weight="900" text-anchor="middle">BAR</text>
+  <text x="760" y="176" fill="#eee6d3" font-family="Georgia,'Times New Roman',serif" font-size="69" font-weight="900" text-anchor="middle">MESÓN TOÑI</text>
+  <text x="604" y="352" fill="#eee6d3" font-family="Georgia,'Times New Roman',serif" font-size="140" font-weight="900" font-style="italic" text-anchor="middle">Toñi</text>
+  <path d="M350 398 L850 398 L824 490 L377 490 Z" fill="#9f1f1d"/>
+  <text x="600" y="462" fill="#f1e8d2" font-family="Georgia,'Times New Roman',serif" font-size="72" font-weight="700" font-style="italic" text-anchor="middle">Toñi Moya</text>
+  <text x="600" y="548" fill="#171716" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="800" text-anchor="middle">Ctra. La Roda, 27 · Tel. 603038601</text>
+  <text x="600" y="588" fill="#171716" font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="900" text-anchor="middle">16611 CASAS DE HARO (Cuenca)</text>
+  <g fill="#191918" opacity=".88">
+    <circle cx="93" cy="100" r="4"/><circle cx="126" cy="78" r="3"/><circle cx="1090" cy="118" r="5"/><circle cx="1110" cy="92" r="3"/>
+    <circle cx="99" cy="566" r="5"/><circle cx="139" cy="602" r="3"/><circle cx="1088" cy="559" r="4"/><circle cx="1115" cy="603" r="3"/>
+  </g>
+</g>
+</svg>

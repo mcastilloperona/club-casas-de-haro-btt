@@ -180,6 +180,21 @@
     "gpx": ""
   },
   {
+    "id": "road-casas-de-haro-2026-09-13",
+    "published": true,
+    "discipline": "road",
+    "title": "Casas de Haro · 13/09/2026",
+    "description": "Salida de carretera del Club Casas de Haro BTT realizada el 13 de septiembre de 2026.",
+    "route_type": "club",
+    "author": "",
+    "distance_km": "",
+    "elevation_m": "",
+    "difficulty": "",
+    "source": "Wikiloc",
+    "source_url": "https://es.wikiloc.com/rutas-ciclismo/casas-de-haro-285542410",
+    "gpx": ""
+  },
+  {
     "id": "road-pantano-alarcon",
     "published": true,
     "discipline": "road",

@@ -11,7 +11,9 @@ on:
       - .tmp/meson-toni-photo-03.b64
       - .tmp/meson-toni-photo-04.b64
       - .tmp/meson-toni-photo-05.b64
-      - .tmp/meson-toni-logo-01.b64
+      - .tmp/meson-toni-logo-a.b64
+      - .tmp/meson-toni-logo-b.b64
+      - .tmp/meson-toni-logo-c.b64
       - .tmp/meson-toni-logo-02.b64
 
 permissions:
@@ -27,7 +29,7 @@ jobs:
       - name: Reconstruir imágenes
         run: |
           cat .tmp/meson-toni-photo-01.b64 .tmp/meson-toni-photo-02.b64 .tmp/meson-toni-photo-03.b64 .tmp/meson-toni-photo-04.b64 .tmp/meson-toni-photo-05.b64 | tr -d '\n\r ' | base64 --decode > assets/meson-toni-colaborador.jpg
-          cat .tmp/meson-toni-logo-01.b64 .tmp/meson-toni-logo-02.b64 | tr -d '\n\r ' | base64 --decode > assets/meson-toni-logo.jpg
+          cat .tmp/meson-toni-logo-a.b64 .tmp/meson-toni-logo-b.b64 .tmp/meson-toni-logo-c.b64 .tmp/meson-toni-logo-02.b64 | tr -d '\n\r ' | base64 --decode > assets/meson-toni-logo.jpg
           test -s assets/meson-toni-colaborador.jpg
           test -s assets/meson-toni-logo.jpg
           file assets/meson-toni-colaborador.jpg assets/meson-toni-logo.jpg

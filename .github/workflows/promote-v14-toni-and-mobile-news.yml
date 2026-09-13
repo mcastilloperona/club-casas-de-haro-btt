@@ -1,0 +1,56 @@
+name: Promote V14 Toni and mobile news
+on:
+  push:
+    paths:
+      - '.github/workflows/promote-v14-toni-and-mobile-news.yml'
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Promote approved V14 content and add mobile news expansion
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, shutil, re
+          root=pathlib.Path('.')
+          # Logo aprobado a producción
+          src=root/'v14/meson-toni-logo-final.png'
+          if src.exists() and src.stat().st_size>100:
+              shutil.copyfile(src, root/'assets/meson-toni-logo-final.png')
+          # Noticia de Toñi: añadir sin perder noticias más recientes de producción
+          vp=root/'v14/data/news.json'; pp=root/'data/news.json'
+          v=json.loads(vp.read_text()); p=json.loads(pp.read_text())
+          t=next((x for x in v if 'Mesón Bar Toñi' in x.get('title','')),None)
+          if t:
+              t=dict(t); t['image']='assets/meson-toni-colaborador.jpg?v=20260914-1'
+              p=[x for x in p if 'Mesón Bar Toñi' not in x.get('title','')]
+              p.insert(0,t)
+              pp.write_text(json.dumps(p,ensure_ascii=False,indent=2)+'\n')
+          # Leer más solo en móvil/tableta
+          js=root/'assets/v13.js'; s=js.read_text()
+          old='${full&&n.body?`<p class="news-body">${esc(n.body)}</p>`:\'\'}'
+          new='${full&&n.body?`<div class="news-body-wrap"><p class="news-body">${esc(n.body)}</p><button type="button" class="news-read-more" aria-expanded="false">Leer más</button></div>`:\'\'}'
+          if old in s:
+              s=s.replace(old,new)
+          if 'MOBILE_NEWS_READ_MORE' not in s:
+              marker='\n})();\n'
+              extra='''\n  /* MOBILE_NEWS_READ_MORE */\n  const newsStyle=document.createElement('style');\n  newsStyle.textContent=`@media(max-width:1024px){.news-body-wrap:not(.expanded) .news-body{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden}.news-read-more{display:inline-flex;margin-top:10px;padding:8px 12px;border:1px solid #13b9e8;border-radius:999px;background:#fff;color:#06264b;font:inherit;font-weight:800;cursor:pointer}.news-body-wrap.expanded .news-read-more{margin-top:12px}}@media(min-width:1025px){.news-read-more{display:none!important}}`;\n  document.head.appendChild(newsStyle);\n  document.addEventListener('click',function(e){const b=e.target.closest('.news-read-more');if(!b)return;const w=b.closest('.news-body-wrap');if(!w)return;const open=w.classList.toggle('expanded');b.textContent=open?'Leer menos':'Leer más';b.setAttribute('aria-expanded',String(open));});\n'''
+              pos=s.rfind(marker)
+              if pos!=-1: s=s[:pos]+extra+s[pos:]
+          js.write_text(s)
+          # Cache busting
+          for f in ['index.html','news.html','patrocinadores.html','v14/index.html','v14/news.html','v14/patrocinadores.html']:
+              pth=root/f
+              if not pth.exists(): continue
+              h=pth.read_text()
+              h=re.sub(r'(assets/v13\.js)(?:\?v=[^"\']*)?',r'\1?v=20260914-news1',h)
+              h=re.sub(r'(assets/colaboradores\.js)(?:\?v=[^"\']*)?',r'\1?v=20260914-prod1',h)
+              pth.write_text(h)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/meson-toni-logo-final.png data/news.json assets/v13.js index.html news.html patrocinadores.html v14/index.html v14/news.html v14/patrocinadores.html || true
+          git diff --cached --quiet || git commit -m 'Producción: Toñi y Leer más en BTT News móvil'
+          git push

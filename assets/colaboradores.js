@@ -5,12 +5,19 @@
   if(isV14){
     const style=document.createElement('style');
     style.textContent=`
-      #collaboratorsGrid .collaborator-card{padding:0;min-height:0;aspect-ratio:16/9;overflow:hidden;display:block}
-      #collaboratorsGrid .collaborator-logo{width:100%;height:100%;margin:0;padding:0;border:0;border-radius:inherit;background:#fff;display:block;overflow:hidden}
-      #collaboratorsGrid .collaborator-logo img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;display:block}
-      #collaboratorsGrid .collaborator-card>h3,
-      #collaboratorsGrid .collaborator-card>p,
-      #collaboratorsGrid .collaborator-card>.btn{display:none}
+      #collaboratorsGrid.single-collaborator{grid-template-columns:minmax(0,760px);max-width:760px}
+      #collaboratorsGrid .collaborator-card-v14{padding:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;border-radius:20px}
+      #collaboratorsGrid .collaborator-card-v14 .collaborator-logo{width:100%;height:auto;aspect-ratio:16/9;margin:0;padding:0;border:0;border-radius:20px 20px 0 0;background:#fff;display:block;overflow:hidden}
+      #collaboratorsGrid .collaborator-card-v14 .collaborator-logo img{width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;display:block;background:#fff}
+      #collaboratorsGrid .collaborator-card-content{padding:20px 22px 22px;display:flex;flex-direction:column;gap:9px}
+      #collaboratorsGrid .collaborator-business-type{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#087b9f}
+      #collaboratorsGrid .collaborator-card-v14 h3{font-size:24px;margin:0;color:var(--navy2)}
+      #collaboratorsGrid .collaborator-card-v14 p{margin:0;color:#56636d;line-height:1.6;font-size:14px}
+      #collaboratorsGrid .collaborator-card-v14 .collaborator-location{margin-top:5px!important;color:#6d7c86!important;font-size:13px!important}
+      #collaboratorsGrid .collaborator-phone{display:inline-flex;align-items:center;gap:7px;width:max-content;margin-top:2px;color:#087b9f;font-weight:900;text-decoration:none}
+      #collaboratorsGrid .collaborator-phone:hover{text-decoration:underline}
+      #collaboratorsGrid .collaborator-card-v14 .btn{align-self:flex-start;margin-top:5px}
+      @media(max-width:620px){#collaboratorsGrid.single-collaborator{max-width:none}#collaboratorsGrid .collaborator-card-content{padding:17px 17px 19px}#collaboratorsGrid .collaborator-card-v14 h3{font-size:21px}}
     `;
     document.head.appendChild(style);
   }
@@ -53,8 +60,30 @@
   }
 
   function card(item){
-    const article=make('article','collaborator-card');
+    const article=make('article',isV14?'collaborator-card collaborator-card-v14':'collaborator-card');
     article.appendChild(logoNode(item,false));
+
+    if(isV14){
+      const content=make('div','collaborator-card-content');
+      if(item.business_type)content.appendChild(make('div','collaborator-business-type',item.business_type));
+      content.appendChild(make('h3','',item.name||'Colaborador'));
+      if(item.description)content.appendChild(make('p','',item.description));
+      if(item.location)content.appendChild(make('p','collaborator-location',item.location));
+      if(item.phone){
+        const phone=make('a','collaborator-phone',`Tel. ${item.phone}`);
+        phone.href=`tel:${String(item.phone).replace(/\D/g,'')}`;
+        content.appendChild(phone);
+      }
+      const url=safeUrl(item.url);
+      if(url){
+        const a=make('a','btn','Conocer colaborador');
+        a.href=url;a.target='_blank';a.rel='noopener';
+        content.appendChild(a);
+      }
+      article.appendChild(content);
+      return article;
+    }
+
     article.appendChild(make('h3','',item.name||'Colaborador'));
     if(item.description)article.appendChild(make('p','',item.description));
     if(item.location)article.appendChild(make('p','collaborator-location',item.location));
@@ -84,6 +113,7 @@
         .sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)||String(a.name).localeCompare(String(b.name),'es'));
 
       if(grid){
+        grid.classList.toggle('single-collaborator',isV14&&items.length===1);
         grid.replaceChildren();
         if(!items.length){
           grid.appendChild(make('div','collaborators-empty','Este espacio está abierto a nuevos colaboradores. Si quieres sumar tu apoyo al Club Casas de Haro BTT, puedes contactar con nosotros por Telegram o por email.'));

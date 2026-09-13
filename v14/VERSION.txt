@@ -1,5 +1,6 @@
-Club Casas de Haro BTT — V14 Preview RC3
+Club Casas de Haro BTT — V14 Preview RC4
 Área Socios visible en modo «En construcción».
 La aplicación funcional permanece desactivada hasta validar Supabase y los permisos.
 Wizard accesible desde una tarjeta situada después de «Próxima salida» y mostrado en una ventana a pantalla completa.
 Icono vectorial de dos ciclistas aplicado a la invitación y al resultado.
+Mesón Bar Toñi incorporado como primer colaborador: noticia en BTT News, ficha en «Colaboradores del club», foto y logo propios y teléfono corregido 603 038 601.

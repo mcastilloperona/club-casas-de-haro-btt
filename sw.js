@@ -1,4 +1,4 @@
-const VERSION = 'cdh-btt-pwa-v4';
+const VERSION = 'cdh-btt-pwa-v5';
 const CLOUDFLARE_TOKEN = 'aefb84cd8fa546bda853ceec721b8746';
 const CLOUDFLARE_SNIPPET = `<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "${CLOUDFLARE_TOKEN}"}'></script><!-- End Cloudflare Web Analytics -->`;
 const VISIT_COUNTER_SNIPPET = `<script src="/assets/visit-counter.js?v=20260913-1" defer></script>`;
@@ -58,6 +58,7 @@ self.addEventListener('fetch', event => {
 
   const isDynamicAsset = url.origin === self.location.origin && (
     url.pathname.endsWith('/assets/v13.js') ||
+    url.pathname.endsWith('/assets/colaboradores.js') ||
     url.pathname.endsWith('/assets/visit-counter.js') ||
     url.pathname.startsWith('/data/')
   );

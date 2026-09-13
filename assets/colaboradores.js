@@ -10,11 +10,10 @@
       #collaboratorsGrid .collaborator-card-v14 .collaborator-logo{width:100%;height:auto;aspect-ratio:16/9;margin:0;padding:0;border:0;border-radius:20px 20px 0 0;background:#fff;display:block;overflow:hidden}
       #collaboratorsGrid .collaborator-card-v14 .collaborator-logo img{width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;display:block;background:#fff}
       #collaboratorsGrid .collaborator-card-content{padding:20px 22px 22px;display:flex;flex-direction:column;gap:9px}
-      #collaboratorsGrid .collaborator-business-type{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#087b9f}
       #collaboratorsGrid .collaborator-card-v14 h3{font-size:24px;margin:0;color:var(--navy2)}
       #collaboratorsGrid .collaborator-card-v14 p{margin:0;color:#56636d;line-height:1.6;font-size:14px}
-      #collaboratorsGrid .collaborator-card-v14 .collaborator-closing{margin-top:7px!important;font-weight:800;color:var(--navy2)!important;font-size:15px!important}
-      #collaboratorsGrid .collaborator-card-v14 .collaborator-location{margin-top:5px!important;color:#6d7c86!important;font-size:13px!important}
+      #collaboratorsGrid .collaborator-card-v14 .collaborator-closing{margin-top:10px!important;font-weight:800;color:var(--navy2)!important;font-size:16px!important}
+      #collaboratorsGrid .collaborator-card-v14 .collaborator-location{margin-top:8px!important;color:#6d7c86!important;font-size:13px!important}
       #collaboratorsGrid .collaborator-phone{display:inline-flex;align-items:center;gap:7px;width:max-content;margin-top:2px;color:#087b9f;font-weight:900;text-decoration:none}
       #collaboratorsGrid .collaborator-phone:hover{text-decoration:underline}
       #collaboratorsGrid .collaborator-card-v14 .btn{align-self:flex-start;margin-top:5px}
@@ -66,13 +65,13 @@
 
     if(isV14){
       const content=make('div','collaborator-card-content');
-      if(item.business_type)content.appendChild(make('div','collaborator-business-type',item.business_type));
       content.appendChild(make('h3','',item.name||'Colaborador'));
       if(item.description)content.appendChild(make('p','',item.description));
       if(item.closing)content.appendChild(make('p','collaborator-closing',item.closing));
       if(item.location)content.appendChild(make('p','collaborator-location',item.location));
       if(item.phone){
-        const phone=make('a','collaborator-phone',`Tel. ${item.phone}`);
+        const label=item.phone_label||'Tel.';
+        const phone=make('a','collaborator-phone',`${label} ${item.phone}`);
         phone.href=`tel:${String(item.phone).replace(/\D/g,'')}`;
         content.appendChild(phone);
       }

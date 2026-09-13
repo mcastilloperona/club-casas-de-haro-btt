@@ -1,6 +1,20 @@
 (function(){
   'use strict';
 
+  const isV14=/\/v14(?:\/|$)/.test(location.pathname);
+  if(isV14){
+    const style=document.createElement('style');
+    style.textContent=`
+      #collaboratorsGrid .collaborator-card{padding:0;min-height:0;aspect-ratio:16/9;overflow:hidden;display:block}
+      #collaboratorsGrid .collaborator-logo{width:100%;height:100%;margin:0;padding:0;border:0;border-radius:inherit;background:#fff;display:block;overflow:hidden}
+      #collaboratorsGrid .collaborator-logo img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;display:block}
+      #collaboratorsGrid .collaborator-card>h3,
+      #collaboratorsGrid .collaborator-card>p,
+      #collaboratorsGrid .collaborator-card>.btn{display:none}
+    `;
+    document.head.appendChild(style);
+  }
+
   const homeTitle=document.querySelector('.home-v12 .hero-v12-content h1');
   if(homeTitle&&homeTitle.textContent.trim()==='Nuestro terreno'){
     homeTitle.textContent='Somos Casas de Haro';

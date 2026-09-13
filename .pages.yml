@@ -100,7 +100,8 @@ content:
     fields:
       - { name: published, label: Publicada, type: boolean }
       - { name: title, label: Titular, type: string, required: true }
-      - { name: date, label: Fecha, type: date }
+      - { name: date, label: Fecha del evento / noticia, type: date }
+      - { name: published_date, label: Fecha de publicación (aviso 7 días), type: date, required: true }
       - name: category
         label: Categoría
         type: select

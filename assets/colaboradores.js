@@ -77,8 +77,21 @@
     .then(r=>{if(!r.ok)throw new Error('No se pudieron cargar los colaboradores');return r.json()})
     .then(data=>{
       const items=(Array.isArray(data)?data:[]).filter(x=>x&&x.published!==false&&x.name).sort((a,b)=>(Number(a.order)||999)-(Number(b.order)||999)||String(a.name).localeCompare(String(b.name),'es'));
-      if(grid){grid.classList.toggle('single-collaborator',items.length===1);grid.replaceChildren();if(!items.length)grid.appendChild(make('div','collaborators-empty','Este espacio está abierto a nuevos colaboradores. Si quieres sumar tu apoyo al Club Casas de Haro BTT, puedes contactar con nosotros por Telegram o por email.'));else items.forEach(item=>grid.appendChild(card(item)))}
-      if(homeTrack&&homeSection){homeTrack.replaceChildren();if(items.length){items.forEach(item=>homeTrack.appendChild(compactItem(item));homeSection.hidden=false}else homeSection.hidden=true}
+      if(grid){
+        grid.classList.toggle('single-collaborator',items.length===1);
+        grid.replaceChildren();
+        if(!items.length)grid.appendChild(make('div','collaborators-empty','Este espacio está abierto a nuevos colaboradores. Si quieres sumar tu apoyo al Club Casas de Haro BTT, puedes contactar con nosotros por Telegram o por email.'));
+        else items.forEach(item=>grid.appendChild(card(item)));
+      }
+      if(homeTrack&&homeSection){
+        homeTrack.replaceChildren();
+        if(items.length){
+          items.forEach(item=>homeTrack.appendChild(compactItem(item)));
+          homeSection.hidden=false;
+        }else{
+          homeSection.hidden=true;
+        }
+      }
       addCollaboratorsToPartnerCarousel(items);
     })
     .catch(()=>{if(grid)grid.replaceChildren(make('div','collaborators-empty','Ahora mismo no se puede cargar el listado de colaboradores.'));if(homeSection)homeSection.hidden=true;addCollaboratorsToPartnerCarousel([])});

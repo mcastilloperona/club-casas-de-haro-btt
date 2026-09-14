@@ -23,7 +23,7 @@ jobs:
 
           old = 'mcastillo@casasdeharobtt.es'
           new = 'info@casasdeharobtt.es'
-          extensions = {'.html', '.htm', '.js', '.json', '.md', '.txt', '.yml', '.yaml', '.xml', '.webmanifest'}
+          extensions = {'.html', '.htm', '.js', '.json', '.md', '.txt', '.xml', '.webmanifest'}
           changed = []
 
           for path in Path('.').rglob('*'):

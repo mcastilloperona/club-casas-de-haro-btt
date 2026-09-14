@@ -111,7 +111,7 @@
     root.querySelector('[data-result-copy]').textContent=recommendation.copy;
     root.querySelector('[data-result-reassurance]').textContent=reassurance();
     root.querySelector('[data-result-telegram]').href='https://t.me/mcastilloperona?text='+encodeURIComponent(message);
-    root.querySelector('[data-result-email]').href='mailto:mcastillo@casasdeharobtt.es?subject='+encodeURIComponent('Quiero probar una salida con el club')+'&body='+encodeURIComponent(message);
+    root.querySelector('[data-result-email]').href='mailto:info@casasdeharobtt.es?subject='+encodeURIComponent('Quiero probar una salida con el club')+'&body='+encodeURIComponent(message);
     form.hidden=true;
     progress.hidden=true;
     result.hidden=false;

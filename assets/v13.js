@@ -23,7 +23,7 @@
     modal.id='signupModal';
     modal.className='signup-modal';
     modal.hidden=true;
-    modal.innerHTML='<div class="signup-modal-card" role="dialog" aria-modal="true" aria-labelledby="signupModalTitle"><button class="signup-modal-close" type="button" aria-label="Cerrar">×</button><h3 id="signupModalTitle">¡Me apunto!</h3><p>Elige cómo quieres contactar con el club para confirmar que vienes a la salida.</p><div class="signup-modal-actions"><a class="btn" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn" href="mailto:mcastillo@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a></div></div>';
+    modal.innerHTML='<div class="signup-modal-card" role="dialog" aria-modal="true" aria-labelledby="signupModalTitle"><button class="signup-modal-close" type="button" aria-label="Cerrar">×</button><h3 id="signupModalTitle">¡Me apunto!</h3><p>Elige cómo quieres contactar con el club para confirmar que vienes a la salida.</p><div class="signup-modal-actions"><a class="btn" href="https://t.me/mcastilloperona" target="_blank" rel="noopener">Telegram</a><a class="btn" href="mailto:info@casasdeharobtt.es?subject=Quiero%20apuntarme%20a%20la%20pr%C3%B3xima%20salida">Email</a></div></div>';
     document.body.appendChild(modal);
     let lastFocus=null;
     const open=()=>{lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';modal.querySelector('.signup-modal-close').focus()};

@@ -1,0 +1,58 @@
+name: Replace club contact email
+
+on:
+  push:
+    paths:
+      - '.github/workflows/replace-contact-email.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  replace-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Replace contact email in web files
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          old = 'mcastillo@casasdeharobtt.es'
+          new = 'info@casasdeharobtt.es'
+          extensions = {'.html', '.htm', '.js', '.json', '.md', '.txt', '.yml', '.yaml', '.xml', '.webmanifest'}
+          changed = []
+
+          for path in Path('.').rglob('*'):
+              if not path.is_file() or '.git' in path.parts:
+                  continue
+              if path.suffix.lower() not in extensions and path.name != 'manifest.webmanifest':
+                  continue
+              try:
+                  text = path.read_text(encoding='utf-8')
+              except UnicodeDecodeError:
+                  continue
+              if old in text:
+                  path.write_text(text.replace(old, new), encoding='utf-8')
+                  changed.append(str(path))
+
+          print('Updated files:')
+          for item in changed:
+              print(f' - {item}')
+          PY
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No email references needed changing.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Update club contact email to info@casasdeharobtt.es'
+          git push

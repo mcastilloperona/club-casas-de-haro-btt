@@ -1,6 +1,29 @@
 [
   {
     "published": true,
+    "title": "Domingo de BTT entre pinares y buena compañía",
+    "date": "2026-09-20",
+    "published_date": "2026-09-20",
+    "category": "salida",
+    "summary": "Una nueva salida del Club Casas de Haro BTT para compartir bicicleta, paisajes y buenos momentos entre compañeros.",
+    "body": "Este domingo 20 de septiembre volvimos a salir en bicicleta y a compartir una mañana de BTT.\n\nLas fotos de hoy nos dejan vistas de pinares y campos, una parada para contemplar el paisaje y la foto de grupo para el recuerdo. Momentos que también forman parte de cada ruta y que merece la pena guardar.\n\nSeguimos disfrutando de la bici y de la buena compañía. ¡Nos vemos en la próxima salida!",
+    "image": "assets/salida-2026-09-20-grupo.jpg",
+    "image_alt": "Seis ciclistas del club posan con el paisaje de pinares al fondo",
+    "gallery": [
+      {
+        "image": "assets/salida-2026-09-20-pinares.jpg",
+        "alt": "Panorámica de pinares y campos bajo un cielo despejado",
+        "caption": "Vistas de los pinares y campos durante la ruta."
+      },
+      {
+        "image": "assets/salida-2026-09-20-parada.jpg",
+        "alt": "Dos ciclistas junto a sus bicicletas contemplan el paisaje con el sol bajo",
+        "caption": "Una parada para disfrutar del paisaje y la buena compañía."
+      }
+    ]
+  },
+  {
+    "published": true,
     "title": "Mesón Bar Toñi se une como colaborador del Club Casas de Haro BTT",
     "date": "2026-09-13",
     "published_date": "2026-09-13",

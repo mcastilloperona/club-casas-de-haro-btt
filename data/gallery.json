@@ -1,6 +1,24 @@
 [
   {
     "published": true,
+    "image": "assets/salida-2026-09-20-grupo.jpg",
+    "alt": "Seis ciclistas del club posan con el paisaje de pinares al fondo",
+    "caption": "Foto de grupo durante la salida del 20 de septiembre."
+  },
+  {
+    "published": true,
+    "image": "assets/salida-2026-09-20-pinares.jpg",
+    "alt": "Panorámica de pinares y campos bajo un cielo despejado",
+    "caption": "Vistas de los pinares y campos durante la ruta."
+  },
+  {
+    "published": true,
+    "image": "assets/salida-2026-09-20-parada.jpg",
+    "alt": "Dos ciclistas junto a sus bicicletas contemplan el paisaje con el sol bajo",
+    "caption": "Una parada para disfrutar del paisaje y la buena compañía."
+  },
+  {
+    "published": true,
     "image": "assets/campos-atardecer.jpg",
     "alt": "Campos de Casas de Haro al atardecer durante una ruta BTT",
     "caption": "Campos de Casas de Haro al atardecer"

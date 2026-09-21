@@ -1,13 +1,13 @@
 {
   "next_route": {
-    "title": "Salida BTT",
-    "date": "2026-09-20",
+    "title": "Salida BTT - ruta por decidir",
+    "date": "2026-09-27",
     "time": "08:30",
     "discipline": "BTT",
-    "description": "Salida BTT. El día la marcha se decidirá el camino exacto.\nPunto de encuentro: Parque del cruce, Casas De haro",
-    "image": "assets/1000026734.jpg",
-    "image_alt": "Moragona",
-    "distance_km": 50,
-    "elevation_m": 300
+    "description": "La ruta no está cerrada. El recorrido se decidirá el domingo antes de salir.\nPunto de encuentro: Parque del cruce, Casas de Haro",
+    "image": "assets/proxima-salida-2026-09-27.jpg",
+    "image_alt": "Paisaje de monte y campos del entorno de Casas de Haro",
+    "distance_km": null,
+    "elevation_m": null
   }
 }

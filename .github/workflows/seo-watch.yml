@@ -1,0 +1,71 @@
+name: SEO Watch Casas de Haro
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 6 * * 1"
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "historia.html"
+      - "rutas.html"
+      - "galeria.html"
+      - "news.html"
+      - "patrocinadores.html"
+      - "sitemap.xml"
+      - "robots.txt"
+      - "data/**"
+      - "scripts/seo_watch.py"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  seo-watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+      GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+      GSC_DATA_LAG_DAYS: "3"
+      GSC_SUBMIT_SITEMAP: ${{ github.event_name == 'push' && 'true' || 'false' }}
+      SEO_REPORT_PATH: seo/latest-report.md
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install --disable-pip-version-check beautifulsoup4 requests google-auth
+
+      - name: Ejecutar SEO Watch
+        run: python scripts/seo_watch.py
+
+      - name: Resumen del workflow
+        run: cat seo/latest-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar informe
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-watch-report
+          path: seo/latest-report.md
+          retention-days: 30
+
+      - name: Publicar informe en GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="SEO Watch Casas de Haro"
+          ISSUE_NUMBER="$(gh issue list --state open --search "$TITLE in:title" --json number,title --jq '.[] | select(.title == env.TITLE) | .number' | head -n 1)"
+          if [ -z "$ISSUE_NUMBER" ]; then
+            gh issue create --title "$TITLE" --body-file seo/latest-report.md
+          else
+            gh issue comment "$ISSUE_NUMBER" --body-file seo/latest-report.md
+          fi

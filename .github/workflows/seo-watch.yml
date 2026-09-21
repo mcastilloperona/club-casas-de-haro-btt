@@ -63,7 +63,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TITLE="SEO Watch Casas de Haro"
-          ISSUE_NUMBER="$(gh issue list --state open --search "$TITLE in:title" --json number,title --jq '.[] | select(.title == env.TITLE) | .number' | head -n 1)"
+          ISSUE_NUMBER="$(gh issue list --state open --search "$TITLE in:title" --json number,title --jq '.[0].number // empty')"
           if [ -z "$ISSUE_NUMBER" ]; then
             gh issue create --title "$TITLE" --body-file seo/latest-report.md
           else

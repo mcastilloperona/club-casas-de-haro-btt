@@ -76,7 +76,7 @@ def static_audit():
         h1s = soup.find_all("h1")
         robots_tag = soup.find("meta", attrs={"name": re.compile("^robots$", re.I)})
         robots = robots_tag.get("content", "").lower() if robots_tag else ""
-        missing_alt = sum(1 for img in soup.find_all("img") if not img.has_attr("alt") or not img.get("alt", "").strip())
+        missing_alt = sum(1 for img in soup.find_all("img") if not img.has_attr("alt"))
         body_text = soup.get_text(" ", strip=True)
         issues = []
 

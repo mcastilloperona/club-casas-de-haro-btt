@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
+  Bell,
   Bike,
   CalendarDays,
   Check,
@@ -12,6 +13,7 @@ import {
   MapPin,
   MessageCircle,
   Plus,
+  RefreshCw,
   ShieldCheck,
   UserCheck,
   UserRound,
@@ -21,9 +23,9 @@ import {
 import { sociosEnabled, supabase } from './supabase';
 
 const DEMO_MEMBERS = [
-  { id: '1', name: 'Álvaro Martínez', email: 'alvaro@ejemplo.es', status: 'pending', role: 'member' },
-  { id: '2', name: 'Gumer López', email: 'gumer@ejemplo.es', status: 'approved', role: 'member' },
-  { id: '3', name: 'Javier Parreño', email: 'javier@ejemplo.es', status: 'approved', role: 'organizer' },
+  { id: '1', name: 'Álvaro Martínez', email: 'alvaro@ejemplo.es', status: 'pending', role: 'member', created_at: '2026-10-01T08:34:00Z' },
+  { id: '2', name: 'Gumer López', email: 'gumer@ejemplo.es', status: 'approved', role: 'member', created_at: '2026-09-28T17:20:00Z' },
+  { id: '3', name: 'Javier Parreño', email: 'javier@ejemplo.es', status: 'approved', role: 'organizer', created_at: '2026-09-27T12:10:00Z' },
 ];
 
 const ROLE_LABELS = {
@@ -54,7 +56,9 @@ function PreviewNotice() {
   return (
     <div className="preview-notice" role="status">
       <span>PREVIEW</span>
-      Esta versión permite probar las pantallas y los permisos. Los datos son de demostración.
+      {sociosEnabled
+        ? 'Entorno de validación conectado. Las altas y los cambios se guardan realmente.'
+        : 'Esta versión permite probar las pantallas y los permisos. Los datos son de demostración.'}
     </div>
   );
 }
@@ -98,13 +102,16 @@ function AuthForm({ mode, setMode, onDemo, onPending, onLiveSession }) {
     setBusy(true);
     try {
       if (isRegister) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
-          options: { data: { full_name: form.name } },
+          options: {
+            data: { full_name: form.name },
+            emailRedirectTo: `${window.location.origin}/v14/socios/`,
+          },
         });
         if (error) throw error;
-        onPending(form.name || 'Nuevo socio');
+        onPending(form.name || 'Nuevo socio', !data.session);
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: form.email,
@@ -170,20 +177,21 @@ function AuthForm({ mode, setMode, onDemo, onPending, onLiveSession }) {
   );
 }
 
-function PendingView({ name, onBack }) {
+function PendingView({ name, needsEmailConfirmation, onLogout }) {
   return (
     <AuthShell>
       <section className="state-card">
         <div className="state-icon state-icon--yellow"><Clock3 size={34} /></div>
         <p className="eyebrow">Solicitud recibida</p>
         <h2>Tu alta está pendiente de aprobación</h2>
-        <p>Gracias, {name}. El administrador del club revisará tu solicitud. Cuando sea aprobada podrás entrar en el área privada.</p>
+        <p>Gracias, {name}. {needsEmailConfirmation && 'Primero confirma tu correo electrónico. '}El administrador del club revisará tu solicitud. Cuando sea aprobada podrás entrar en el área privada.</p>
         <div className="state-steps">
           <span className="done"><Check size={17} /> Solicitud enviada</span>
+          {needsEmailConfirmation && <span><Mail size={17} /> Confirmación del correo</span>}
           <span><Clock3 size={17} /> Revisión del club</span>
           <span><Bike size={17} /> Acceso activado</span>
         </div>
-        <button className="secondary-button" onClick={onBack}>Volver al acceso</button>
+        <button className="secondary-button" onClick={onLogout}>Volver al acceso</button>
       </section>
     </AuthShell>
   );
@@ -238,11 +246,11 @@ function NextRideCard({ role }) {
   );
 }
 
-function MemberHome({ role }) {
+function MemberHome({ role, profile }) {
   return (
     <>
       <div className="dashboard-title">
-        <div><p className="eyebrow">Área privada</p><h1>Buenos días, Miguel</h1><p>Consulta las salidas y organiza la próxima ruta con el grupo.</p></div>
+        <div><p className="eyebrow">Área privada</p><h1>Buenos días, {profile.name.split(' ')[0]}</h1><p>{role === 'organizer' ? 'Consulta las salidas y organiza la próxima ruta con el grupo.' : 'Consulta las salidas y comparte ruta con el grupo.'}</p></div>
         {(role === 'organizer' || role === 'admin') && <button className="primary-button"><Plus size={19} /> Publicar una salida</button>}
       </div>
       <div className="stats-grid">
@@ -259,27 +267,45 @@ function MemberHome({ role }) {
   );
 }
 
+function formatRequestDate(value) {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value));
+}
+
 function AdminPanel() {
   const [members, setMembers] = useState(sociosEnabled ? [] : DEMO_MEMBERS);
   const [loadingMembers, setLoadingMembers] = useState(sociosEnabled);
   const [adminMessage, setAdminMessage] = useState('');
+  const [filter, setFilter] = useState('pending');
+
+  const loadMembers = async () => {
+    if (!sociosEnabled) return;
+    setLoadingMembers(true);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id,full_name,email,status,role,created_at')
+      .order('created_at', { ascending: false });
+    setLoadingMembers(false);
+    if (error) {
+      setAdminMessage('No se ha podido cargar el listado de socios.');
+      return;
+    }
+    setAdminMessage('');
+    setMembers((data || []).map((member) => ({ ...member, name: member.full_name })));
+  };
 
   useEffect(() => {
-    if (!sociosEnabled) return;
-    supabase.from('profiles').select('id,full_name,email,status,role').order('created_at', { ascending: false }).then(({ data, error }) => {
-      setLoadingMembers(false);
-      if (error) {
-        setAdminMessage('No se ha podido cargar el listado de socios.');
-        return;
-      }
-      setMembers((data || []).map((member) => ({ ...member, name: member.full_name })));
-    });
+    loadMembers();
   }, []);
 
   const update = async (id, changes) => {
     if (sociosEnabled) {
       const payload = { ...changes, updated_at: new Date().toISOString() };
-      if (changes.status === 'approved') payload.approved_at = new Date().toISOString();
+      if (changes.status === 'approved') {
+        const { data: authData } = await supabase.auth.getUser();
+        payload.approved_at = new Date().toISOString();
+        payload.approved_by = authData.user?.id || null;
+      }
       const { error } = await supabase.from('profiles').update(payload).eq('id', id);
       if (error) {
         setAdminMessage('No se ha podido guardar el cambio.');
@@ -290,27 +316,37 @@ function AdminPanel() {
     setMembers((current) => current.map((member) => member.id === id ? { ...member, ...changes } : member));
   };
   const pending = members.filter((member) => member.status === 'pending').length;
+  const visibleMembers = filter === 'all' ? members : members.filter((member) => member.status === filter);
 
   return (
     <section className="admin-panel">
       <div className="dashboard-title">
         <div><p className="eyebrow">Administración</p><h1>Gestión de socios</h1><p>Aprueba accesos y decide quién puede publicar salidas.</p></div>
-        <span className="pending-summary"><Clock3 size={18} /> {pending} solicitud{pending === 1 ? '' : 'es'} pendiente{pending === 1 ? '' : 's'}</span>
+        <span className="pending-summary"><Bell size={18} /> {pending} solicitud{pending === 1 ? '' : 'es'} pendiente{pending === 1 ? '' : 's'}</span>
+      </div>
+      <div className="admin-toolbar">
+        <div className="admin-filters" aria-label="Filtrar socios">
+          <button className={filter === 'pending' ? 'active' : ''} onClick={() => setFilter('pending')}>Pendientes <span>{pending}</span></button>
+          <button className={filter === 'approved' ? 'active' : ''} onClick={() => setFilter('approved')}>Aprobados</button>
+          <button className={filter === 'rejected' ? 'active' : ''} onClick={() => setFilter('rejected')}>Rechazados</button>
+          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>Todos</button>
+        </div>
+        {sociosEnabled && <button className="refresh-button" onClick={loadMembers} disabled={loadingMembers}><RefreshCw size={16} /> Actualizar</button>}
       </div>
       {adminMessage && <p className="form-error">{adminMessage}</p>}
       {loadingMembers && <div className="list-loading">Cargando solicitudes…</div>}
-      {!loadingMembers && !members.length && <div className="list-loading">Todavía no hay solicitudes de alta.</div>}
+      {!loadingMembers && !visibleMembers.length && <div className="list-loading">No hay socios en este estado.</div>}
       <div className="member-list">
-        {members.map((member) => (
+        {visibleMembers.map((member) => (
           <article className="member-row" key={member.id}>
-            <div className="member-person"><div className="avatar avatar--light">{member.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{member.name}</strong><span>{member.email}</span></div></div>
+            <div className="member-person"><div className="avatar avatar--light">{member.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{member.name}</strong><span>{member.email}</span><small>Solicitud: {formatRequestDate(member.created_at)}</small></div></div>
             <span className={`status status--${member.status}`}>{STATUS_LABELS[member.status]}</span>
-            {member.status === 'approved' ? (
+            {member.role === 'admin' ? <span className="admin-protected"><ShieldCheck size={15} /> Administrador</span> : member.status === 'approved' ? (
               <label className="role-select">Permiso<select value={member.role} onChange={(event) => update(member.id, { role: event.target.value })}><option value="member">Socio</option><option value="organizer">Organizador</option></select></label>
             ) : <span className="role-empty">Sin permisos</span>}
             <div className="member-actions">
               {member.status === 'pending' && <><button className="approve" onClick={() => update(member.id, { status: 'approved' })}><Check size={17} /> Aprobar</button><button className="reject" title="Rechazar" onClick={() => update(member.id, { status: 'rejected' })}><X size={18} /></button></>}
-              {member.status === 'approved' && <button className="text-button" onClick={() => update(member.id, { status: 'pending', role: 'member' })}>Retirar acceso</button>}
+              {member.status === 'approved' && member.role !== 'admin' && <button className="text-button" onClick={() => update(member.id, { status: 'pending', role: 'member' })}>Retirar acceso</button>}
               {member.status === 'rejected' && <button className="text-button" onClick={() => update(member.id, { status: 'pending' })}>Revisar de nuevo</button>}
             </div>
           </article>
@@ -331,7 +367,7 @@ function Dashboard({ initialRole, liveProfile, onLogout }) {
   return (
     <div className="app-shell">
       <DashboardHeader profile={profile} role={role} setRole={setRole} onLogout={onLogout} />
-      <main className="dashboard-main">{role === 'admin' ? <AdminPanel /> : <MemberHome role={role} />}</main>
+      <main className="dashboard-main">{role === 'admin' ? <AdminPanel /> : <MemberHome role={role} profile={profile} />}</main>
     </div>
   );
 }
@@ -344,6 +380,7 @@ function App() {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(sociosEnabled);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
 
   useEffect(() => {
     if (!sociosEnabled) return undefined;
@@ -368,11 +405,13 @@ function App() {
       setLoading(false);
       if (error || !data) {
         setPendingName(session.user.user_metadata?.full_name || 'Nuevo socio');
+        setNeedsEmailConfirmation(false);
         setScreen('pending');
         return;
       }
       if (data.status !== 'approved') {
         setPendingName(data.full_name || 'Nuevo socio');
+        setNeedsEmailConfirmation(false);
         setScreen('pending');
         return;
       }
@@ -384,10 +423,10 @@ function App() {
 
   const content = useMemo(() => {
     if (loading) return <div className="loading-screen"><Brand /><span>Cargando el área de socios…</span></div>;
-    if (screen === 'pending') return <PendingView name={pendingName} onBack={() => setScreen('auth')} />;
+    if (screen === 'pending') return <PendingView name={pendingName} needsEmailConfirmation={needsEmailConfirmation} onLogout={async () => { if (sociosEnabled) await supabase.auth.signOut(); setSession(null); setScreen('auth'); }} />;
     if (screen === 'dashboard') return <Dashboard initialRole={role} liveProfile={profile} onLogout={async () => { if (sociosEnabled) await supabase.auth.signOut(); setScreen('auth'); }} />;
-    return <AuthForm mode={mode} setMode={setMode} onPending={(name) => { setPendingName(name); setScreen('pending'); }} onDemo={(nextRole) => { setRole(nextRole); setScreen('dashboard'); }} onLiveSession={setSession} />;
-  }, [loading, screen, pendingName, mode, role, profile]);
+    return <AuthForm mode={mode} setMode={setMode} onPending={(name, confirmationRequired = false) => { setPendingName(name); setNeedsEmailConfirmation(confirmationRequired); setScreen('pending'); }} onDemo={(nextRole) => { setRole(nextRole); setScreen('dashboard'); }} onLiveSession={setSession} />;
+  }, [loading, screen, pendingName, needsEmailConfirmation, mode, role, profile]);
 
   return content;
 }

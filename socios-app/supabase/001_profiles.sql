@@ -1,4 +1,4 @@
--- Fase 1 · Acceso y permisos del área de socios
+-- Fase 1 · Acceso, aprobación y permisos del área de socios
 -- Ejecutar una sola vez en el SQL Editor del proyecto Supabase.
 
 do $$ begin
@@ -23,6 +23,9 @@ create table if not exists public.profiles (
   approved_by uuid references auth.users(id)
 );
 
+create index if not exists profiles_status_created_at_idx
+  on public.profiles (status, created_at desc);
+
 alter table public.profiles enable row level security;
 
 create or replace function public.is_club_admin()
@@ -34,9 +37,14 @@ set search_path = public
 as $$
   select exists (
     select 1 from public.profiles
-    where id = auth.uid() and status = 'approved' and role = 'admin'
+    where id = (select auth.uid())
+      and status = 'approved'
+      and role = 'admin'
   );
 $$;
+
+revoke all on function public.is_club_admin() from public;
+grant execute on function public.is_club_admin() to authenticated;
 
 create or replace function public.handle_new_club_member()
 returns trigger
@@ -65,21 +73,35 @@ drop policy if exists "members_read_own_profile" on public.profiles;
 create policy "members_read_own_profile"
   on public.profiles for select
   to authenticated
-  using (id = auth.uid() or public.is_club_admin());
+  using (id = (select auth.uid()) or public.is_club_admin());
 
 drop policy if exists "admins_manage_profiles" on public.profiles;
 create policy "admins_manage_profiles"
   on public.profiles for update
   to authenticated
-  using (public.is_club_admin())
-  with check (public.is_club_admin());
+  using (
+    public.is_club_admin()
+    and id <> (select auth.uid())
+    and role <> 'admin'
+  )
+  with check (
+    public.is_club_admin()
+    and id <> (select auth.uid())
+    and role <> 'admin'
+  );
 
+revoke all on public.profiles from anon;
+revoke all on public.profiles from authenticated;
 grant select on public.profiles to authenticated;
 grant update (status, role, approved_at, approved_by, updated_at) on public.profiles to authenticated;
 
--- Después de registrarte, convierte tu propia cuenta en administradora
--- sustituyendo el correo por el utilizado en el alta:
+-- 1. Regístrate desde la preview con tu correo.
+-- 2. Convierte esa primera cuenta en administradora sustituyendo el correo:
 -- update public.profiles p
--- set status = 'approved', role = 'admin', approved_at = now()
+-- set status = 'approved',
+--     role = 'admin',
+--     approved_at = now(),
+--     updated_at = now()
 -- from auth.users u
--- where p.id = u.id and u.email = 'TU_CORREO';
+-- where p.id = u.id
+--   and lower(u.email) = lower('TU_CORREO');

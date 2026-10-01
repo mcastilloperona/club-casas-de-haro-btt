@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   Bell,
@@ -8,12 +8,14 @@ import {
   ChevronRight,
   Clock3,
   KeyRound,
+  LockKeyhole,
   LogOut,
   Mail,
   MapPin,
   MessageCircle,
   Plus,
   RefreshCw,
+  Send,
   ShieldCheck,
   UserCheck,
   UserRound,
@@ -222,7 +224,81 @@ function Stat({ icon, number, label }) {
   return <div className="stat"><span>{icon}</span><strong>{number}</strong><small>{label}</small></div>;
 }
 
-function NextRideCard({ role }) {
+const DEMO_CHAT_MESSAGES = [
+  { id: 1, name: 'Javier Parreño', initials: 'JP', role: 'Organizador', text: '¡Buenas! Confirmamos salida el domingo a las 8:30 desde el parque.', time: '18:42' },
+  { id: 2, name: 'Gumer López', initials: 'GL', text: 'Perfecto. ¿La hacemos finalmente por Pozoamargo y La Losa?', time: '18:47' },
+  { id: 3, name: 'Álvaro Martínez', initials: 'ÁM', text: 'Por mí sí. Parece que hará fresco a primera hora, llevaré cortavientos.', time: '19:03' },
+  { id: 4, name: 'Javier Parreño', initials: 'JP', role: 'Organizador', text: 'Esa es la idea. Ritmo tranquilo y reagrupamos en los cruces. 🚲', time: '19:08' },
+];
+
+function RouteChat({ profile, onClose }) {
+  const [messages, setMessages] = useState(DEMO_CHAT_MESSAGES);
+  const [text, setText] = useState('');
+  const endRef = useRef(null);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const closeOnEscape = (event) => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [onClose]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+    const cleanText = text.trim();
+    if (!cleanText) return;
+    setMessages((current) => [...current, {
+      id: Date.now(),
+      name: profile.name,
+      initials: profile.name.split(' ').map((part) => part[0]).slice(0, 2).join(''),
+      text: cleanText,
+      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      mine: true,
+    }]);
+    setText('');
+  };
+
+  return (
+    <div className="chat-overlay" role="presentation">
+      <section className="chat-panel" role="dialog" aria-modal="true" aria-labelledby="chat-title">
+        <header className="chat-header">
+          <div className="chat-route-icon"><Bike size={23} /></div>
+          <div><span>Chat de la salida</span><h2 id="chat-title">Casas de Haro · Pozoamargo · La Losa</h2><small><i /> 7 participantes</small></div>
+          <button onClick={onClose} aria-label="Cerrar chat"><X size={21} /></button>
+        </header>
+        <div className="chat-security"><LockKeyhole size={16} /><span>Conversación privada. Solo pueden verla los socios apuntados y el organizador.</span></div>
+        <div className="chat-day"><span>Hoy</span></div>
+        <div className="chat-messages" aria-live="polite">
+          {messages.map((message) => (
+            <article className={`chat-message ${message.mine ? 'chat-message--mine' : ''}`} key={message.id}>
+              {!message.mine && <div className="chat-avatar">{message.initials}</div>}
+              <div className="chat-bubble">
+                <div className="chat-author"><strong>{message.mine ? 'Tú' : message.name}</strong>{message.role && <span>{message.role}</span>}<time>{message.time}</time></div>
+                <p>{message.text}</p>
+              </div>
+            </article>
+          ))}
+          <div ref={endRef} />
+        </div>
+        <div className="chat-demo-note">Demostración: los mensajes se borrarán al recargar la página.</div>
+        <form className="chat-composer" onSubmit={sendMessage}>
+          <input autoFocus value={text} onChange={(event) => setText(event.target.value)} maxLength={500} placeholder="Escribe un mensaje…" aria-label="Escribe un mensaje" />
+          <button disabled={!text.trim()} aria-label="Enviar mensaje"><Send size={19} /></button>
+        </form>
+      </section>
+    </div>
+  );
+}
+
+function NextRideCard({ role, onOpenChat, unreadMessages }) {
   return (
     <article className="ride-card">
       <div className="ride-card__top">
@@ -238,7 +314,7 @@ function NextRideCard({ role }) {
       </div>
       <div className="ride-actions">
         <button className="primary-button">Me apunto <ChevronRight size={18} /></button>
-        <button className="icon-button" title="Conversación de la salida"><MessageCircle size={19} /><span>Chat</span></button>
+        <button className="icon-button" title="Conversación de la salida" onClick={onOpenChat}><MessageCircle size={19} /><span>Chat</span>{unreadMessages > 0 && <b className="chat-badge">{unreadMessages}</b>}</button>
         {(role === 'organizer' || role === 'admin') && <button className="text-button">Editar salida</button>}
       </div>
       <div className="attendees"><Users size={17} /><span><strong>7 socios</strong> apuntados</span><div className="mini-avatars"><i>JM</i><i>GM</i><i>ÁM</i><i>+4</i></div></div>
@@ -247,6 +323,14 @@ function NextRideCard({ role }) {
 }
 
 function MemberHome({ role, profile }) {
+  const [chatOpen, setChatOpen] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(3);
+
+  const openChat = () => {
+    setUnreadMessages(0);
+    setChatOpen(true);
+  };
+
   return (
     <>
       <div className="dashboard-title">
@@ -256,13 +340,14 @@ function MemberHome({ role, profile }) {
       <div className="stats-grid">
         <Stat icon={<CalendarDays size={22} />} number="1" label="Próxima salida" />
         <Stat icon={<Users size={22} />} number="7" label="Participantes" />
-        <Stat icon={<MessageCircle size={22} />} number="3" label="Mensajes nuevos" />
+        <Stat icon={<MessageCircle size={22} />} number={unreadMessages} label="Mensajes nuevos" />
       </div>
       <section className="content-section">
         <div className="section-heading"><div><p className="eyebrow">Salidas del club</p><h2>Próximas rutas</h2></div><button className="text-button">Ver todas <ChevronRight size={17} /></button></div>
-        <NextRideCard role={role} />
+        <NextRideCard role={role} onOpenChat={openChat} unreadMessages={unreadMessages} />
       </section>
-      <div className="phase-note"><ShieldCheck size={22} /><div><strong>Fase de acceso y permisos</strong><p>La publicación real de rutas, las inscripciones y el chat se activarán en las siguientes fases.</p></div></div>
+      <div className="phase-note"><ShieldCheck size={22} /><div><strong>Chat en demostración</strong><p>Puedes probar la conversación de esta salida. Los mensajes todavía no se guardan ni se envían a otros socios.</p></div></div>
+      {chatOpen && <RouteChat profile={profile} onClose={() => setChatOpen(false)} />}
     </>
   );
 }

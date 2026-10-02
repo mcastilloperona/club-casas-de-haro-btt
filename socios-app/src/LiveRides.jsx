@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Bell, Bike, CalendarDays, Clock3, MapPin, MessageCircle, Plus, RefreshCw, Send, Users, X } from 'lucide-react';
+import { Bell, Bike, CalendarDays, Clock3, MapPin, MessageCircle, Plus, RefreshCw, Send, Trash2, Users, X } from 'lucide-react';
 import { supabase } from './supabase';
 import { madridInput, madridToISO, rideAccess, rideError } from './ride-utils';
 
@@ -179,6 +179,21 @@ export default function LiveRides({ role, profile }) {
   const statusChange = (ride, status) => mutate(ride.id, async () => {
     const { error: failure } = await supabase.from('club_rides').update({ status }).eq('id', ride.id).select('id').single(); if (failure) throw failure;
   });
+  const deleteRide = ride => {
+    if (role !== 'admin' || busy) return;
+    const confirmed = window.confirm(`¿Eliminar definitivamente “${ride.title}”?\n\nTambién se borrarán las inscripciones, el chat y los avisos asociados. Esta acción no se puede deshacer.`);
+    if (!confirmed) return;
+    mutate(ride.id, async () => {
+      const { error: failure } = await supabase.from('club_rides').delete().eq('id', ride.id).select('id').single();
+      if (failure) throw failure;
+      setUnread(current => {
+        const next = { ...current };
+        delete next[ride.id];
+        return next;
+      });
+      if (chatId === ride.id) setChatId(null);
+    });
+  };
   const visible = rides.filter(r => filter === 'upcoming' ? r.status === 'active' && new Date(r.starts_at) > new Date() : r.status !== 'active' || new Date(r.starts_at) <= new Date());
   const chatRide = rides.find(r => r.id === chatId);
   const chatMembers = members.filter(m => m.ride_id === chatId);
@@ -218,6 +233,7 @@ export default function LiveRides({ role, profile }) {
           {access.canManage && <>
             {ride.status === 'active' && new Date(ride.starts_at) > new Date() && <button className="text-button" onClick={() => setEditor(ride)}>Editar salida</button>}
             {ride.status === 'active' ? <><button className="text-button" disabled={Boolean(busy)} onClick={() => statusChange(ride, 'archived')}>Archivar y cerrar chat</button><button className="text-button" disabled={Boolean(busy)} onClick={() => statusChange(ride, 'cancelled')}>Cancelar salida</button></> : <button className="text-button" disabled={Boolean(busy)} onClick={() => statusChange(ride, 'active')}>Reactivar salida</button>}
+            {role === 'admin' && <button className="text-button text-button--danger" disabled={Boolean(busy)} onClick={() => deleteRide(ride)}><Trash2 size={16} /> Eliminar definitivamente</button>}
           </>}
           {access.canManage && <a className="text-button" href={`https://wa.me/?text=${encodeURIComponent(`${ride.title}\n${formatDate(ride.starts_at)} · Madrid\nEncuentro: ${ride.meeting_point}\nApúntate en https://casasdeharobtt.es/socios/?ride=${ride.id}`)}`} target="_blank" rel="noopener noreferrer">Compartir por WhatsApp</a>}
         </div>

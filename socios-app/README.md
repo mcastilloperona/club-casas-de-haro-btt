@@ -71,3 +71,5 @@ Para activarlos hay que desplegar `notify-membership`, configurar los secretos `
 ## Compilación
 
 `npm run build` genera la preview dentro de `../v14/socios/`.
+
+- Los administradores pueden eliminar definitivamente una salida; el borrado elimina también inscripciones, mensajes y avisos asociados mediante cascada en base de datos. Los organizadores no tienen permiso de borrado.

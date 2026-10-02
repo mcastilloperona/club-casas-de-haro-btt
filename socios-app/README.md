@@ -5,7 +5,9 @@ Aplicación React para el área privada del club.
 ## Estado
 
 - Producción (`/socios/`): mantiene el cartel de «En construcción».
-- Preview (`/v14/socios/`): fase 1 de acceso, aprobación y roles.
+- Preview (`/v14/socios/`): fase 1 de acceso, aprobación y roles; compilación conectada al proyecto `tjdtbsroqpbpkyysqjuv`.
+- La tabla actual utiliza `name` y las columnas `id`, `email`, `status`, `role`, `created_at`, `updated_at`. Las actualizaciones no requieren `approved_at` ni `approved_by`.
+- En modo conectado no se muestran salidas ni chat de demostración. Esas funciones y los avisos por correo aún están pendientes de activación.
 - Con `VITE_SOCIOS_ENABLED=false`, la preview funciona con datos de demostración.
 - Con `VITE_SOCIOS_ENABLED=true`, utiliza Supabase Auth y la tabla `profiles`.
 
@@ -16,6 +18,12 @@ Aplicación React para el área privada del club.
 3. Ejecutar `npm run dev`.
 
 ## Base de datos
+
+La migración `001_profiles.sql` es la propuesta original con `full_name`; no ejecutarla sobre el nuevo proyecto sin reconciliar antes la estructura y las políticas existentes. El nuevo proyecto ya tiene una migración distinta con `name`, ejecutada desde el panel por el propietario. Antes de abrir producción, verificar su trigger de alta y sus políticas RLS con pruebas de permisos.
+
+Para reproducir la compilación conectada, configurar `.env.local` con la URL y clave pública del proyecto nuevo y `VITE_SOCIOS_ENABLED=true`. La clave pública se incorpora al cliente; nunca usar claves secretas o `service_role`.
+
+Las instrucciones siguientes describen el esquema original y deben adaptarse antes de volver a utilizarlas:
 
 1. Ejecutar `supabase/001_profiles.sql` en el SQL Editor de Supabase.
 2. Registrarse desde la preview con la cuenta que administrará el club.

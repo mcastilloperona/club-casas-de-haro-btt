@@ -108,7 +108,7 @@ function AuthForm({ mode, setMode, onDemo, onPending, onLiveSession }) {
           email: form.email,
           password: form.password,
           options: {
-            data: { full_name: form.name },
+            data: { name: form.name, full_name: form.name },
             emailRedirectTo: `${window.location.origin}/v14/socios/`,
           },
         });
@@ -331,6 +331,13 @@ function MemberHome({ role, profile }) {
     setChatOpen(true);
   };
 
+  if (sociosEnabled) return (
+    <section className="content-section">
+      <div className="dashboard-title"><div><p className="eyebrow">Área privada · Validación</p><h1>Bienvenido, {profile.name.split(' ')[0]}</h1><p>Tu acceso como {ROLE_LABELS[role].toLowerCase()} está aprobado.</p></div></div>
+      <div className="phase-note"><ShieldCheck size={22} /><div><strong>Acceso de socios activado</strong><p>Las salidas, inscripciones y conversaciones se habilitarán cuando estén conectadas y verificadas. Los avisos por correo del club aún no están activos.</p></div></div>
+    </section>
+  );
+
   return (
     <>
       <div className="dashboard-title">
@@ -368,7 +375,7 @@ function AdminPanel() {
     setLoadingMembers(true);
     const { data, error } = await supabase
       .from('profiles')
-      .select('id,full_name,email,status,role,created_at')
+      .select('id,name,email,status,role,created_at')
       .order('created_at', { ascending: false });
     setLoadingMembers(false);
     if (error) {
@@ -376,7 +383,7 @@ function AdminPanel() {
       return;
     }
     setAdminMessage('');
-    setMembers((data || []).map((member) => ({ ...member, name: member.full_name })));
+    setMembers(data || []);
   };
 
   useEffect(() => {
@@ -386,13 +393,8 @@ function AdminPanel() {
   const update = async (id, changes) => {
     if (sociosEnabled) {
       const payload = { ...changes, updated_at: new Date().toISOString() };
-      if (changes.status === 'approved') {
-        const { data: authData } = await supabase.auth.getUser();
-        payload.approved_at = new Date().toISOString();
-        payload.approved_by = authData.user?.id || null;
-      }
-      const { error } = await supabase.from('profiles').update(payload).eq('id', id);
-      if (error) {
+      const { data, error } = await supabase.from('profiles').update(payload).eq('id', id).select('id').single();
+      if (error || !data) {
         setAdminMessage('No se ha podido guardar el cambio.');
         return;
       }
@@ -466,6 +468,7 @@ function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(sociosEnabled);
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
+  const [profileError, setProfileError] = useState('');
 
   useEffect(() => {
     if (!sociosEnabled) return undefined;
@@ -486,21 +489,26 @@ function App() {
   useEffect(() => {
     if (!sociosEnabled || !session?.user) return;
     setLoading(true);
-    supabase.from('profiles').select('full_name,status,role').eq('id', session.user.id).single().then(({ data, error }) => {
+    setProfileError('');
+    supabase.from('profiles').select('name,status,role').eq('id', session.user.id).single().then(({ data, error }) => {
       setLoading(false);
       if (error || !data) {
-        setPendingName(session.user.user_metadata?.full_name || 'Nuevo socio');
-        setNeedsEmailConfirmation(false);
-        setScreen('pending');
+        setProfileError('No se ha podido consultar tu perfil. Contacta con el administrador del club para revisar el alta.');
+        setScreen('profile-error');
         return;
       }
       if (data.status !== 'approved') {
-        setPendingName(data.full_name || 'Nuevo socio');
+        if (data.status === 'rejected') {
+          setProfileError('Tu solicitud no ha sido aprobada. Contacta con el administrador del club si quieres que la revise.');
+          setScreen('profile-error');
+          return;
+        }
+        setPendingName(data.name || 'Nuevo socio');
         setNeedsEmailConfirmation(false);
         setScreen('pending');
         return;
       }
-      setProfile({ name: data.full_name || session.user.email, email: session.user.email });
+      setProfile({ name: data.name || session.user.email, email: session.user.email });
       setRole(data.role || 'member');
       setScreen('dashboard');
     });
@@ -508,10 +516,11 @@ function App() {
 
   const content = useMemo(() => {
     if (loading) return <div className="loading-screen"><Brand /><span>Cargando el área de socios…</span></div>;
+    if (screen === 'profile-error') return <AuthShell><section className="state-card"><h2>Revisión del acceso</h2><p role="alert">{profileError}</p><button className="secondary-button" onClick={async () => { await supabase.auth.signOut(); setScreen('auth'); }}>Volver al acceso</button></section></AuthShell>;
     if (screen === 'pending') return <PendingView name={pendingName} needsEmailConfirmation={needsEmailConfirmation} onLogout={async () => { if (sociosEnabled) await supabase.auth.signOut(); setSession(null); setScreen('auth'); }} />;
     if (screen === 'dashboard') return <Dashboard initialRole={role} liveProfile={profile} onLogout={async () => { if (sociosEnabled) await supabase.auth.signOut(); setScreen('auth'); }} />;
     return <AuthForm mode={mode} setMode={setMode} onPending={(name, confirmationRequired = false) => { setPendingName(name); setNeedsEmailConfirmation(confirmationRequired); setScreen('pending'); }} onDemo={(nextRole) => { setRole(nextRole); setScreen('dashboard'); }} onLiveSession={setSession} />;
-  }, [loading, screen, pendingName, needsEmailConfirmation, mode, role, profile]);
+  }, [loading, screen, pendingName, needsEmailConfirmation, mode, role, profile, profileError]);
 
   return content;
 }

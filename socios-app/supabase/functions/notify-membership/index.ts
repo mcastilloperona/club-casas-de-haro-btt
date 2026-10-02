@@ -1,5 +1,5 @@
 type MemberRecord = {
-  full_name?: string;
+  name?: string;
   email?: string;
   status?: 'pending' | 'approved' | 'rejected';
 };
@@ -56,7 +56,7 @@ Deno.serve(async (request) => {
     }
 
     const member = payload.record;
-    const name = escapeHtml(member.full_name || 'Nuevo socio');
+    const name = escapeHtml(member.name || 'Nuevo socio');
     const email = escapeHtml(member.email || '');
     const siteUrl = Deno.env.get('SITE_URL') || 'https://casasdeharobtt.es';
 
@@ -66,7 +66,7 @@ Deno.serve(async (request) => {
       await sendEmail(
         adminEmail,
         'Nueva solicitud de alta en el Club Casas de Haro BTT',
-        `<h2>Nueva solicitud de alta</h2><p><strong>${name}</strong> ha solicitado acceso al área de socios.</p><p>${email}</p><p><a href="${siteUrl}/v14/socios/">Revisar solicitud</a></p>`,
+        `<h2>Nueva solicitud de alta</h2><p><strong>${name}</strong> ha solicitado acceso al área de socios.</p><p>${email}</p><p><a href="${siteUrl}/socios/">Revisar solicitud</a></p>`,
       );
       return new Response(JSON.stringify({ sent: 'admin' }), { headers: jsonHeaders });
     }
@@ -79,7 +79,7 @@ Deno.serve(async (request) => {
       await sendEmail(
         member.email,
         'Tu acceso al Club Casas de Haro BTT ha sido aprobado',
-        `<h2>Bienvenido al área de socios</h2><p>Hola, ${name}. Tu solicitud ha sido aprobada.</p><p><a href="${siteUrl}/v14/socios/">Entrar en el área de socios</a></p>`,
+        `<h2>Bienvenido al área de socios</h2><p>Hola, ${name}. Tu solicitud ha sido aprobada.</p><p><a href="${siteUrl}/socios/">Entrar en el área de socios</a></p>`,
       );
       return new Response(JSON.stringify({ sent: 'member' }), { headers: jsonHeaders });
     }

@@ -6,6 +6,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 
 // Renderiza el componente real; solo se sustituye el transporte a Supabase.
 globalThis.document = { body: { style: {} }, activeElement: null, addEventListener() {}, removeEventListener() {} };
+globalThis.window = { location: { search: '' } };
 const future = '2099-10-04T06:30:00.000Z';
 globalThis.__ridesFixture = {
   club_rides: [{ id:'ride1',organizer_id:'org',organizer_name:'Organizador',title:'Ruta del domingo',description:'Ritmo tranquilo',starts_at:future,meeting_point:'Parque',discipline:'BTT',difficulty:'Medio',distance_km:null,status:'active' }],
@@ -48,7 +49,11 @@ assert.equal(button('Chat'),undefined);
 await click('Me apunto');
 assert.ok(button('Chat'));
 assert.ok(button('Darme de baja'));
+globalThis.__ridesFixture.club_ride_messages.push({id:'msg-other',ride_id:'ride1',user_id:'org',author_name:'Organizador',body:'Mensaje nuevo',created_at:new Date().toISOString()});
+await click('Actualizar');
+assert.ok(text(renderer.toJSON()).includes('Tienes nuevos mensajes'));
 await click('Chat');
+assert.ok(!text(renderer.toJSON()).includes('Tienes nuevos mensajes'));
 const message = renderer.root.findByProps({'aria-label':'Mensaje'});
 await act(async()=>message.props.onChange({target:{value:'Hola al grupo'}}));
 await act(async()=>{await renderer.root.findByProps({className:'chat-composer'}).props.onSubmit({preventDefault(){}})});

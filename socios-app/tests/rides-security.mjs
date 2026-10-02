@@ -6,7 +6,7 @@ import { madridToISO, madridInput, rideAccess } from '../src/ride-utils.js';
 
 const db = new PGlite();
 const ids = Object.fromEntries(['admin','organizer','other','member','outsider','pending'].map((role, i) => [role, `00000000-0000-0000-0000-${String(i + 1).padStart(12, '0')}`]));
-await db.exec(`create role anon; create role authenticated; create schema auth;
+await db.exec(`create role anon; create role authenticated; create role service_role bypassrls; create schema auth;
 create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
 create table public.profiles(id uuid primary key,name text,email text,status text,role text,created_at timestamptz default now(),updated_at timestamptz default now());
 insert into public.profiles(id,name,email,status,role) values ${Object.entries(ids).map(([key,id]) => `('${id}','${key}','${key}@example.test','${key === 'pending' ? 'pending' : 'approved'}','${['admin','organizer'].includes(key) ? key : key === 'other' ? 'organizer' : 'member'}')`).join(',')};
@@ -17,7 +17,7 @@ await db.exec(migration); // Se puede repetir sin borrar datos.
 async function asUser(user, query) {
   await db.exec('reset role');
   await db.query("select set_config('request.jwt.claim.sub',$1,false)", [ids[user] || '']);
-  await db.exec(`set role ${user === 'anon' ? 'anon' : 'authenticated'}`);
+  await db.exec(`set role ${['anon','service_role'].includes(user) ? user : 'authenticated'}`);
   return db.query(query);
 }
 let checks = 0;
@@ -98,4 +98,34 @@ assert.equal(rideAccess(sample,{id:ids.member},'member',[{user_id:ids.member}]).
 assert.equal(rideAccess(sample,{id:ids.other},'organizer',[]).canManage,false);
 assert.equal(rideAccess(sample,{id:ids.admin},'admin',[]).canManage,true);
 console.log(`${checks} comprobaciones SQL/RLS y 10 de fecha/permisos de interfaz superadas.`);
+await db.exec('reset role');
+const notifications = await readFile(new URL('../supabase/003_email_notifications.sql', import.meta.url), 'utf8');
+await db.exec(notifications);
+await db.exec(notifications);
+const [noticeRide] = await rows('organizer',createRide,1);
+const noticeJoin = user => `insert into public.club_ride_members(ride_id,user_id) values('${noticeRide.id}','${ids[user]}') returning user_id`;
+await rows('outsider',noticeJoin('outsider'),1);
+await rows('admin',noticeJoin('admin'),1);
+const noticeSend = `insert into public.club_ride_messages(ride_id,user_id,body) values('${noticeRide.id}','${ids.organizer}','Un aviso') returning id`;
+await rows('organizer',noticeSend,1);
+await rows('organizer',noticeSend,1);
+await denied('member','select * from public.club_notification_jobs');
+await denied('admin','select * from public.club_notification_jobs');
+await denied('admin','select * from public.club_claim_notifications(20)');
+const queued = await asUser('service_role','select * from public.club_notification_jobs');
+assert.equal(queued.rows.filter(j=>j.kind==='ride').length,4);
+assert.equal(queued.rows.filter(j=>j.kind==='chat').length,2);
+await rows('outsider',`delete from public.club_ride_members where ride_id='${noticeRide.id}' returning user_id`,1);
+await asUser('service_role',`update public.club_notification_jobs set due_at=now()-interval '1 minute'`);
+const claimed = await asUser('service_role','select * from public.club_claim_notifications(20)');
+assert.equal(claimed.rows.length,5);
+assert.equal(claimed.rows.filter(j=>j.kind==='chat').length,1);
+assert.equal(claimed.rows.find(j=>j.kind==='chat').recipient_id,ids.admin);
+assert.ok(claimed.rows.every(j=>j.token && j.email));
+assert.equal((await asUser('service_role','select * from public.club_claim_notifications(20)')).rows.length,0);
+await asUser('service_role',`update public.club_notification_jobs set locked_until=now()-interval '1 minute' where state='processing'`);
+const retried = await asUser('service_role','select * from public.club_claim_notifications(20)');
+assert.equal(retried.rows.length,5);
+assert.notEqual(retried.rows[0].token,claimed.rows.find(j=>j.job_id===retried.rows[0].job_id).token);
+console.log('Cola de correos: permisos, agrupación, baja, exclusión del autor y reclamación/reintento superados.');
 await db.close();

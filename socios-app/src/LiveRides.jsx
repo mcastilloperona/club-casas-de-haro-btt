@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Bike, CalendarDays, Clock3, MapPin, MessageCircle, Plus, RefreshCw, Send, Users, X } from 'lucide-react';
+import { Bell, Bike, CalendarDays, Clock3, MapPin, MessageCircle, Plus, RefreshCw, Send, Users, X } from 'lucide-react';
 import { supabase } from './supabase';
 import { madridInput, madridToISO, rideAccess, rideError } from './ride-utils';
 
@@ -126,6 +126,10 @@ export default function LiveRides({ role, profile }) {
   const [editor, setEditor] = useState(null);
   const [chatId, setChatId] = useState(null);
   const [filter, setFilter] = useState('upcoming');
+  const [unread, setUnread] = useState({});
+  const seen = useRef(new Set());
+  const hydrated = useRef(false);
+  const openChatRef = useRef(null);
   const loadingRef = useRef(false);
   const mounted = useRef(true);
   const load = useCallback(async () => {
@@ -135,13 +139,27 @@ export default function LiveRides({ role, profile }) {
       const results = await Promise.all([
         supabase.from('club_rides').select('*').order('starts_at', { ascending: true }),
         supabase.from('club_ride_members').select('ride_id,user_id,name,created_at'),
+        supabase.from('club_ride_messages').select('id,ride_id,user_id,created_at').order('created_at', { ascending: false }).limit(200),
       ]);
       if (!mounted.current) return;
       for (const result of results) if (result.error) throw result.error;
       setRides(results[0].data || []); setMembers(results[1].data || []); setError('');
+      const added = {};
+      for (const message of results[2].data || []) {
+        if (hydrated.current && !seen.current.has(message.id) && message.user_id !== profile.id && message.ride_id !== openChatRef.current) {
+          added[message.ride_id] = (added[message.ride_id] || 0) + 1;
+        }
+        seen.current.add(message.id);
+      }
+      hydrated.current = true;
+      if (Object.keys(added).length) setUnread(current => {
+        const next = { ...current };
+        for (const [id, count] of Object.entries(added)) next[id] = (next[id] || 0) + count;
+        return next;
+      });
     } catch (failure) { if (mounted.current) { setError(rideError(failure)); setRides([]); setMembers([]); } }
     finally { loadingRef.current = false; if (mounted.current) setLoading(false); }
-  }, []);
+  }, [profile.id]);
   useEffect(() => {
     mounted.current = true; load();
     const timer = setInterval(load, 10000);
@@ -167,12 +185,23 @@ export default function LiveRides({ role, profile }) {
   const chatAccess = chatRide && rideAccess(chatRide, profile, role, chatMembers).canChat;
   const closeEditor = useCallback(() => setEditor(null), []);
   const closeChat = useCallback(() => setChatId(null), []);
+  const openChat = id => { openChatRef.current = id; setUnread(v => ({ ...v, [id]: 0 })); setChatId(id); };
+  useEffect(() => { openChatRef.current = chatId; }, [chatId]);
+  useEffect(() => {
+    if (!loading && rides.length) {
+      const id = new URLSearchParams(window.location.search).get('ride');
+      const selected = rides.find(r => r.id === id);
+      if (selected) setFilter(selected.status !== 'active' || new Date(selected.starts_at) <= new Date() ? 'history' : 'upcoming');
+    }
+  }, [loading]);
+  const alerts = rides.filter(r => unread[r.id] && rideAccess(r, profile, role, members.filter(m => m.ride_id === r.id)).canChat);
   return <section className="live-rides">
     <div className="dashboard-title"><div><p className="eyebrow">Área privada · Salidas del club</p><h1>Bienvenido, {profile.name.split(' ')[0]}</h1><p>Encuentra tu próxima ruta y conversa con el grupo.</p></div>
       {['admin','organizer'].includes(role) && <button className="primary-button" onClick={() => setEditor({})}><Plus size={19} /> Publicar una salida</button>}
     </div>
     <div className="admin-toolbar"><div className="admin-filters"><button className={filter === 'upcoming' ? 'active' : ''} onClick={() => setFilter('upcoming')}>Próximas salidas</button><button className={filter === 'history' ? 'active' : ''} onClick={() => setFilter('history')}>Historial</button></div><button className="refresh-button" onClick={load} disabled={loading}><RefreshCw size={16} /> Actualizar</button></div>
     {error && <p className="form-error" role="alert">{error}</p>}
+    {alerts.length > 0 && <div className="message-alert" role="status"><Bell size={20} /><div><strong>Tienes nuevos mensajes</strong>{alerts.map(r => <button key={r.id} className="text-button" onClick={() => openChat(r.id)}>{r.title} · {unread[r.id]} nuevo{unread[r.id] === 1 ? '' : 's'}</button>)}</div></div>}
     {loading && <p className="list-loading">Cargando salidas…</p>}
     {!loading && !error && !visible.length && <div className="list-loading">{filter === 'upcoming' ? 'No hay próximas salidas publicadas.' : 'Todavía no hay salidas en el historial.'}</div>}
     <div className="live-rides-grid">{visible.map(ride => {
@@ -185,17 +214,18 @@ export default function LiveRides({ role, profile }) {
         <p className="ride-organizer">Organiza: {ride.organizer_name} {ride.status !== 'active' && `· ${ride.status === 'archived' ? 'Archivada' : 'Cancelada'}`}</p>
         <div className="ride-actions">
           {access.canJoin && <button className={access.joined ? 'secondary-button' : 'primary-button'} disabled={Boolean(busy)} onClick={() => enrollment(ride, access.joined)}>{busy === ride.id ? 'Guardando…' : access.joined ? 'Ya estoy apuntado · Darme de baja' : 'Me apunto'}</button>}
-          {access.canChat && <button className="icon-button" onClick={() => setChatId(ride.id)}><MessageCircle size={18} /> Chat</button>}
+          {access.canChat && <button className="icon-button" onClick={() => openChat(ride.id)}><MessageCircle size={18} /> Chat {unread[ride.id] > 0 && <b className="chat-badge">{unread[ride.id]}</b>}</button>}
           {access.canManage && <>
             {ride.status === 'active' && new Date(ride.starts_at) > new Date() && <button className="text-button" onClick={() => setEditor(ride)}>Editar salida</button>}
             {ride.status === 'active' ? <><button className="text-button" disabled={Boolean(busy)} onClick={() => statusChange(ride, 'archived')}>Archivar y cerrar chat</button><button className="text-button" disabled={Boolean(busy)} onClick={() => statusChange(ride, 'cancelled')}>Cancelar salida</button></> : <button className="text-button" disabled={Boolean(busy)} onClick={() => statusChange(ride, 'active')}>Reactivar salida</button>}
           </>}
+          {access.canManage && <a className="text-button" href={`https://wa.me/?text=${encodeURIComponent(`${ride.title}\n${formatDate(ride.starts_at)} · Madrid\nEncuentro: ${ride.meeting_point}\nApúntate en https://casasdeharobtt.es/socios/?ride=${ride.id}`)}`} target="_blank" rel="noopener noreferrer">Compartir por WhatsApp</a>}
         </div>
         <details className="ride-attendees"><summary><Users size={17} /> {attendees.length} socio{attendees.length === 1 ? '' : 's'} apuntado{attendees.length === 1 ? '' : 's'}</summary><ul>{attendees.map(m => <li key={m.user_id}>{m.name}</li>)}</ul></details>
         {!access.canChat && ride.status === 'active' && <small className="chat-access-note">Apúntate para acceder al chat de esta salida.</small>}
       </article>;
     })}</div>
-    <p className="live-email-note"><Clock3 size={16} /> Los avisos por correo del club todavía no están activados.</p>
+    <p className="live-email-note"><Clock3 size={16} /> Los avisos de mensajes aparecen mientras tienes abierta esta web. El envío por correo está pendiente de configurar.</p>
     {editor && <RideEditor ride={editor.id ? editor : null} profile={profile} onClose={closeEditor} onSaved={() => { closeEditor(); load(); }} />}
     {chatRide && chatAccess && <LiveChat ride={chatRide} profile={profile} onClose={closeChat} />}
   </section>;

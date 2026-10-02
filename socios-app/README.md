@@ -4,12 +4,18 @@ Aplicación React para el área privada del club.
 
 ## Estado
 
-- Producción (`/socios/`): mantiene el cartel de «En construcción».
+- Producción (`/socios/`): aplicación real de acceso, aprobación, salidas, inscripciones y chat.
 - Preview (`/v14/socios/`): acceso, aprobación, roles, salidas, inscripciones y chat; compilación conectada al proyecto `tjdtbsroqpbpkyysqjuv`.
 - La tabla actual utiliza `name` y las columnas `id`, `email`, `status`, `role`, `created_at`, `updated_at`. Las actualizaciones no requieren `approved_at` ni `approved_by`.
 - En modo conectado se usan exclusivamente las tablas reales. Es necesario activar `supabase/002_live_rides.sql`. Los avisos por correo aún no están configurados.
 - Con `VITE_SOCIOS_ENABLED=false`, la preview funciona con datos de demostración.
 - Con `VITE_SOCIOS_ENABLED=true`, utiliza Supabase Auth y la tabla `profiles`.
+
+`npm run build` genera producción en `/socios/`; `npm run build:preview` genera `/v14/socios/`. Los scripts seleccionan explícitamente `vite.config.mjs` para evitar la configuración JS antigua. Ambas versiones usan los mismos usuarios y datos reales.
+
+Los avisos dentro de la web detectan mensajes de otros usuarios recibidos desde que se abrió la sesión, con contador por salida y aviso superior. No son notificaciones push con la web cerrada. Organizadores y administradores tienen un botón para compartir la salida por WhatsApp; el usuario selecciona el destino y confirma el envío en WhatsApp.
+
+El correo se prepara con `supabase/003_email_notifications.sql` y la función `notify-club`. Ver instrucciones en `supabase/NOTIFICATIONS.md`. La cola tiene destinatarios individuales, agrupación de chat, exclusión del autor, reclamación exclusiva y reintentos; los correos no están activos hasta configurar Resend y Cron. Las nuevas rutas avisan a socios aprobados; los chats avisan a inscritos y organizador. La migración 003 y el worker también se prueban con `npm test` sin enviar correos reales.
 
 ## Desarrollo
 

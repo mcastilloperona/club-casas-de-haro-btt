@@ -56,6 +56,7 @@ function Brand({ compact = false }) {
 }
 
 function PreviewNotice() {
+  if (import.meta.env.BASE_URL === '/socios/') return null;
   return (
     <div className="preview-notice" role="status">
       <span>PREVIEW</span>
@@ -78,7 +79,7 @@ function AuthShell({ children }) {
         </div>
       </div>
       <section className="auth-panel">
-        <a className="back-link" href="../index.html"><ArrowLeft size={17} /> Volver a la preview</a>
+        <a className="back-link" href="../index.html"><ArrowLeft size={17} /> Volver a la web</a>
         <Brand />
         <PreviewNotice />
         {children}
@@ -110,7 +111,7 @@ function AuthForm({ mode, setMode, onDemo, onPending, onLiveSession }) {
           password: form.password,
           options: {
             data: { name: form.name, full_name: form.name },
-            emailRedirectTo: `${window.location.origin}/v14/socios/`,
+            emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
           },
         });
         if (error) throw error;

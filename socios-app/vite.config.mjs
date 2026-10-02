@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
-export default defineConfig({
-  base: '/v14/socios/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'preview' ? '/v14/socios/' : '/socios/',
   plugins: [react()],
   build: {
-    outDir: '../v14/socios',
+    outDir: mode === 'preview' ? '../v14/socios' : '../socios',
     emptyOutDir: true,
   },
-});
+}));

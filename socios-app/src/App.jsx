@@ -23,6 +23,7 @@ import {
   X,
 } from 'lucide-react';
 import { sociosEnabled, supabase } from './supabase';
+import LiveRides from './LiveRides';
 
 const DEMO_MEMBERS = [
   { id: '1', name: 'Álvaro Martínez', email: 'alvaro@ejemplo.es', status: 'pending', role: 'member', created_at: '2026-10-01T08:34:00Z' },
@@ -454,7 +455,12 @@ function Dashboard({ initialRole, liveProfile, onLogout }) {
   return (
     <div className="app-shell">
       <DashboardHeader profile={profile} role={role} setRole={setRole} onLogout={onLogout} />
-      <main className="dashboard-main">{role === 'admin' ? <AdminPanel /> : <MemberHome role={role} profile={profile} />}</main>
+      <main className="dashboard-main">
+        {sociosEnabled ? <>
+          <LiveRides role={role} profile={profile} />
+          {role === 'admin' && <AdminPanel />}
+        </> : role === 'admin' ? <AdminPanel /> : <MemberHome role={role} profile={profile} />}
+      </main>
     </div>
   );
 }
@@ -508,7 +514,7 @@ function App() {
         setScreen('pending');
         return;
       }
-      setProfile({ name: data.name || session.user.email, email: session.user.email });
+      setProfile({ id: session.user.id, name: data.name || session.user.email, email: session.user.email });
       setRole(data.role || 'member');
       setScreen('dashboard');
     });

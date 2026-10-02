@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "test": "node tests/rides-security.mjs && node tests/rides-ui.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -15,7 +16,9 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
     "@vitejs/plugin-react-swc": "3.11.0",
+    "react-test-renderer": "18.3.1",
     "vite": "5.4.21"
   }
 }

@@ -5,9 +5,9 @@ Aplicación React para el área privada del club.
 ## Estado
 
 - Producción (`/socios/`): mantiene el cartel de «En construcción».
-- Preview (`/v14/socios/`): fase 1 de acceso, aprobación y roles; compilación conectada al proyecto `tjdtbsroqpbpkyysqjuv`.
+- Preview (`/v14/socios/`): acceso, aprobación, roles, salidas, inscripciones y chat; compilación conectada al proyecto `tjdtbsroqpbpkyysqjuv`.
 - La tabla actual utiliza `name` y las columnas `id`, `email`, `status`, `role`, `created_at`, `updated_at`. Las actualizaciones no requieren `approved_at` ni `approved_by`.
-- En modo conectado no se muestran salidas ni chat de demostración. Esas funciones y los avisos por correo aún están pendientes de activación.
+- En modo conectado se usan exclusivamente las tablas reales. Es necesario activar `supabase/002_live_rides.sql`. Los avisos por correo aún no están configurados.
 - Con `VITE_SOCIOS_ENABLED=false`, la preview funciona con datos de demostración.
 - Con `VITE_SOCIOS_ENABLED=true`, utiliza Supabase Auth y la tabla `profiles`.
 
@@ -18,6 +18,26 @@ Aplicación React para el área privada del club.
 3. Ejecutar `npm run dev`.
 
 ## Base de datos
+
+### Activación de salidas en el proyecto actual
+
+Ejecutar completo `supabase/002_live_rides.sql` desde SQL Editor, con la cuenta propietaria del proyecto. La clave pública del navegador no permite aplicar migraciones.
+
+La transacción conserva usuarios y perfiles, añade `club_rides`, `club_ride_members`, `club_ride_messages`, y sustituye las políticas de `profiles` por lectura propia/administrador y edición exclusiva del administrador. Cancela la operación si no existe un administrador aprobado. El trigger de altas existente se conserva.
+
+- Socios aprobados: ven salidas y nombres de inscritos, se inscriben o dan de baja antes del inicio.
+- Organizadores: publican y gestionan sus propias salidas. Administradores: gestionan todas.
+- Chat: inscritos, organizador propietario y administradores aprobados. Baja o rechazo del perfil retiran el acceso. Cancelar/archivar conserva los mensajes y cierra la escritura.
+- Los nombres de autor e inscritos los fija el servidor desde `profiles`; nunca se publican correos de socios a otros socios.
+- Las fechas se introducen y muestran en Europe/Madrid. Se rechazan horas ambiguas/inexistentes del cambio de horario.
+- Mensajes guardados en PostgreSQL; consulta cada 5 segundos, salidas cada 10 segundos. No requiere activar Supabase Realtime. Carga inicial de los 100 mensajes más recientes y paginación para anteriores.
+- No hay borrado de salidas ni edición/borrado de mensajes en esta fase.
+
+Validación: `npm test` ejecuta la migración dos veces contra PostgreSQL embebido (PGlite) y prueba RLS con anon, pendiente, socio, organizadores y administrador; `npm run build` compila la preview. Estos tests no inspeccionan otras funciones RPC o triggers ya existentes en el proyecto remoto. Antes de producción, repetir la prueba con cuentas reales y revisar los objetos existentes.
+
+Prueba manual tras activar SQL: publicar una salida futura como organizador; abrirla como socio; inscribirse; enviar mensajes desde ambos usuarios; recargar y comprobar persistencia; darse de baja y comprobar que desaparece el acceso al chat; volver a inscribirse; archivar y comprobar lectura sin envío. Verificar también que un segundo organizador no puede editar una salida ajena.
+
+### Esquema antiguo
 
 La migración `001_profiles.sql` es la propuesta original con `full_name`; no ejecutarla sobre el nuevo proyecto sin reconciliar antes la estructura y las políticas existentes. El nuevo proyecto ya tiene una migración distinta con `name`, ejecutada desde el panel por el propietario. Antes de abrir producción, verificar su trigger de alta y sus políticas RLS con pruebas de permisos.
 

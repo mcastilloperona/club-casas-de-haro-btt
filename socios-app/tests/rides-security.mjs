@@ -14,6 +14,9 @@ grant usage on schema auth to authenticated;`);
 const migration = await readFile(new URL('../supabase/002_live_rides.sql', import.meta.url), 'utf8');
 await db.exec(migration);
 await db.exec(migration); // Se puede repetir sin borrar datos.
+const deleteMigration = await readFile(new URL('../supabase/004_admin_delete_rides.sql', import.meta.url), 'utf8');
+await db.exec(deleteMigration);
+await db.exec(deleteMigration); // También es idempotente.
 async function asUser(user, query) {
   await db.exec('reset role');
   await db.query("select set_config('request.jwt.claim.sub',$1,false)", [ids[user] || '']);
@@ -46,6 +49,11 @@ await rows('member',`update public.club_rides set title='Ajena' where id='${ride
 await denied('organizer',`update public.club_rides set organizer_id='${ids.other}' where id='${ride.id}'`);
 await rows('organizer',`update public.club_rides set title='Ruta editada' where id='${ride.id}' returning id`,1);
 await rows('admin',`update public.club_rides set description='Revisada' where id='${ride.id}' returning id`,1);
+const [deleteRide] = await rows('organizer', `insert into public.club_rides(organizer_id,title,starts_at,meeting_point) values ('${ids.organizer}','Ruta para borrar',now()+interval '4 days','Parque') returning id`, 1);
+await rows('organizer',`delete from public.club_rides where id='${deleteRide.id}' returning id`,0);
+await rows('member',`delete from public.club_rides where id='${deleteRide.id}' returning id`,0);
+await rows('admin',`delete from public.club_rides where id='${deleteRide.id}' returning id`,1);
+await rows('admin',`select * from public.club_rides where id='${deleteRide.id}'`,0);
 const join = user => `insert into public.club_ride_members(ride_id,user_id) values('${ride.id}','${ids[user]}') returning *`;
 await denied('outsider',join('member'));
 await denied('pending',join('pending'));

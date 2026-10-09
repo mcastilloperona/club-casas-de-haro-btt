@@ -15,3 +15,183 @@
 .message-alert{display:flex;gap:12px;background:#e2f4fc;border:1px solid #9bddf6;border-radius:14px;padding:16px 20px;margin:16px 0}.message-alert .text-button{display:block;margin-top:8px;text-align:left}.ride-actions a.text-button{text-decoration:none;display:inline-flex;align-items:center}
 
 .text-button--danger{color:#b12f2f}.text-button--danger:hover{color:#8f1f1f}
+
+
+/* =========================================================
+   Responsive hardening · mobile/PWA
+   Evita recortes horizontales y adapta todos los paneles
+   del área de socios a pantallas pequeñas.
+   ========================================================= */
+html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
+img,svg{max-width:100%}
+.app-shell,.dashboard-main,.content-section,.admin-panel,.live-rides{min-width:0;max-width:100%}
+.app-header>*,
+.dashboard-title>*,
+.section-heading>*,
+.ride-card>*,
+.member-row>*,
+.header-user,
+.brand,
+.brand>div{min-width:0}
+
+@media(max-width:700px){
+  body{min-width:0}
+  .app-header{
+    height:auto;
+    min-height:68px;
+    padding:
+      calc(8px + env(safe-area-inset-top))
+      max(12px,env(safe-area-inset-right))
+      8px
+      max(12px,env(safe-area-inset-left));
+    gap:8px
+  }
+  .brand--compact{gap:8px;flex:1;overflow:hidden}
+  .brand--compact img{width:42px;height:42px;flex:0 0 42px}
+  .brand--compact>div{overflow:hidden}
+  .brand--compact strong{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:13px
+  }
+  .header-user{flex:0 0 auto;gap:6px}
+  .header-user>button{margin-left:0;width:36px;height:36px}
+  .header-user .avatar{width:34px;height:34px}
+  .role-preview{
+    top:calc(68px + env(safe-area-inset-top));
+    width:100%;
+    max-width:100vw;
+    padding:7px 12px;
+    gap:5px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    scrollbar-width:none
+  }
+  .role-preview::-webkit-scrollbar{display:none}
+  .role-preview button{flex:0 0 auto;white-space:nowrap}
+
+  .dashboard-main{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:24px 14px calc(46px + env(safe-area-inset-bottom))
+  }
+  .dashboard-title{gap:14px;margin-bottom:20px}
+  .dashboard-title h1{font-size:clamp(27px,9vw,37px);overflow-wrap:anywhere}
+  .dashboard-title>div>p:last-child{line-height:1.5}
+  .section-heading{align-items:flex-start;gap:10px}
+  .section-heading h2{font-size:22px}
+  .section-heading .text-button{flex:0 0 auto}
+
+  .stats-grid{gap:10px;margin-bottom:28px}
+  .stat{grid-template-columns:42px minmax(0,1fr);padding:13px;border-radius:15px}
+  .stat>span{width:36px;height:36px}
+  .stat strong{font-size:21px}
+  .stat small{overflow-wrap:anywhere}
+
+  .ride-card{width:100%;max-width:100%;padding:16px;border-radius:17px;overflow:hidden}
+  .ride-card__top{gap:8px;flex-wrap:wrap;margin-bottom:15px}
+  .ride-card h3{font-size:22px;line-height:1.2;overflow-wrap:anywhere}
+  .ride-details{display:grid;grid-template-columns:1fr;gap:10px}
+  .ride-details span{min-width:0;align-items:flex-start}
+  .ride-details svg{flex:0 0 auto}
+  .ride-actions{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+    margin-top:18px;
+    padding-top:17px
+  }
+  .ride-actions>.primary-button,
+  .ride-actions>.icon-button,
+  .ride-actions>.text-button,
+  .ride-actions>a.text-button{
+    width:100%;
+    grid-column:1;
+    justify-content:center;
+    min-height:44px
+  }
+  .attendees{flex-wrap:wrap;gap:8px 10px}
+  .mini-avatars{margin-left:0;max-width:100%}
+  .phase-note{padding:14px;align-items:flex-start}
+  .phase-note>svg{flex:0 0 auto}
+
+  .admin-toolbar{gap:10px}
+  .admin-filters{width:100%;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .admin-filters button{min-width:0;padding:9px 7px}
+  .pending-summary{width:100%;justify-content:center;white-space:normal;text-align:center}
+  .member-row{width:100%;max-width:100%;padding:13px;gap:11px;overflow:hidden}
+  .member-person{min-width:0}
+  .member-person>div:last-child{min-width:0}
+  .member-person strong,.member-person span,.member-person small{overflow-wrap:anywhere}
+  .role-select{width:100%;flex-wrap:wrap}
+  .role-select select{max-width:100%;min-width:0}
+  .member-actions{width:100%;flex-wrap:wrap}
+  .member-actions .approve{flex:1}
+  .permission-legend>div{min-width:0}
+
+  .chat-overlay{padding:0}
+  .chat-panel{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0}
+  .chat-header{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  .chat-security{overflow-wrap:anywhere}
+  .chat-bubble{max-width:88%;min-width:0}
+  .chat-author{flex-wrap:wrap}
+  .chat-author time{margin-left:auto}
+  .chat-composer{
+    grid-template-columns:minmax(0,1fr) 44px;
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right))
+  }
+
+  .live-dialog,
+  .live-dialog--chat{
+    width:100vw;
+    max-width:100vw;
+    max-height:100dvh;
+    border-radius:0
+  }
+  .live-dialog-header{padding:14px}
+  .ride-editor{padding:16px 14px calc(18px + env(safe-area-inset-bottom))}
+  .ride-form-columns{grid-template-columns:1fr}
+  .ride-editor input,
+  .ride-editor textarea,
+  .ride-editor select{font-size:16px}
+
+  .auth-page{width:100%;max-width:100vw}
+  .auth-panel{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:
+      calc(18px + env(safe-area-inset-top))
+      max(16px,env(safe-area-inset-right))
+      calc(30px + env(safe-area-inset-bottom))
+      max(16px,env(safe-area-inset-left))
+  }
+  .auth-panel .brand{gap:10px;margin:22px 0}
+  .auth-panel .brand img{width:56px;height:56px}
+  .auth-panel .brand strong{font-size:18px}
+  .auth-tabs{width:100%}
+  .field input{min-width:0;font-size:16px}
+  .preview-notice{width:100%}
+}
+
+@media(max-width:420px){
+  .dashboard-main{padding-inline:11px}
+  .brand--compact strong{font-size:12px}
+  .header-user .avatar{display:none}
+  .app-header{gap:5px}
+  .role-preview{padding-inline:10px}
+  .role-preview>span{font-size:10px}
+  .role-preview button{padding:6px 8px}
+  .dashboard-title h1{font-size:28px}
+  .section-heading{flex-direction:column;align-items:stretch}
+  .section-heading .text-button{align-self:flex-start;padding-left:0}
+  .admin-filters{grid-template-columns:1fr}
+  .ride-card{padding:14px}
+  .chat-header{grid-template-columns:36px minmax(0,1fr) 36px;gap:8px}
+  .chat-route-icon{width:36px;height:36px}
+  .chat-bubble{max-width:91%}
+}

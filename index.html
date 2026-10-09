@@ -340,5 +340,69 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<!-- Aviso PWA: solo se muestra cuando el navegador ofrece instalar la aplicación. -->
+<style>
+#cdh-pwa-prompt{position:fixed;z-index:10000;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 28px));padding:18px;border-radius:18px;background:#06264b;color:#fff;box-shadow:0 12px 36px #0006;font:inherit}
+#cdh-pwa-prompt[hidden]{display:none!important}
+#cdh-pwa-prompt .cdh-pwa-title{font-size:16px;font-weight:800;margin:0 0 6px}
+#cdh-pwa-prompt .cdh-pwa-desc{font-size:13px;line-height:1.5;margin:0 0 14px;color:#e4f5fc}
+#cdh-pwa-prompt .cdh-pwa-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#cdh-pwa-prompt button{border:0;border-radius:999px;padding:10px 15px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+#cdh-pwa-install{background:#13b9e8;color:#06264b}
+#cdh-pwa-later{background:transparent;color:#fff;border:1px solid #ffffff88!important}
+</style>
+<script>
+(function(){
+  'use strict';
+  var deferredInstall = null;
+  var dismissed = false;
+  var promptNode = null;
+  function isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  }
+  function hide(){
+    if(promptNode) promptNode.hidden = true;
+  }
+  function show(){
+    if(!deferredInstall || dismissed || isStandalone() || promptNode) return;
+    promptNode = document.createElement('aside');
+    promptNode.id = 'cdh-pwa-prompt';
+    promptNode.setAttribute('aria-label', 'Instalar Casas de Haro BTT');
+    promptNode.innerHTML = '<p class="cdh-pwa-title">🚴 Lleva Casas de Haro BTT en tu móvil</p><p class="cdh-pwa-desc">Accede fácilmente a las rutas, noticias y al área de socios desde tu pantalla de inicio.</p><div class="cdh-pwa-actions"><button id="cdh-pwa-install" type="button">Instalar aplicación</button><button id="cdh-pwa-later" type="button">Ahora no</button></div>';
+    document.body.appendChild(promptNode);
+    promptNode.querySelector('#cdh-pwa-later').addEventListener('click', function(){
+      dismissed = true;
+      hide();
+    });
+    promptNode.querySelector('#cdh-pwa-install').addEventListener('click', async function(){
+      if(!deferredInstall) return;
+      var event = deferredInstall;
+      deferredInstall = null;
+      hide();
+      try {
+        await event.prompt();
+        await event.userChoice;
+      } catch(error){
+        console.warn('No se pudo abrir la instalación PWA:',error);
+      }
+    });
+  }
+  window.addEventListener('beforeinstallprompt', function(event){
+    if(isStandalone()) return;
+    event.preventDefault();
+    deferredInstall = event;
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded',show,{once:true});
+    else show();
+  });
+  window.addEventListener('appinstalled', function(){
+    deferredInstall = null;
+    dismissed = true;
+    hide();
+  });
+  window.matchMedia('(display-mode: standalone)').addEventListener?.('change', function(){
+    if(isStandalone()) hide();
+  });
+})();
+</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "aefb84cd8fa546bda853ceec721b8746"}'></script><!-- End Cloudflare Web Analytics -->
 </body></html>

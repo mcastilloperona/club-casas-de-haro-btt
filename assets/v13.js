@@ -91,19 +91,6 @@
     });
   }
 
-  async function renderNextRoute(){
-    const targets=document.querySelectorAll('[data-next-route]');
-    if(!targets.length)return;
-    try{
-      const data=await json('data/site.json'); const r=data.next_route||{};
-      const gpx=r.gpx?relPath(r.gpx):''; const url=safeUrl(r.track_url);
-      targets.forEach(t=>{
-        const img=relPath(r.image||'assets/camino-atardecer.jpg');
-        t.innerHTML=`<img src="${esc(img)}" alt="${esc(r.image_alt||'Próxima ruta del Club Casas de Haro BTT')}" loading="lazy" decoding="async"><div class="info"><span class="pill">Próxima salida</span><p class="next-route-date">${esc(fmtDate(r.date))}${r.time?' · '+esc(r.time):''}</p><h3>${esc(r.title||'Próxima ruta')}</h3><p class="next-route-desc">${esc(r.description||'Ruta con salida desde Casas de Haro.')}</p><div class="stats"><div class="stat"><b>${esc(r.distance_km||'—')} km</b><span>DISTANCIA</span></div><div class="stat"><b>+${esc(r.elevation_m||'—')} m</b><span>DESNIVEL</span></div><div class="stat"><b>${esc((r.discipline||'BTT').toUpperCase())}</b><span>MODALIDAD</span></div></div><div class="route-actions-wide">${gpx?`<a class="btn" href="${esc(gpx)}" download>Descargar GPX</a>`:''}${url?`<a class="btn secondary" href="${esc(url)}" target="_blank" rel="noopener">Ver track</a>`:''}<button class="btn secondary signup-open" type="button">¡Me apunto!</button></div></div>`;
-      });
-    }catch(e){console.warn(e)}
-  }
-
   function routeCard(r){
     const url=safeUrl(r.source_url); const gpx=r.gpx?relPath(r.gpx):'';
     const isClub=r.route_type==='club';
@@ -247,7 +234,7 @@
     wrap.append(nav);
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();setupSignupModal();enhanceInstagram();renderNextRoute();renderRoutes();renderWeather();renderNewsBadge();renderNews();renderGallery();enhanceFooter();});
+  document.addEventListener('DOMContentLoaded',()=>{markCurrentNav();setupSignupModal();enhanceInstagram();renderRoutes();renderWeather();renderNewsBadge();renderNews();renderGallery();enhanceFooter();});
   /* MOBILE_NEWS_READ_MORE */
   const newsStyle=document.createElement('style');
   newsStyle.textContent=`@media(max-width:1024px){.news-body-wrap:not(.expanded) .news-body{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden}.news-read-more{display:inline-flex;margin-top:10px;padding:8px 12px;border:1px solid #13b9e8;border-radius:999px;background:#fff;color:#06264b;font:inherit;font-weight:800;cursor:pointer}.news-body-wrap.expanded .news-read-more{margin-top:12px}}@media(min-width:1025px){.news-read-more{display:none!important}}`;

@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "test": "node tests/rides-security.mjs && node tests/rides-ui.mjs && node tests/email-worker.mjs",
+    "test": "node tests/rides-security.mjs && node tests/rides-ui.mjs && node tests/email-worker.mjs && node tests/public-rides.mjs",
     "dev": "vite --config vite.config.mjs --mode preview",
     "build": "vite build --config vite.config.mjs",
     "build:preview": "vite build --config vite.config.mjs --mode preview",

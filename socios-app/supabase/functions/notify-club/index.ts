@@ -43,7 +43,45 @@ export async function handle(request: Request): Promise<Response> {
       // Evita ráfagas al proveedor. No expone direcciones en logs/respuestas.
       await new Promise(resolve=>setTimeout(resolve,600));
     }
-    return json({sent,failed});
+
+  // Procesa también los eventos administrativos, con cola y destinatarios separados.
+  let adminSent=0, adminFailed=0;
+  try {
+    type AdminJob={job_id:string;token:string;event_type:string;email:string;actor_name:string;actor_email:string;ride_title:string;ride_id:string|null};
+    const adminJobs:AdminJob[] = await db('rpc/club_claim_admin_emails','POST',{batch_size:10});
+    for(const job of adminJobs){
+      const action:Record<string,string>={
+        membership_pending:'Nueva solicitud de socio',
+        membership_approved:'Socio aprobado',
+        membership_rejected:'Solicitud rechazada',
+        membership_role:'Cambio de permisos de socio',
+        ride_join:'Inscripción en salida',
+        ride_leave:'Baja de una salida',
+        ride_created:'Nueva salida publicada',
+        ride_cancelled:'Salida cancelada'
+      };
+      const description=action[job.event_type] || 'Movimiento en el club';
+      const subject='[Administración Casas de Haro BTT] '+description;
+      const rideLine=job.ride_title ? '<p><strong>Salida:</strong> '+escape(job.ride_title)+'</p>' : '';
+      const actorLine=job.actor_name ? '<p><strong>Socio:</strong> '+escape(job.actor_name)+'</p>' : '';
+      const emailLine=job.actor_email && job.event_type==='membership_pending' ? '<p><strong>Email:</strong> '+escape(job.actor_email)+'</p>' : '';
+      const link=site+'/socios/'+(job.ride_id ? '?ride='+encodeURIComponent(job.ride_id) : '');
+      const html='<h2>'+escape(description)+'</h2>'+actorLine+rideLine+emailLine+'<p><a href="'+escape(link)+'">Entrar en el área de socios</a></p>';
+      try{
+        const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{...headers,Authorization:`Bearer ${apiKey}`,'Idempotency-Key':`cdh-admin-${job.job_id}`},body:JSON.stringify({from,to:[job.email],subject,html}),signal:AbortSignal.timeout(15000)});
+        if(!response.ok) throw new Error('Email provider '+response.status);
+        await db(`club_admin_email_jobs?id=eq.${job.job_id}&lease_token=eq.${job.token}&state=eq.processing`,'PATCH',{state:'sent',sent_at:new Date().toISOString(),last_error:null});
+        adminSent++;
+      } catch(error){
+        adminFailed++;
+        await db(`club_admin_email_jobs?id=eq.${job.job_id}&lease_token=eq.${job.token}&state=eq.processing`,'PATCH',{state:'pending',due_at:new Date(Date.now()+5*60000).toISOString(),last_error:error instanceof Error?error.message:'Error de envío'});
+      }
+      await new Promise(resolve=>setTimeout(resolve,600));
+    }
+  }catch(error){
+    console.error('No se pudo procesar la cola administrativa:',error);
+  }
+    return json({sent,failed,adminSent,adminFailed});
   } catch { return json({error:'No se ha podido procesar la cola'},500); }
 }
 Deno.serve(handle);

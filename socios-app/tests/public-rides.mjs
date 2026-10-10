@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { transform } from 'esbuild';
+
+const moduleFrom = code => import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+const { madridDay, upcomingRides, rideCard, loadRides } = await moduleFrom(await readFile(new URL('../../assets/club-rides.js', import.meta.url), 'utf8'));
+const ride = { id:'one', title:'Ruta <domingo>', description:'<script>unsafe</script>', starts_at:'2026-10-11T06:00:00Z', meeting_point:'Parque & plaza', discipline:'BTT', difficulty:'Medio', distance_km:null, status:'active' };
+const parallel = { ...ride, id:'two', starts_at:'2026-10-11T07:00:00Z' };
+assert.equal(madridDay('2026-10-11T22:00:00Z'), '2026-10-12');
+assert.equal(upcomingRides([parallel,ride], '2026-10-11T21:59:59Z').length,2);
+assert.equal(upcomingRides([ride], '2026-10-11T22:00:00Z').length,0);
+assert.deepEqual(upcomingRides([parallel,ride,{...ride,id:'cancel',status:'cancelled'},{...ride,id:'invalid',starts_at:'bad'}], '2026-10-10T12:00:00Z').map(r=>r.id),['one','two']);
+// Madrid midnight must work through daylight-saving transitions too.
+const autumn = { ...ride, starts_at:'2026-10-25T08:00:00Z' };
+assert.equal(upcomingRides([autumn], '2026-10-25T22:59:59Z').length,1);
+assert.equal(upcomingRides([autumn], '2026-10-25T23:00:00Z').length,0);
+const spring = { ...ride, starts_at:'2027-03-28T06:00:00Z' };
+assert.equal(upcomingRides([spring], '2027-03-28T21:59:59Z').length,1);
+assert.equal(upcomingRides([spring], '2027-03-28T22:00:00Z').length,0);
+const html=rideCard(ride,'2026-10-10T12:00:00Z');
+assert.ok(html.includes('&lt;script&gt;') && !html.includes('<script>'));
+assert.ok(html.includes('Por confirmar') && html.includes('socios/?ride=one'));
+assert.ok(rideCard(ride,'2026-10-11T12:00:00Z').includes('Ver salida en Socios'));
+await assert.rejects(loadRides(async()=>new Response('{}',{status:503})));
+await assert.rejects(loadRides(async()=>new Response(JSON.stringify({rides:[],server_time:'invalid'}))));
+
+globalThis.Deno={env:{get:key=>({SUPABASE_URL:'https://db.test',SUPABASE_SERVICE_ROLE_KEY:'server-only'})[key]},serve(){}};
+const {code}=await transform(await readFile(new URL('../supabase/functions/public-rides/index.ts',import.meta.url),'utf8'),{loader:'ts',format:'esm'});
+const {handle}=await moduleFrom(code);
+const calls=[];
+globalThis.fetch=async(url,options)=>{calls.push({url,options});return new Response(JSON.stringify([{...ride,starts_at:new Date().toISOString()},{...ride,id:'expired',starts_at:'2020-01-01T12:00:00Z'}]));};
+const response=await handle(new Request('https://worker.test',{method:'GET'}));
+assert.equal(response.status,200);
+assert.equal(response.headers.get('Cache-Control'),'no-store');
+const result=await response.json();
+assert.equal(result.rides.length,1);
+const query=new URL(calls[0].url).searchParams;
+assert.equal(query.get('status'),'eq.active');
+assert.equal(query.get('select'),'id,title,description,starts_at,meeting_point,discipline,difficulty,distance_km');
+assert.equal((await handle(new Request('https://worker.test',{method:'POST'}))).status,405);
+assert.equal(calls.length,1);
+globalThis.fetch=async()=>new Response('private database error',{status:500});
+const failed=await handle(new Request('https://worker.test'));
+assert.equal(failed.status,503);
+assert.ok(!(await failed.text()).includes('private'));
+console.log('Public routes: Madrid midnight/DST, parallel rides, cancellations, privacy, escaping and errors passed.');

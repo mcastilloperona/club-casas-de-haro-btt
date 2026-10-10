@@ -1,0 +1,17 @@
+.club-rides-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:28px}
+.club-ride-card{display:flex;flex-direction:column;min-width:0;padding:28px;border-radius:24px;background:linear-gradient(135deg,#031b37,#06264b);color:#fff;box-shadow:0 12px 32px #06264b18}
+.club-ride-card>.pill{align-self:flex-start;color:#dff6fb}
+.club-ride-card h3{font-size:28px;line-height:1.2;margin:4px 0 14px;overflow-wrap:anywhere}
+.club-ride-card p{line-height:1.6;overflow-wrap:anywhere}
+.club-ride-card .next-route-date{color:#b9e9f4;font-weight:700;font-size:14px;margin:18px 0 12px}
+.club-ride-description{white-space:pre-line;margin:0 0 12px;color:#e7f0f5}
+.club-ride-meeting{margin:0 0 18px}
+.club-ride-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px}
+.club-ride-stats dt{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#b9e9f4}
+.club-ride-stats dd{font-size:16px;font-weight:800;margin:6px 0 0;overflow-wrap:anywhere}
+.club-ride-card>.btn{margin-top:auto;align-self:flex-start;background:#65d7a1;color:#031b37;border:0}
+.club-rides-notice{grid-column:1/-1;padding:32px;border:1px solid #d9e5ea;border-radius:24px;background:#fff}
+.club-rides-notice h3{font-size:25px;margin:0 0 12px;color:#06264b}
+.club-rides-notice p{color:#56606b;line-height:1.6;margin:0 0 20px}
+.club-rides-notice button{font:inherit;cursor:pointer}
+@media(max-width:760px){.club-rides-grid{grid-template-columns:1fr}.club-ride-card,.club-rides-notice{padding:24px}.club-ride-card h3{font-size:25px}.club-ride-stats{gap:8px}.club-ride-stats dd{font-size:14px}}

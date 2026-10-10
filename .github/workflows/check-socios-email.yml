@@ -1,0 +1,27 @@
+name: Comprobar correo de aprobaciones de socios
+on:
+  pull_request:
+    paths:
+      - 'socios-app/**'
+      - '.github/workflows/check-socios-email.yml'
+  push:
+    branches: [fix/avisos-aprobacion-socios-20261010]
+    paths:
+      - 'socios-app/**'
+      - '.github/workflows/check-socios-email.yml'
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: socios-app/package-lock.json
+      - run: npm ci
+        working-directory: socios-app
+      - run: npm test
+        working-directory: socios-app

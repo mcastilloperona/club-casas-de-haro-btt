@@ -81,7 +81,44 @@ export async function handle(request: Request): Promise<Response> {
   }catch(error){
     console.error('No se pudo procesar la cola administrativa:',error);
   }
-    return json({sent,failed,adminSent,adminFailed});
+    // Correos de bienvenida: cola independiente, no depende del navegador del socio.
+    let approvalSent=0, approvalFailed=0;
+    try {
+      type ApprovalJob={job_id:string;token:string;email:string;member_name:string};
+      const approvals:ApprovalJob[] = await db('rpc/club_claim_member_approval_emails','POST',{batch_size:10});
+      for(const job of approvals){
+        const member=escape(job.member_name || 'socio');
+        const subject='¡Bienvenido al Club Casas de Haro BTT! Tu acceso está aprobado';
+        const html='<p>Hola, '+member+'.</p>'
+          +'<h2>¡Tu solicitud ha sido aprobada!</h2>'
+          +'<p>Ya puedes acceder al área de socios del Club Casas de Haro BTT, '
+          +'consultar las próximas salidas y participar en las actividades.</p>'
+          +'<p><a href="'+escape(site+'/socios/')+'">Entrar en el área de socios</a></p>'
+          +'<p>¡Nos vemos sobre la bici!</p>';
+        try {
+          const response=await fetch('https://api.resend.com/emails',{
+            method:'POST',
+            headers:{...headers,Authorization:`Bearer ${apiKey}`,
+              'Idempotency-Key':`cdh-approved-${job.job_id}`},
+            body:JSON.stringify({from,to:[job.email],subject,html}),
+            signal:AbortSignal.timeout(15000)
+          });
+          if(!response.ok) throw new Error('Email provider '+response.status);
+          await db(`club_member_approval_jobs?id=eq.${job.job_id}&lease_token=eq.${job.token}&state=eq.processing`,
+            'PATCH',{state:'sent',sent_at:new Date().toISOString(),last_error:null});
+          approvalSent++;
+        }catch(error){
+          approvalFailed++;
+          await db(`club_member_approval_jobs?id=eq.${job.job_id}&lease_token=eq.${job.token}&state=eq.processing`,
+            'PATCH',{state:'pending',due_at:new Date(Date.now()+5*60000).toISOString(),
+              last_error:error instanceof Error?error.message:'Error de envío'});
+        }
+        await new Promise(resolve=>setTimeout(resolve,600));
+      }
+    }catch(error){
+      console.error('No se pudo procesar la cola de aprobaciones:',error);
+    }
+    return json({sent,failed,adminSent,adminFailed,approvalSent,approvalFailed});
   } catch { return json({error:'No se ha podido procesar la cola'},500); }
 }
 Deno.serve(handle);

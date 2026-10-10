@@ -3,6 +3,12 @@ import { readFile } from 'node:fs/promises';
 import { transform } from 'esbuild';
 
 const moduleFrom = code => import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+for (const page of ['index.html','rutas.html']) {
+  const source=await readFile(new URL('../../'+page,import.meta.url),'utf8');
+  assert.ok(source.includes('data-club-rides'));
+  assert.ok(source.includes('type="module" src="assets/club-rides.js?'));
+  assert.ok(!source.includes('data-next-route'));
+}
 const { madridDay, upcomingRides, rideCard, loadRides } = await moduleFrom(await readFile(new URL('../../assets/club-rides.js', import.meta.url), 'utf8'));
 const ride = { id:'one', title:'Ruta <domingo>', description:'<script>unsafe</script>', starts_at:'2026-10-11T06:00:00Z', meeting_point:'Parque & plaza', discipline:'BTT', difficulty:'Medio', distance_km:null, status:'active' };
 const parallel = { ...ride, id:'two', starts_at:'2026-10-11T07:00:00Z' };

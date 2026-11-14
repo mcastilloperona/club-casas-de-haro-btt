@@ -1,4 +1,4 @@
-const VERSION = 'cdh-btt-pwa-v6';
+const VERSION = 'cdh-btt-pwa-v7';
 const CLOUDFLARE_TOKEN = 'aefb84cd8fa546bda853ceec721b8746';
 const CLOUDFLARE_SNIPPET = `<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "${CLOUDFLARE_TOKEN}"}'></script><!-- End Cloudflare Web Analytics -->`;
 const VISIT_COUNTER_SNIPPET = `<script src="${new URL("assets/visit-counter.js?v=20260913-1", self.registration.scope).pathname}" defer></script>`;
@@ -13,6 +13,7 @@ self.addEventListener('activate', event => {
 
 function isProductionPage(url) {
   if (url.origin !== self.location.origin) return false;
+  if (url.pathname.startsWith(new URL('salir/', self.registration.scope).pathname)) return false;
   if (url.pathname.startsWith(new URL('v14/', self.registration.scope).pathname)) return false;
   if (url.pathname.startsWith(new URL('gestion-master/', self.registration.scope).pathname)) return false;
   return true;
@@ -70,3 +71,4 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(fetch(event.request));
 });
+

@@ -1,7 +1,8 @@
-const CACHE='salir-shell-1.4';
+const CACHE='salir-shell-1.5';
 const BASE=new URL('./',self.location.href).pathname;
 const SHELL=['./','index.html','style.css','leaflet.css','leaflet.js','radar.js','font-400.ttf','font-500.ttf','font-600.ttf','font-700.ttf','app.js','data-client.js','install.js','route.js','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png'].map(path=>new URL(path,self.registration.scope).href);
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('salir-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==self.location.origin||!url.pathname.startsWith(BASE))return;
 event.respondWith(fetch(event.request).then(response=>{if(response.ok&&!response.redirected&&response.type!=='opaqueredirect'){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));}return response;}).catch(async()=>{const cache=await caches.open(CACHE);return await cache.match(event.request)||(event.request.mode==='navigate'?await cache.match(new URL('index.html',self.registration.scope).href):null)||Response.error();}));});
+

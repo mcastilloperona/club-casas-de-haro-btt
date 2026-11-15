@@ -21,3 +21,6 @@ Las versiones previas se alojaban en un Site independiente. A partir de 1.4, est
 Open-Meteo: pronóstico y búsqueda, consultados directamente desde el navegador. RainViewer: radar reciente con atribución. OpenStreetMap: mapa base. Leaflet 1.9.4 y su licencia se incluyen localmente. Las consultas necesitan conexión. Los datos guardados se identifican como tales y no generan recomendaciones nuevas.
 
 El GPX/TCX se procesa en la pestaña; solo las coordenadas muestreadas se envían al proveedor de previsión. La ubicación y las preferencias se guardan en el navegador del visitante.
+
+
+Version 1.5: Salir is linked in the club menus; recommendations apply to outdoor outings, with the same scoring and hours. GPS locations display locality/city from BigDataCloud. A failed name lookup never blocks weather; a late response cannot override a newly selected location. Existing unnamed GPS locations can be resolved by pressing Usar mi ubicación again.

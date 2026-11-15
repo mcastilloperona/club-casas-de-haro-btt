@@ -1,6 +1,6 @@
-const CACHE='salir-shell-1.6';
+const CACHE='salir-shell-1.7';
 const BASE=new URL('./',self.location.href).pathname;
-const SHELL=['./','index.html','style.css','leaflet.css','leaflet.js','radar.js','font-400.ttf','font-500.ttf','font-600.ttf','font-700.ttf','app.js','data-client.js','install.js','route.js','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png'].map(path=>{const url=new URL(path,self.registration.scope);if(/\.(js|css)$/.test(url.pathname))url.searchParams.set('v',CACHE.replace('salir-shell-',''));return url.href;});
+const SHELL=['./','index.html','style.css','leaflet.css','leaflet.js','radar.js','font-400.ttf','font-500.ttf','font-600.ttf','font-700.ttf','app.js','data-client.js','install.js','route.js','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png','club-logo.png'].map(path=>{const url=new URL(path,self.registration.scope);if(/\.(js|css)$/.test(url.pathname))url.searchParams.set('v',CACHE.replace('salir-shell-',''));return url.href;});
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL.map(url=>new Request(url,{cache:'reload'})))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('salir-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==self.location.origin||!url.pathname.startsWith(BASE))return;

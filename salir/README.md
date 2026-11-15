@@ -24,3 +24,5 @@ El GPX/TCX se procesa en la pestaña; solo las coordenadas muestreadas se envía
 
 
 Version 1.5: Salir is linked in the club menus; recommendations apply to outdoor outings, with the same scoring and hours. GPS locations display locality/city from BigDataCloud. A failed name lookup never blocks weather; a late response cannot override a newly selected location. Existing unnamed GPS locations can be resolved by pressing Usar mi ubicación again.
+
+Version 1.6: primary recommendations require daylight for the entire outing. Dark/partial-light options are collapsed separately and explicitly warned. Locality lookup now uses Photon reverse against GPS coordinates, checks proximity, and includes province/region; manual search also shows province.

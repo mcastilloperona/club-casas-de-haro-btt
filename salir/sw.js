@@ -1,4 +1,4 @@
-const CACHE='salir-shell-1.5';
+const CACHE='salir-shell-1.6';
 const BASE=new URL('./',self.location.href).pathname;
 const SHELL=['./','index.html','style.css','leaflet.css','leaflet.js','radar.js','font-400.ttf','font-500.ttf','font-600.ttf','font-700.ttf','app.js','data-client.js','install.js','route.js','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png'].map(path=>new URL(path,self.registration.scope).href);
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL.map(url=>new Request(url,{cache:'reload'})))).then(()=>self.skipWaiting()));});

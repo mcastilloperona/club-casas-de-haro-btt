@@ -28,3 +28,5 @@ Version 1.5: Salir is linked in the club menus; recommendations apply to outdoor
 Version 1.6: primary recommendations require daylight for the entire outing. Dark/partial-light options are collapsed separately and explicitly warned. Locality lookup now uses Photon reverse against GPS coordinates, checks proximity, and includes province/region; manual search also shows province.
 
 Version 1.7: preserve Salir visual identity and add a visible club crest with Volver al club in the header, plus a footer return link. Club logo is stored inside the app for offline shell isolation.
+
+Version 1.8: a labelled weather symbol accompanies every proposed time window, including Today, daylight alternatives and dark options. It summarises intersecting forecast hours only, showing the most adverse forecast condition and noting variability. Probabilities do not change weather symbols. Clear overnight options use a moon.

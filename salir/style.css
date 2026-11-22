@@ -115,3 +115,14 @@
 .routestatus{min-height:24px;font-size:13px;font-weight:600}
 .routestatus.error{background:#fff1ed;color:#a13b19;padding:10px 12px;border-radius:10px}
 @media(max-width:600px){.route-upload-control{width:100%;min-width:0}.routehead{display:flex;gap:10px}.routehead>div:first-child{width:100%}}
+
+/* v2.0 fixed GPX upload: stays mounted while forecast panels rerender */
+.bike-upload-dock{padding:20px;margin:0 0 18px;background:#fff;border:2px solid #d7e3f7;border-radius:18px}
+.bike-upload-dock .bike-upload-heading h2{font-size:20px;margin:6px 0}
+.bike-upload-dock .bike-upload-heading p{font-size:13px;line-height:1.5;color:var(--muted);margin:0 0 13px}
+.bike-file-label{display:block;font-size:13px;font-weight:700;margin-bottom:9px}
+#routeFile{display:block;position:static!important;opacity:1!important;visibility:visible!important;width:100%;height:auto!important;min-height:52px;border:1px solid #b9c9ea;border-radius:12px;background:#f5f8ff;padding:7px!important;color:#203249;font-size:13px;cursor:pointer}
+#routeFile::file-selector-button{font:inherit;font-weight:700;border:0;border-radius:9px;color:#fff;background:#2456ef;padding:10px 12px;margin-right:12px}
+.bike-upload-status{margin:12px 0 0;font-weight:600;font-size:13px;line-height:1.5;color:#24633c;min-height:20px}
+.bike-upload-status.error{color:#9e341c;background:#fff1ed;border-radius:9px;padding:9px}
+@media(max-width:600px){.bike-upload-dock{padding:15px}.bike-upload-dock .bike-upload-heading h2{font-size:19px}}

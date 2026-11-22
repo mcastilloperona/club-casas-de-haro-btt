@@ -52,3 +52,13 @@
 @media(max-width:600px){header{flex-wrap:wrap;row-gap:12px}.club-return{order:1;flex-basis:100%;margin-left:0;padding:12px 0 0;border-top:1px solid var(--line);border-radius:0}.club-return:hover{background:transparent}.club-return img{width:32px;height:32px}.club-return span{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 12px}.club-return strong{font-size:12px}.club-return small{font-size:10px}header>.club-return+#install{margin-left:auto}}
 
 .window-weather{display:flex;align-items:center;gap:9px;margin:10px 0 12px;font-size:13px;font-weight:500;line-height:1.4;color:#596b85}.window-weather-icon{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:36px;height:36px;border-radius:10px;background:#eaf0f7}.window-weather-icon svg{width:26px;height:26px}.window-weather small{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:2px}.weather-clear{color:#99701f}.weather-clear .window-weather-icon{background:#fff4d9}.weather-partly{color:#6b7990}.weather-partly .window-weather-icon{background:#eef2f7}.weather-rain,.weather-drizzle{color:#2456af}.weather-rain .window-weather-icon,.weather-drizzle .window-weather-icon{background:#e6efff}.weather-snow{color:#32768f}.weather-storm{color:#78508d}@media(max-width:600px){.window-weather{font-size:12px;gap:8px}.window-weather-icon{width:32px;height:32px}.window-weather-icon svg{width:24px;height:24px}.window-weather small{font-size:10px}}
+
+/* v1.9 · Disponibilidad clara, primero la luz */
+.availability-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid #dfe7ef;border-left:4px solid #e9a83c;border-radius:16px;padding:17px 20px;margin:0 0 19px}
+.availability-bar>div{flex:1 1 200px;min-width:0}
+.availability-bar strong{display:block;font-size:16px;letter-spacing:-.35px}
+.availability-bar small{display:block;font-size:12px;color:#687282;margin-top:5px;line-height:1.4}
+.availability-select{flex:0 1 200px}
+.availability-select select{width:100%;background:#f8faff;border:1px solid #d5deee;border-radius:10px;min-height:44px;padding:9px 12px;color:#18202b;font-weight:600}
+.availability-edit{padding:10px 3px;white-space:nowrap}
+@media(max-width:600px){.availability-bar{padding:15px;gap:10px}.availability-bar>div{flex-basis:100%}.availability-select{flex:1 1 180px}.availability-edit{flex:0 0 auto;font-size:12px}}

@@ -5,7 +5,13 @@ function localDateTime(d){return new Date(d.getTime()-d.getTimezoneOffset()*6000
 const rad=n=>n*Math.PI/180;
 function routeDistance(a,b){const x=rad(b.lat-a.lat),y=rad(b.lon-a.lon),v=Math.sin(x/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(y/2)**2;return 6371*2*Math.atan2(Math.sqrt(v),Math.sqrt(Math.max(0,1-v)));}
 function routeBearing(a,b){const d=rad(b.lon-a.lon),y=Math.sin(d)*Math.cos(rad(b.lat)),x=Math.cos(rad(a.lat))*Math.sin(rad(b.lat))-Math.sin(rad(a.lat))*Math.cos(rad(b.lat))*Math.cos(d);return(Math.atan2(y,x)*180/Math.PI+360)%360;}
-function parseBikeRoute(xml,filename){const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('El archivo no es un GPX o TCX válido. Vuelve a exportarlo desde tu aplicación de rutas.');
+function parseBikeRoute(xml,filename){
+if(xml.length>750000&&/<gpx\b/i.test(xml)){
+  // Extensions are per-point metadata, not coordinates. Reducing them avoids
+  // creating tens of thousands of unnecessary XML nodes on Android.
+  xml=xml.replace(/<extensions\b[^>]*>[\s\S]*?<\/extensions\s*>/gi,'');
+}
+const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.querySelector('parsererror'))throw Error('El archivo no es un GPX o TCX válido. Vuelve a exportarlo desde tu aplicación de rutas.');
 const root=doc.documentElement.localName.toLowerCase();if(!['gpx','trainingcenterdatabase'].includes(root))throw Error('Selecciona una ruta en formato GPX o TCX.');
 const byName=(node,name)=>Array.from(node.getElementsByTagNameNS('*',name));let raw=[];
 if(root==='gpx'){let groups=byName(doc,'trkseg');if(!groups.length)groups=byName(doc,'rte');if(!groups.length)throw Error('El GPX no contiene un recorrido. Exporta una ruta con track o puntos de ruta.');raw=groups.flatMap(group=>byName(group,group.localName==='rte'?'rtept':'trkpt').map(n=>({lat:Number(n.getAttribute('lat')),lon:Number(n.getAttribute('lon')),valid:n.hasAttribute('lat')&&n.hasAttribute('lon')})));}

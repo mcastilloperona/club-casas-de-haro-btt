@@ -104,3 +104,14 @@
 .bike-marker-data{display:block;background:#fff;color:#18202b;white-space:nowrap;font-size:10px;font-weight:800;padding:2px 5px;border-radius:5px;margin-top:1px;box-shadow:0 1px 5px #15213c4a}
 .bike-popup{font-size:12px;line-height:1.65}.bike-popup strong{font-size:14px}.bike-map-container .leaflet-popup-content-wrapper{border-radius:12px}
 @media(max-width:600px){.routebox{padding:15px}.bike-map-container{height:380px}.bike-map-overlay{font-size:10px;max-width:170px;padding:7px 9px}.bike-map-legend{gap:8px 10px;font-size:10px}}
+
+/* v2.3: Native mobile GPX picker — do not overlay a hidden file input */
+.routehead{flex-wrap:wrap;align-items:flex-start}
+.route-upload-control{display:flex;flex-direction:column;gap:5px;min-width:220px;max-width:100%;align-items:stretch}
+.route-upload-control label{font-size:12px;font-weight:700;color:#324566}
+.route-upload-control input[type=file]{position:static!important;opacity:1!important;display:block!important;inset:auto!important;width:100%;max-width:100%;min-height:48px;padding:6px;border:1px solid #bbcbe0;background:#f8faff;border-radius:10px;font-size:12px;cursor:pointer;color:#24364d}
+.route-upload-control input[type=file]::file-selector-button{background:#2456ef;border:none;color:white;border-radius:8px;padding:10px 12px;margin-right:8px;font:inherit;font-weight:700;cursor:pointer}
+.route-upload-control small{font-size:11px;color:#687282;line-height:1.4}
+.routestatus{min-height:24px;font-size:13px;font-weight:600}
+.routestatus.error{background:#fff1ed;color:#a13b19;padding:10px 12px;border-radius:10px}
+@media(max-width:600px){.route-upload-control{width:100%;min-width:0}.routehead{display:flex;gap:10px}.routehead>div:first-child{width:100%}}

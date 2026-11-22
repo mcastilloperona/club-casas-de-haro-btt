@@ -63,6 +63,23 @@ linear-gradient(90deg,transparent 0 4%,var(--cyan) 4% 13%,transparent 13% 18%,va
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Casas de Haro BTT">
+
+<style id="cdh-responsive-navigation">
+@media (max-width:767px){
+  .top .nav{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:66px!important;padding:8px 0!important}
+  .top .brand{display:flex!important;align-items:center!important;justify-content:flex-start!important;min-width:0!important;flex:1 1 auto!important;padding:0!important;gap:8px!important}
+  .top .brand span{font-size:clamp(12px,3.5vw,16px)!important;line-height:1.15!important;white-space:normal!important}
+  .top .club-logo{width:48px!important;height:48px!important;flex:0 0 48px!important}
+  .top .links{display:none!important}
+  .top .menu-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 44px!important;width:44px!important;height:44px!important;background:#06264b!important;color:#fff!important;border:1px solid #3a7095!important;border-radius:10px!important;font-size:26px!important;line-height:1!important;cursor:pointer!important}
+  .top .menu-btn:focus-visible,.top .mobile-menu a:focus-visible{outline:3px solid #13b9e8;outline-offset:2px}
+  .top .mobile-menu{display:none!important;position:absolute!important;top:100%!important;left:-4.35%!important;right:-4.35%!important;z-index:100!important;background:#031b37!important;padding:8px 18px 12px!important;border-top:3px solid #13b9e8!important;border-radius:0 0 16px 16px!important;box-shadow:0 18px 28px #0005!important;max-height:calc(100dvh - 75px)!important;overflow-y:auto!important}
+  .top .mobile-menu.open{display:grid!important;grid-template-columns:1fr!important}
+  .top .mobile-menu a{display:block!important;color:#fff!important;padding:13px 10px!important;font-size:15px!important;font-weight:700!important;border-bottom:1px solid #ffffff1b!important;text-align:left!important}
+  .top .mobile-menu a:last-child{border-bottom:0!important}
+  .top .mobile-menu a[aria-current="page"]{color:#34c9ef!important}
+}
+</style>
 </head><body>
 <div class="cdh-intro" id="cdhIntro" aria-hidden="true"><div class="cdh-logo-stack"><img class="cdh-logo-inner" src="assets/logo-cdh-inner.png" alt=""><img class="cdh-logo-plate" src="assets/logo-cdh-plate-v2.png" alt=""></div></div>
 
@@ -108,6 +125,54 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function () {});
   });
 }
+</script>
+
+<script id="cdh-responsive-navigation-script">
+(function(){
+  const header=document.querySelector('.top .nav');
+  if(!header)return;
+  const desktop=header.querySelector('.links');
+  if(!desktop)return;
+  let btn=header.querySelector('.menu-btn');
+  let menu=header.querySelector('.mobile-menu');
+  if(!btn){
+    btn=document.createElement('button');
+    btn.type='button';btn.className='menu-btn';btn.id='cdhMenuToggle';btn.textContent='☰';
+    header.appendChild(btn);
+  }
+  if(!menu){
+    menu=document.createElement('nav');
+    menu.className='mobile-menu';menu.id='cdhMobileNavigation';
+    menu.innerHTML=desktop.innerHTML;
+    header.appendChild(menu);
+    btn.addEventListener('click',function(){
+      const open=menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded',String(open));
+      btn.setAttribute('aria-label',open?'Cerrar menú':'Abrir menú');
+      btn.textContent=open?'✕':'☰';
+    });
+    menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+  }
+  if(!menu.id)menu.id='cdhMobileNavigation';
+  btn.setAttribute('aria-controls',menu.id);
+  btn.setAttribute('aria-expanded',String(menu.classList.contains('open')));
+  btn.setAttribute('aria-label','Abrir menú');
+  function close(){
+    menu.classList.remove('open');btn.setAttribute('aria-expanded','false');
+    btn.setAttribute('aria-label','Abrir menú');btn.textContent='☰';
+  }
+  menu.querySelectorAll('a').forEach(a=>{
+    const link=new URL(a.getAttribute('href'),location.href);
+    if(link.pathname===location.pathname || (location.pathname==='/' && link.pathname==='/index.html'))a.setAttribute('aria-current','page');
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  document.addEventListener('click',e=>{if(menu.classList.contains('open')&&!header.contains(e.target))close();});
+  window.addEventListener('resize',()=>{if(window.innerWidth>767)close();});
+  if(!btn.dataset.cdhLabelBound){
+    btn.addEventListener('click',()=>btn.setAttribute('aria-label',menu.classList.contains('open')?'Cerrar menú':'Abrir menú'));
+    btn.dataset.cdhLabelBound='yes';
+  }
+})();
 </script>
 </body></html>
 

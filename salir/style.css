@@ -82,3 +82,25 @@
 .availability-result-actions .outline{background:#2456ef;color:#fff;border-color:#2456ef}
 @media(max-width:600px){.availability-panel{padding:16px}.availability-heading h2{font-size:21px}.availability-fields,.availability-custom{grid-template-columns:1fr 1fr;gap:9px}.availability-panel select,.availability-panel input{font-size:13px;min-height:46px;padding:9px 8px}.availability-result{padding:16px}.availability-result .bigtime{font-size:25px}}
 @media(max-width:360px){.availability-fields{grid-template-columns:1fr}}
+
+/* v2.2 – GPX as a real, interactive map */
+.routevisual{display:block;margin:15px 0 18px}
+.bike-map-section{margin-top:18px;border:1px solid #dce5f2;border-radius:17px;overflow:hidden;background:#fff}
+.bike-map-top{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:15px 16px}
+.bike-map-top strong,.bike-map-top small{display:block}.bike-map-top strong{font-size:17px}.bike-map-top small{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+.bike-map-distance{font-weight:700;color:#2456ef;white-space:nowrap}
+.bike-map-container{height:430px;width:100%;position:relative;background:#eaf0f6;z-index:0}
+.bike-map-overlay{position:absolute;left:10px;top:10px;z-index:600;background:#fffef3ed;color:#24364a;padding:9px 11px;border-radius:10px;font-size:11px;line-height:1.5;max-width:210px;box-shadow:0 3px 12px #0002;pointer-events:none}
+.bike-map-fallback{padding:16px;color:#9b442e}
+.bike-map-legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 15px;padding:12px 15px;font-size:11px;color:#526179}
+.bike-map-legend span{display:flex;align-items:center;gap:6px}
+.bike-legend-dot{width:12px;height:12px;display:inline-block;border-radius:50%;background:#64748b}
+.bike-legend-dot.tail{background:#19875b}.bike-legend-dot.head{background:#d45636}.bike-legend-dot.side{background:#e1a331}.bike-legend-dot.pending{background:#2456ef}
+.bike-map-section>.routekey{padding:0 15px 14px;line-height:1.5}
+.bike-wind-marker{background:none!important;border:0!important;display:flex;flex-direction:column;align-items:center}
+.bike-marker-inner{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#64748b;color:#fff;border:2px solid #fff;box-shadow:0 2px 7px #15213c65;font-weight:800}
+.bike-wind-marker.tail .bike-marker-inner{background:#19875b}.bike-wind-marker.head .bike-marker-inner{background:#d45636}.bike-wind-marker.side .bike-marker-inner{background:#e1a331;color:#17242f}.bike-wind-marker.pending .bike-marker-inner{background:#2456ef}
+.bike-wind-arrow{display:block;font-size:23px;font-weight:900;line-height:1}.bike-point-number{font-size:12px}
+.bike-marker-data{display:block;background:#fff;color:#18202b;white-space:nowrap;font-size:10px;font-weight:800;padding:2px 5px;border-radius:5px;margin-top:1px;box-shadow:0 1px 5px #15213c4a}
+.bike-popup{font-size:12px;line-height:1.65}.bike-popup strong{font-size:14px}.bike-map-container .leaflet-popup-content-wrapper{border-radius:12px}
+@media(max-width:600px){.routebox{padding:15px}.bike-map-container{height:380px}.bike-map-overlay{font-size:10px;max-width:170px;padding:7px 9px}.bike-map-legend{gap:8px 10px;font-size:10px}}

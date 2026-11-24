@@ -128,3 +128,5 @@
 @media(max-width:600px){.bike-upload-dock{padding:15px}.bike-upload-dock .bike-upload-heading h2{font-size:19px}}
 
 .no-proposal-reason{margin-top:1rem;padding:1rem;border-left:4px solid #b65b20;background:#fff3e5;border-radius:8px;color:#57300f;font-size:1rem;line-height:1.6}.no-proposal-reason strong{display:block}.no-proposal-reason ul{margin:.6rem 0;padding-left:1.3rem}.no-proposal-reason p{margin:.6rem 0 0}.no-proposal h3{margin-top:0}
+
+.outing-assessment{margin:1rem 0;padding:1rem;border-radius:12px;background:#edf7ef;border-left:4px solid #2d7447;color:#1c4b2e;font-size:1rem;line-height:1.6}.outing-assessment h3{margin:0 0 .6rem;font-size:1.25rem}.outing-assessment ul{padding-left:1.3rem;margin:.6rem 0}.outing-assessment p{margin:.6rem 0}.outing-assessment small{display:block;font-size:.875rem}.outing-assessment.verdict-bad{background:#fff0ed;border-color:#b63c2b;color:#79281d}.outing-assessment.verdict-caution{background:#fff3e5;border-color:#b65b20;color:#57300f}.assessment-light.night-warning{padding:.6rem;background:#fff3e5;border-radius:8px;color:#57300f}

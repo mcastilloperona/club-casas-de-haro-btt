@@ -1,4 +1,4 @@
-const CACHE='salir-shell-2.0';
+const CACHE='salir-shell-2.0-weather1';
 const BASE=new URL('./',self.location.href).pathname;
 const SHELL=['./','index.html','style.css','leaflet.css','leaflet.js','radar.js','font-400.ttf','font-500.ttf','font-600.ttf','font-700.ttf','app.js','data-client.js','install.js','route.js','manifest.webmanifest','icon-192.png','icon-512.png','icon-maskable.png','club-logo.png'].map(path=>{const url=new URL(path,self.registration.scope);if(/\.(js|css)$/.test(url.pathname))url.searchParams.set('v',CACHE.replace('salir-shell-',''));return url.href;});
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL.map(url=>new Request(url,{cache:'reload'})))).then(()=>self.skipWaiting()));});

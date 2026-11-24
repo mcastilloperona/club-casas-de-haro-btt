@@ -126,3 +126,5 @@
 .bike-upload-status{margin:12px 0 0;font-weight:600;font-size:13px;line-height:1.5;color:#24633c;min-height:20px}
 .bike-upload-status.error{color:#9e341c;background:#fff1ed;border-radius:9px;padding:9px}
 @media(max-width:600px){.bike-upload-dock{padding:15px}.bike-upload-dock .bike-upload-heading h2{font-size:19px}}
+
+.no-proposal-reason{margin-top:1rem;padding:1rem;border-left:4px solid #b65b20;background:#fff3e5;border-radius:8px;color:#57300f;font-size:1rem;line-height:1.6}.no-proposal-reason strong{display:block}.no-proposal-reason ul{margin:.6rem 0;padding-left:1.3rem}.no-proposal-reason p{margin:.6rem 0 0}.no-proposal h3{margin-top:0}
